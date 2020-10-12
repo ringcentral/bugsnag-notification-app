@@ -1,0 +1,19 @@
+{
+  "name": "glip-integration-bugsnag",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "ngrok": "ngrok http -region ap 6066",
+    "server": "node ./src/server/run-server.js"
+  },
+  "devDependencies": {
+    "ngrok": "^3.3.0",
+    "dynamodb-local": "0.0.31"
+  },
+  "dependencies": {
+    "dotenv": "6.2.0",
+    "glip-integration-js": "^0.2.0",
+    "serverless-http": "^2.6.0"
+  }
+}
