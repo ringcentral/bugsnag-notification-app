@@ -5,15 +5,24 @@
   "license": "MIT",
   "scripts": {
     "ngrok": "ngrok http -region ap 6066",
-    "server": "node ./src/server/run-server.js"
+    "server": "node ./src/server/run-server.js",
+    "initDB": "node ./scripts/init-db",
+    "dynamo": "node ./scripts/dynamo-local"
   },
   "devDependencies": {
+    "dynamodb-local": "0.0.31",
     "ngrok": "^3.3.0",
-    "dynamodb-local": "0.0.31"
+    "serverless": "^2.3.0",
+    "sqlite3": "^5.0.0"
   },
   "dependencies": {
+    "cookie-session": "^1.4.0",
     "dotenv": "6.2.0",
+    "dynamo-sequelize": "^0.7.9",
     "glip-integration-js": "^0.2.0",
-    "serverless-http": "^2.6.0"
+    "pug": "^3.0.0",
+    "sequelize": "^5.22.3",
+    "serverless-http": "^2.6.0",
+    "shortid": "^2.2.15"
   }
 }

@@ -5,8 +5,8 @@ const { server } = require('./server');
 // import initDb from './app/common/init-db';
 
 const {
-  RINGCENTRAL_PORT: port,
-  RINGCENTRAL_HOST: host,
+  APP_PORT: port,
+  APP_HOST: host,
   APP_HOME = '/'
 } = process.env;
 

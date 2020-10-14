@@ -1,0 +1,100 @@
+
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(http-equiv='x-ua-compatible' content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='csrf-token' content=csrfToken)
+    title #{title}
+    link(href='//developer.ringcentral.com/assets/images/favicon.ico?v=20181214-0738', type='image/vnd.microsoft.icon', rel='shortcut icon')
+    style
+      include style.css
+  body
+    #container
+      p The integration can send notifications to the RingCentral conversation and allows you to take action on errors straight from RingCentral.
+      p 1. Sign into Bugsnag and go to project setting page.
+      p 2. Go to <strong>Data forwarding</strong> setting:
+      p
+        img(src='https://apps.ringcentral.com/integration/bugsnag/bugsnag01.png')
+      p 3. Click <strong>Webhook</strong>.
+      p 4. In <strong>Webhook URL</strong> field, enter the following URL:
+      .webhookURLArea
+          input.input#webhookURL(readonly type='text' value=webhookUri data-webhookId=webhookId)
+          button#copyBtn(title="Copy")
+            img(src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' class='sc-fzpans gmdNNO'%3E%3Cpath d='M27 28H10a1 1 0 01-1-1V10a1 1 0 011-1h17a1 1 0 011 1v17a1 1 0 01-1 1zm1-21H9a2 2 0 00-2 2v19a2 2 0 002 2h19a2 2 0 002-2V9a2 2 0 00-2-2zM3 18a1 1 0 01-1-1V4a2 2 0 012-2h13a1 1 0 010 2H5a1 1 0 00-1 1v12a1 1 0 01-1 1z'%3E%3C/path%3E%3C/svg%3E")
+            
+      p 5. Click <strong>Save</strong>.
+      p 6. Update your Webhook <strong>Notify me when</strong> setting
+      p
+        img(src='https://apps.ringcentral.com/integration/bugsnag/bugsnag02.png')
+      p 7. (Optional) Generate Personal auth token in <strong>Bugsnag</strong/>>><strong>Account Settings</strong>>><strong>Personal auth tokens</strong>, then set it here.
+      .authTokenArea
+          input.input#authToken(type='text' value=authToken placeholder='Bugsnag personal auth token')
+          button.button#authCancelBtn Cancel
+          button.button#authBtn(data-type='save') Save
+      p Personal auth token is required for <strong>Mark as fixed</strong>, <strong>Snooze 1hr</strong> and <strong>Ignore</strong> actions.
+    script.
+      var copyBtn = window.document.getElementById('copyBtn');
+      var webhookInput = window.document.getElementById('webhookURL');
+      var webhookId = webhookInput.getAttribute('data-webhookId');
+      copyBtn.addEventListener('click', function() {
+        webhookInput.select();
+        webhookInput.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+      });
+      var authTokenInput = window.document.getElementById('authToken');
+      var authTokenBtn = window.document.getElementById('authBtn');
+      var authTokenCancelBtn = window.document.getElementById('authCancelBtn');
+      var originalAuthToken = authTokenInput.value;
+      if (originalAuthToken) {
+        authTokenBtn.setAttribute('data-type', 'edit');
+        authTokenBtn.innerHTML = 'Edit';
+        authTokenInput.setAttribute('readonly', true);
+      }
+      authTokenBtn.addEventListener('click', function() {
+        const type = authTokenBtn.getAttribute('data-type');
+        if (type === 'saving') {
+          return;
+        }
+        if (type === 'edit') {
+          authTokenBtn.setAttribute('data-type', 'save');
+          authTokenBtn.innerHTML = 'Save';
+          authTokenInput.removeAttribute('readonly');
+          authTokenInput.value = '';
+          authTokenInput.focus();
+          authTokenCancelBtn.style.display = 'inline-block';
+          return;
+        }
+        const authToken = authTokenInput.value;
+        authTokenBtn.setAttribute('data-type', 'saving');
+        authTokenBtn.innerHTML = 'Saving';
+        authTokenInput.setAttribute('readonly', true);
+        authTokenCancelBtn.style.display = 'none';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        fetch(`/webhook/${webhookId}?_csrf=${csrfToken}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ authToken })
+        }).then(function () {
+          authTokenBtn.setAttribute('data-type', 'edit');
+          authTokenBtn.innerHTML = 'Edit';
+          authTokenInput.value = (new Array(authToken.length)).fill('*').join('');
+        }).catch(function (e) {
+          console.error(e);
+          authTokenBtn.setAttribute('data-type', 'Save');
+          authTokenBtn.innerHTML = 'save';
+          authTokenCancelBtn.style.display = 'inline-block';
+          authTokenInput.removeAttribute('readonly');
+        })
+      });
+      authTokenCancelBtn.addEventListener('click', function() {
+        authTokenBtn.setAttribute('data-type', 'edit');
+        authTokenBtn.innerHTML = 'Edit';
+        authTokenInput.setAttribute('readonly', true);
+        authTokenInput.value = originalAuthToken;
+        authTokenCancelBtn.style.display = 'none';
+      });
+
