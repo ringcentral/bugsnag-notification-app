@@ -6,6 +6,7 @@
   "scripts": {
     "ngrok": "ngrok http -region ap 6066",
     "server": "node ./src/run-server.js",
+    "start": "yarn server",
     "initDB": "node ./scripts/init-db",
     "dynamo": "node ./scripts/dynamo-local"
   },
