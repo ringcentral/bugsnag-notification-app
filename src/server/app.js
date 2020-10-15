@@ -3,6 +3,8 @@ const axios = require('axios');
 const { Webhook } = require('./models/webhook');
 const cookieSession = require('cookie-session');
 
+const { formatGlipMessage } = require('./utils/formatGlipMessage');
+
 exports.appExtend = (app) => {
   app.set('views', path.resolve(__dirname, './views'));
   app.set('view engine', 'pug');
@@ -14,13 +16,16 @@ exports.appExtend = (app) => {
     signed: true,
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   }));
-  app.post('/bugsnag', async (req, res) => {
+  app.post('/notify/:id', async (req, res) => {
+    const id = req.params.id;
+    const webhookRecord = await Webhook.findByPk(id);
+    if (!webhookRecord) {
+      res.end(404);
+      return;
+    }
     const body = req.body;
-    console.log(body);
-    const glipRes = await axios.post(process.env.STATIC_WEBHOOK, {
-      text: 'Now',
-      body: 'test'
-    }, {
+    // console.log(JSON.stringify(body, null, 2));
+    await axios.post(webhookRecord.rc_webhook, formatGlipMessage(body), {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
@@ -51,7 +56,7 @@ exports.appExtend = (app) => {
       authToken = (new Array(authToken.length)).fill('*').join('');
     }
     res.render('new', {
-      webhookUri: `${process.env.APP_SERVER}/webhook/${webhookRecord.id}`,
+      webhookUri: `${process.env.APP_SERVER}/notify/${webhookRecord.id}`,
       webhookId: webhookRecord.id,
       authToken,
       csrfToken,

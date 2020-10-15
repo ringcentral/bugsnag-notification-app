@@ -37,9 +37,6 @@ p img {
   padding: 0px 16px;
   flex: 1;
   margin-right: 8px;
-}
-
-#webhookURL:hover {
   background-color: rgb(249, 249, 250);
 }
 
