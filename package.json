@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "ngrok": "ngrok http -region ap 6066",
-    "server": "node ./src/server/run-server.js",
+    "server": "node ./src/run-server.js",
     "initDB": "node ./scripts/init-db",
     "dynamo": "node ./scripts/dynamo-local"
   },
