@@ -54,4 +54,4 @@ $ yarn
 
 Visit your publish uri `https://xxxxxx.ngrok.io/webhook/new?webhook=glipWebhookUri`, and follow step to connect Glip conversation and Bugsnag project.
 
-For test, you can get `glipWebhookUri` from Glip Webhook integration.
+For test, you can get `glipWebhookUri` from Glip Incoming Webhook integration.

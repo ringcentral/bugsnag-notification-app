@@ -41,11 +41,13 @@ function formatReleaseMessage(message) {
       title: "Version",
       value: message.release.version,
       style: 'Short',
+      short: true,
     },
     {
       title: "Release Stage",
       value: message.release.releaseStage,
       style: "Short",
+      short: true,
     }
   ];
   if (message.release.releasedBy) {
@@ -53,6 +55,7 @@ function formatReleaseMessage(message) {
       title: "Release By",
       value: message.release.releasedBy,
       style: "Short",
+      short: true,
     });
   }
   if (message.release.sourceControl) {
@@ -67,6 +70,7 @@ function formatReleaseMessage(message) {
       title: "Commit",
       value: itemValue,
       style: "Short",
+      short: true,
     });
   }
   return {
