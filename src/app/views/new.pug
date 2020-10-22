@@ -72,7 +72,8 @@ html
         authTokenInput.setAttribute('readonly', true);
         authTokenCancelBtn.style.display = 'none';
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        fetch(`/webhook/${webhookId}?_csrf=${csrfToken}`, {
+        // update uri: '/webhook/:id'
+        fetch(`${window.location.pathname.replace('new', webhookId)}?_csrf=${csrfToken}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
