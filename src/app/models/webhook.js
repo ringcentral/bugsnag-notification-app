@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const { sequelize } = require('./sequelize');
 
-exports.Webhook = sequelize.define('BugsnagForRCIntegrationWebhook', {
+exports.Webhook = sequelize.define('webhooks', {
   id: {
     type: Sequelize.STRING,
     primaryKey: true,

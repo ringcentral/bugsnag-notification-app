@@ -40,15 +40,23 @@ exports.appExtend = (app) => {
     const glipWebhookUri = req.query.webhook;
     let webhookRecord = {};
     if (glipWebhookUri) {
-      webhookRecord = await Webhook.findOne({
-        where: {
-          rc_webhook: glipWebhookUri,
-        }
-      });
-      if (!webhookRecord) {
-        webhookRecord = await Webhook.create({
-          rc_webhook: glipWebhookUri,
+      try {
+        const webhookRecords = await Webhook.findAll({
+          where: {
+            rc_webhook: glipWebhookUri,
+          }
         });
+        webhookRecord = webhookRecords[0];
+        if (!webhookRecord) {
+          webhookRecord = await Webhook.create({
+            rc_webhook: glipWebhookUri,
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        res.send('Internal server error');
+        res.end(500);
+        return;
       }
     }
     let authToken = webhookRecord.bs_auth_token || '';

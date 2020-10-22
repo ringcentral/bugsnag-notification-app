@@ -4,7 +4,7 @@ require('dotenv').config()
 const { server } = require('./server');
 
 const {
-  APP_PORT: port,
+  PORT: port,
   APP_HOST: host,
 } = process.env;
 
