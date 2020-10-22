@@ -15,13 +15,13 @@ $ git clone this_project_uri
 Inside project root:
 
 ```
-$ yarn
+$ npm install
 ```
 
 ### 3. Start Ngrok to create a URI for public internet access
 
 ```
-$ yarn ngrok
+$ npm run ngrok
 ```
 
 Keep this process active, and you will get a publish uri as `https://xxxxxxxxxx.ngrok.io` that connected with your local port `localhost:6066`.
@@ -43,13 +43,13 @@ We will use sqlite as local database. Please install sqlite3 in your machine fir
 Init Database:
 
 ```
-$ yarn initDB
+$ npm run initDB
 ```
 
 ### 6. Start server
 
 ```
-$ yarn 
+$ npm start 
 ```
 
 Visit your publish uri `https://xxxxxx.ngrok.io/webhook/new?webhook=glipWebhookUri`, and follow step to connect Glip conversation and Bugsnag project.

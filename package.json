@@ -6,13 +6,16 @@
   "scripts": {
     "ngrok": "ngrok http -region ap 6066",
     "server": "node ./src/run-server.js",
-    "start": "yarn server",
+    "start": "npm run server",
     "initDB": "node ./scripts/init-db",
-    "dynamo": "node ./scripts/dynamo-local"
+    "dynamo": "node ./scripts/dynamo-local",
+    "serverless-build": "node ./scripts/serverless-build",
+    "serverless-deploy": "node ./scripts/serverless-deploy"
   },
   "devDependencies": {
     "dynamodb-local": "0.0.31",
     "ngrok": "^3.3.0",
+    "shelljs": "^0.8.4",
     "serverless": "^2.3.0",
     "sqlite3": "^5.0.0"
   },

@@ -1,0 +1,65 @@
+service:
+  name: ringcentral-bugsnag-notification-app
+provider:
+  stage: ${opt:stage, 'prod'}
+  name: aws
+  runtime: nodejs10.x
+  region: us-east-1
+  memorySize: 256
+  environment: ${file(./env.yml)}
+  profile: default
+  excludeDevDependencies: true
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - lambda:InvokeFunction
+  #     Resource: ""
+  deploymentBucket:
+    tags:
+      Department: dev
+      Owner: Your name
+      Stage: production
+      Environment: your-env-tag
+      Team: your-team
+      Name: ringcentral-bugsnag-notification-app
+  tags:
+    Department: dev
+    Owner: Your name
+    Stage: production
+    Environment: your-env-tag
+    Team: your-team
+    Name: ringcentral-bugsnag-notification-app
+package:
+  include:
+    - '.json'
+    - '.js'
+    - 'node_modules/**'
+functions:
+  app:
+    handler: lambda.app
+    timeout: 400 # 5 miutes
+    # role: arn:aws:iam::111111:role/xxxx-prod-us-east-1-lambdaRole
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
+          cors: false
+resources:
+  Resources:
+    webhooksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: bugsnag-rc-notification-webhooks
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: rc_webhook
+            AttributeType: S
+          - AttributeName: bs_auth_token
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
