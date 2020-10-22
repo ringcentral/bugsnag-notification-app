@@ -37,7 +37,6 @@ package:
 functions:
   app:
     handler: lambda.app
-    timeout: 400 # 5 miutes
     # role: arn:aws:iam::111111:role/xxxx-prod-us-east-1-lambdaRole
     events:
       - http:
@@ -52,10 +51,6 @@ resources:
         TableName: bugsnag-rc-notification-webhooks
         AttributeDefinitions:
           - AttributeName: id
-            AttributeType: S
-          - AttributeName: rc_webhook
-            AttributeType: S
-          - AttributeName: bs_auth_token
             AttributeType: S
         KeySchema:
           - AttributeName: id

@@ -55,3 +55,37 @@ $ npm start
 Visit your publish uri `https://xxxxxx.ngrok.io/webhook/new?webhook=glipWebhookUri`, and follow step to connect Glip conversation and Bugsnag project.
 
 For test, you can get `glipWebhookUri` from Glip Incoming Webhook integration.
+
+## Deploy with serverless
+
+### 1. Create `serverless-deploy/env.yml` file
+
+```
+$ cp serverless-deploy/env.default.yml serverless-deploy/env.yml
+```
+
+Edit `serverless-deploy/env.yml` to set environment variables.
+We will get `APP_SERVER` after first deploy. So now just keep it blank.
+
+### 2. Create `serverless-deploy/serverless.yml` file
+
+```
+$ cp serverless-deploy/serverless.default.yml serverless-deploy/serverless.yml
+```
+
+Edit `serverless-deploy/env.yml` to update serverless settings.
+The Dynamo `TableName` should be `${DYNAMODB_TABLE_PREFIX}webhooks`. DYNAMODB_TABLE_PREFIX is environment variable that we set upper.
+
+### 3. Deploy
+
+```
+$ npm run serverless-build
+$ npm run serverless-deploy
+```
+
+In first deploy, you will get lambda uri in console output: `https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod`.
+Copy the uri, and update environment variable `APP_SERVER` with it in `serverless-deploy/env.yml` file. Then deploy again:
+
+```
+$ npm run serverless-deploy
+```
