@@ -1,0 +1,167 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+      {
+          "type": "Container",
+          "id": "b09b760c-612e-ad53-cd62-12116708d569",
+          "padding": "Default",
+          "items": [
+              {
+                  "type": "TextBlock",
+                  "id": "52a1f88f-bb25-b7e9-c6b6-595de8a5fc1d",
+                  "text": "{{subject}}",
+                  "wrap": true
+              },
+              {
+                  "type": "ColumnSet",
+                  "id": "3d95e087-cee3-d609-9dc4-96d3ed3ab022",
+                  "columns": [
+                      {
+                          "type": "Column",
+                          "id": "22bbb00f-5c16-41ea-ee8e-5e727896073a",
+                          "padding": "None",
+                          "width": "auto",
+                          "items": [
+                              {
+                                  "type": "ColumnSet",
+                                  "columns": [
+                                      {
+                                          "type": "Column",
+                                          "id": "87ebd8d2-1518-c201-f49f-e0af07b94160",
+                                          "padding": "None",
+                                          "width": "auto",
+                                          "items": [
+                                              {
+                                                  "type": "TextBlock",
+                                                  "id": "494a8520-4f4f-380f-3197-5ec53984cec9",
+                                                  "text": "Version",
+                                                  "wrap": true,
+                                                  "weight": "Bolder"
+                                              },
+                                              {
+                                                  "type": "TextBlock",
+                                                  "id": "893f910c-7687-d86a-5bcc-ad31dcaf6fe2",
+                                                  "text": "{{version}}",
+                                                  "wrap": true
+                                              }
+                                          ]
+                                      }
+                                  ],
+                                  "padding": "None"
+                              },
+                              {
+                                  "type": "ColumnSet",
+                                  "columns": [
+                                      {
+                                          "type": "Column",
+                                          "padding": "None",
+                                          "width": "stretch",
+                                          "items": [
+                                              {
+                                                  "type": "ColumnSet",
+                                                  "columns": [
+                                                      {
+                                                          "type": "Column",
+                                                          "id": "bbe6892f-4e8f-2fe3-6824-8ddb080ef9e3",
+                                                          "padding": "None",
+                                                          "width": "auto",
+                                                          "items": [
+                                                              {
+                                                                  "type": "TextBlock",
+                                                                  "id": "632df010-6757-df8f-4d5d-c7c2c56228d2",
+                                                                  "text": "Release By",
+                                                                  "wrap": true,
+                                                                  "weight": "Bolder"
+                                                              },
+                                                              {
+                                                                  "type": "TextBlock",
+                                                                  "id": "7447251d-7e77-490b-7420-9517d14792ae",
+                                                                  "text": "{{by}}",
+                                                                  "wrap": true
+                                                              }
+                                                          ]
+                                                      }
+                                                  ],
+                                                  "padding": "None"
+                                              }
+                                          ]
+                                      }
+                                  ],
+                                  "padding": "None"
+                              }
+                          ]
+                      },
+                      {
+                          "type": "Column",
+                          "padding": "None",
+                          "width": "stretch",
+                          "items": [
+                              {
+                                  "type": "ColumnSet",
+                                  "columns": [
+                                      {
+                                          "type": "Column",
+                                          "padding": "None",
+                                          "width": "stretch",
+                                          "items": [
+                                              {
+                                                  "type": "TextBlock",
+                                                  "id": "2497ba6c-3d92-437f-a37b-19cbf03c6d1d",
+                                                  "text": "Release Stage",
+                                                  "wrap": true,
+                                                  "weight": "Bolder"
+                                              },
+                                              {
+                                                  "type": "TextBlock",
+                                                  "id": "971300b7-f303-2ef0-c883-da2eec1eb02c",
+                                                  "text": "{{stage}}",
+                                                  "wrap": true
+                                              }
+                                          ]
+                                      }
+                                  ],
+                                  "padding": "None"
+                              },
+                              {
+                                  "type": "ColumnSet",
+                                  "columns": [
+                                      {
+                                          "type": "Column",
+                                          "padding": "None",
+                                          "width": "stretch",
+                                          "items": [
+                                              {
+                                                  "type": "TextBlock",
+                                                  "id": "91f97a81-8d16-38fa-c06c-77e7134d070e",
+                                                  "text": "Commit",
+                                                  "wrap": true,
+                                                  "weight": "Bolder"
+                                              },
+                                              {
+                                                  "type": "TextBlock",
+                                                  "id": "a5d45a9d-5a33-37b6-9f93-936a8943441b",
+                                                  "text": "{{commit}}",
+                                                  "wrap": true,
+                                                  "color": "Accent"
+                                              }
+                                          ]
+                                      }
+                                  ],
+                                  "padding": "None"
+                              }
+                          ]
+                      }
+                  ],
+                  "padding": "Small",
+                  "style": "emphasis",
+                  "separator": true
+              }
+          ]
+      }
+  ],
+  "padding": "None",
+  "@type": "AdaptiveCard",
+  "@context": "http://schema.org/extensions"
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+      {
+          "type": "Container",
+          "id": "75ebc5fe-d0ee-702c-1b05-e0cbdc6d61c6",
+          "padding": "None",
+          "items": [
+              {
+                  "type": "TextBlock",
+                  "id": "573f0a1e-d750-cafe-3061-409423b4f1e0",
+                  "text": "{{subject}}",
+                  "wrap": true
+              },
+              {
+                  "type": "Container",
+                  "id": "ac4b8edf-cd45-13d9-be0d-95381c64bb0d",
+                  "padding": "Small",
+                  "items": [
+                      {
+                          "type": "Container",
+                          "id": "fa9b127d-4752-fbde-97ff-250f8394c89d",
+                          "padding": "None",
+                          "items": [
+                              {
+                                  "type": "TextBlock",
+                                  "id": "6fd34226-19bc-c2d5-5f52-771bb98c9ea6",
+                                  "text": "Unhandled error",
+                                  "wrap": true,
+                                  "weight": "Bolder"
+                              },
+                              {
+                                  "type": "TextBlock",
+                                  "id": "04bd9676-3c79-f52e-ae52-6377f0f73534",
+                                  "text": "{{message}}",
+                                  "wrap": true,
+                                  "spacing": "Small"
+                              }
+                          ]
+                      },
+                      {
+                          "type": "Container",
+                          "id": "d940c4a2-4ae2-b728-b216-09f5a07f1c82",
+                          "padding": "None",
+                          "items": [
+                              {
+                                  "type": "TextBlock",
+                                  "id": "c05743c9-27e6-a5f1-3e54-5ed45d503ad4",
+                                  "text": "Location",
+                                  "wrap": true,
+                                  "weight": "Bolder"
+                              },
+                              {
+                                  "type": "TextBlock",
+                                  "id": "4e113c0d-97b2-5634-7a55-535fe76fd02a",
+                                  "text": "{{location}}",
+                                  "wrap": true,
+                                  "spacing": "Small"
+                              }
+                          ]
+                      }
+                  ],
+                  "style": "emphasis",
+                  "separator": true
+              },
+              {
+                  "type": "ActionSet",
+                  "id": "7462123a-3e36-88fb-9320-f4ff4147f352",
+                  "actions": [
+                      {
+                          "type": "Action.Http",
+                          "id": "788584c8-ee67-122f-a807-d8e96d2ae1d3",
+                          "title": "Make as fixed",
+                          "url": "http://9ebb2aaf6603.ap.ngrok.io",
+                          "method": "POST",
+                          "body": "{ test: 1 }"
+                      },
+                      {
+                          "type": "Action.Http",
+                          "id": "1e99ffdf-2005-7300-7353-d7200166e3ca",
+                          "title": "Snooze 1hr",
+                          "method": "POST",
+                          "url": "https://messagecardplaygroundfn.azurewebsites.net/api/HttpPost?code=zJaYHdG4dZdPK0GTymwYzpaCtcPAPec8fTvc2flJRvahwigYWg3p0A=="
+                      },
+                      {
+                          "type": "Action.Http",
+                          "id": "97142586-699c-7927-817c-370b38d16546",
+                          "title": "Ignore",
+                          "method": "POST",
+                          "url": "https://messagecardplaygroundfn.azurewebsites.net/api/HttpPost?code=zJaYHdG4dZdPK0GTymwYzpaCtcPAPec8fTvc2flJRvahwigYWg3p0A=="
+                      },
+                      {
+                          "type": "Action.OpenUrl",
+                          "id": "58f48db0-7843-a192-ff21-f2fe7f13524c",
+                          "title": "Open",
+                          "url": "https://amdesigner.azurewebsites.net"
+                      }
+                  ]
+              }
+          ]
+      }
+  ],
+  "padding": "Default",
+  "@type": "AdaptiveCard",
+  "@context": "http://schema.org/extensions"
+}
