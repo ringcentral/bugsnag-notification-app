@@ -10,6 +10,7 @@ html
     link(href='//developer.ringcentral.com/assets/images/favicon.ico?v=20181214-0738', type='image/vnd.microsoft.icon', rel='shortcut icon')
     style
       include style.css
+    script(src='https://apps.ringcentral.com/integration/bugsnag/RcPostMessage.umd.js')
   body
     #container
       p The integration can send notifications to the RingCentral conversation and allows you to take action on errors straight from RingCentral.
@@ -33,7 +34,7 @@ html
           input.input#authToken(type='text' value=authToken placeholder='Bugsnag personal auth token')
           button.button#authCancelBtn Cancel
           button.button#authBtn(data-type='save') Save
-      p Personal auth token is required for <strong>Mark as fixed</strong>, <strong>Snooze 1hr</strong> and <strong>Ignore</strong> actions.
+      p Personal auth token is required for <strong>Mark as fixed</strong>, <strong>Snooze 1hr</strong> and <strong>Ignore</strong> actions. (<strong>Notice</strong>: Action features are still on <strong>Development</strong> now)
     script.
       var copyBtn = window.document.getElementById('copyBtn');
       var webhookInput = window.document.getElementById('webhookURL');
@@ -98,4 +99,10 @@ html
         authTokenInput.value = originalAuthToken;
         authTokenCancelBtn.style.display = 'none';
       });
-
+      var rcPostMessage = new RcPostMessage.PostMessageApp();
+      rcPostMessage.handle('INTEGRATION_SUBMIT_CHANNEL', function () {
+        return { status: true };
+      });
+      setTimeout(function () {
+        rcPostMessage.send('INTEGRATION_OAUTH_CHANNEL', { status: true })
+      }, 2000);
