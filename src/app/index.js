@@ -64,12 +64,20 @@ exports.appExtend = (app) => {
     let webhookRecord = {};
     if (glipWebhookUri) {
       try {
-        const webhookRecords = await Webhook.findAll({
-          where: {
-            rc_webhook: glipWebhookUri,
-          }
-        });
-        webhookRecord = webhookRecords[0];
+        if (Webhook.getOne) {
+          const webhookRecords = await Webhook.getOne({
+            where: {
+              rc_webhook: glipWebhookUri,
+            }
+          });
+          webhookRecord = webhookRecords[0];
+        } else {
+          webhookRecord = await Webhook.findOne({
+            where: {
+              rc_webhook: glipWebhookUri,
+            }
+          });
+        }
         if (!webhookRecord) {
           webhookRecord = await Webhook.create({
             rc_webhook: glipWebhookUri,
