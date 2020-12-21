@@ -4,6 +4,8 @@ const {
   formatCommentMessage,
 } = require('./formatBugsnagMessage');
 
+const FEEDBACK_URL = 'https://github.com/ringcentral/bugsnag-notification-app/issues/new';
+const DEFAULT_FOOTER = `[Feedback (Any suggestions, or issues about the Bugsnag notification app?)](${FEEDBACK_URL})`;
 function formatErrorMessageIntoCard(message) {
   const errorMessage = formatErrorMessage(message);
   return {
@@ -22,7 +24,8 @@ function formatErrorMessageIntoCard(message) {
         value: errorMessage.location,
         style: "Long"
       }
-    ]
+    ],
+    footer: DEFAULT_FOOTER,
   };
 }
 
@@ -63,6 +66,7 @@ function formatReleaseMessageIntoCard(message) {
     color: "#2eb886",
     intro: releaseMessage.subject,
     fields,
+    footer: DEFAULT_FOOTER,
   }
 }
 
@@ -78,6 +82,7 @@ function formatCommentMessageIntoCard(message) {
       value: commentMessage.comment,
       style: "Long",
     }],
+    footer: DEFAULT_FOOTER,
   };
 }
 
