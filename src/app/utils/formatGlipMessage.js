@@ -6,6 +6,8 @@ const {
 
 const FEEDBACK_URL = 'https://github.com/ringcentral/bugsnag-notification-app/issues/new';
 const DEFAULT_FOOTER = `[Feedback (Any suggestions, or issues about the Bugsnag notification app?)](${FEEDBACK_URL})`;
+const ICON_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/bugsnag.png';
+
 function formatErrorMessageIntoCard(message) {
   const errorMessage = formatErrorMessage(message);
   return {
@@ -106,6 +108,7 @@ function formatGlipMessage(bugsnapMessage) {
   return {
     title,
     attachments,
+    icon: ICON_URL,
   };
 }
 
