@@ -2,6 +2,7 @@ const {
   formatReleaseMessage,
   formatErrorMessage,
   formatCommentMessage,
+  formatErrorStateMessage,
 } = require('./formatBugsnagMessage');
 
 const FEEDBACK_URL = 'https://github.com/ringcentral/bugsnag-notification-app/issues/new';
@@ -24,6 +25,39 @@ function formatErrorMessageIntoCard(message) {
       {
         title: "Location",
         value: errorMessage.location,
+        style: "Long"
+      },
+      {
+        title: "Severity",
+        value: errorMessage.severity,
+        style: "Long"
+      }
+    ],
+    footer: DEFAULT_FOOTER,
+  };
+}
+
+function formatErrorStateMessageIntoCard(message) {
+  const errorMessage = formatErrorStateMessage(message);
+  return {
+    type: 'Card',
+    fallback: errorMessage.url,
+    color: "#2eb886",
+    intro: errorMessage.subject,
+    fields: [
+      {
+        title: "Unhandled error",
+        value: errorMessage.message,
+        style: "Long"
+      },
+      {
+        title: "Location",
+        value: errorMessage.location,
+        style: "Long"
+      },
+      {
+        title: "Severity",
+        value: errorMessage.severity,
         style: "Long"
       }
     ],
@@ -101,7 +135,12 @@ function formatGlipMessage(bugsnapMessage) {
     attachments.push(commentCard);
     title = commentCard.intro;
   } else if (bugsnapMessage.error) {
-    const errorCard = formatErrorMessageIntoCard(bugsnapMessage);
+    let errorCard
+    if (bugsnapMessage.trigger.type === 'errorStateManualChange') {
+      errorCard = formatErrorStateMessageIntoCard(bugsnapMessage);
+    } else {
+      errorCard = formatErrorMessageIntoCard(bugsnapMessage);
+    }
     attachments.push(errorCard);
     title = errorCard.intro;
   }

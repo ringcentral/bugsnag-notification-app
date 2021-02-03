@@ -1,3 +1,22 @@
+function formatTriggerType(trigger) {
+  if (trigger.type === 'exception') {
+    return 'Exception';
+  }
+  if (trigger.type === 'firstException') {
+    return 'New error';
+  }
+  if (trigger.type === 'errorEventFrequency') {
+    return `Repeated error (${trigger.message})`;
+  }
+  if (trigger.type === 'reopened') {
+    return 'Reopened error';
+  }
+  if (trigger.type === 'errorStateManualChange') {
+    return `Collaborator state change (${trigger.stateChange})`
+  }
+  return trigger.message;
+}
+
 function formatReleaseMessage(message) {
   let subject = `**${message.trigger.message}** in **${message.release.releaseStage}**`;
   subject = `${subject} for [${message.project.name}](${message.project.url})`;
@@ -22,30 +41,48 @@ function formatReleaseMessage(message) {
   };
 }
 
-function formatErrorMessage(message) {
-  let subject = `**${message.trigger.message}** in **${message.error.releaseStage}**`;
-  subject = `${subject} from [${message.project.name}](${message.project.url})`;
-  subject = `${subject} in ${message.error.context} ([details](${message.error.url}))`;
+function formatErrorLocation(error) {
   let location = [];
-  if (message.error.stackTrace) {
-    message.error.stackTrace.forEach((stack) => {
+  if (error.stackTrace) {
+    error.stackTrace.forEach((stack) => {
       location.push(`${stack.file}:`);
       location.push(`${stack.lineNumber} - ${stack.method}`);
     });
   } else {
-    location.push(message.error.requestUrl);
+    location.push(error.requestUrl);
   }
   location = location.join('\n');
+  return location;
+}
+
+function formatErrorMessage(message) {
+  let subject = `**${formatTriggerType(message.trigger)}** in **${message.error.releaseStage}**`;
+  subject = `${subject} from [${message.project.name}](${message.project.url})`;
+  subject = `${subject} in ${message.error.context} ([details](${message.error.url}))`;
   return {
     subject,
     message: `Error: ${message.error.message}`,
-    location,
+    location: formatErrorLocation(message.error),
+    severity: message.error.severity,
+    url: message.error.url,
+  }
+}
+
+function formatErrorStateMessage(message) {
+  let subject = `**${formatTriggerType(message.trigger)} by ${message.user.name}**`;
+  subject = `${subject} from [${message.project.name}](${message.project.url})`;
+  subject = `${subject} in ${message.error.context} ([details](${message.error.url}))`;
+  return {
+    subject,
+    message: `Error: ${message.error.message}`,
+    location: formatErrorLocation(message.error),
+    severity: message.error.severity,
     url: message.error.url,
   }
 }
 
 function formatCommentMessage(message) {
-  const subject = `**${message.trigger.message}** on ${message.error.exceptionClass}: ${message.error.message} ([details](${message.error.url}))`;
+  const subject = `**${formatTriggerType(message.trigger)}** on ${message.error.exceptionClass}: ${message.error.message} ([details](${message.error.url}))`;
 
   return {
     url: message.error.url,
@@ -58,4 +95,4 @@ function formatCommentMessage(message) {
 exports.formatErrorMessage = formatErrorMessage;
 exports.formatReleaseMessage = formatReleaseMessage;
 exports.formatCommentMessage = formatCommentMessage;
-
+exports.formatErrorStateMessage = formatErrorStateMessage;
