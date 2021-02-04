@@ -5,6 +5,9 @@ function formatTriggerType(trigger) {
   if (trigger.type === 'firstException') {
     return 'New error';
   }
+  if (trigger.type === 'powerTen') {
+    return '10 events in the last hour';
+  }
   if (trigger.type === 'errorEventFrequency') {
     return `Repeated error (${trigger.message})`;
   }
@@ -41,18 +44,17 @@ function formatReleaseMessage(message) {
   };
 }
 
-function formatErrorLocation(error) {
-  let location = [];
+function formatErrorStackTrace(error) {
+  let stackTrace = [];
   if (error.stackTrace) {
     error.stackTrace.forEach((stack) => {
-      location.push(`${stack.file}:`);
-      location.push(`${stack.lineNumber} - ${stack.method}`);
+      stackTrace.push(`*  ${stack.file}:${stack.lineNumber} - ${stack.method}`);
     });
   } else {
-    location.push(error.requestUrl);
+    stackTrace.push(error.requestUrl);
   }
-  location = location.join('\n');
-  return location;
+  stackTrace = stackTrace.join('\n');
+  return stackTrace;
 }
 
 function formatErrorMessage(message) {
@@ -61,9 +63,10 @@ function formatErrorMessage(message) {
   subject = `${subject} in ${message.error.context} ([details](${message.error.url}))`;
   return {
     subject,
-    message: `Error: ${message.error.message}`,
-    location: formatErrorLocation(message.error),
+    message: message.error.message,
+    stackTrace: formatErrorStackTrace(message.error),
     severity: message.error.severity,
+    status: message.error.status,
     url: message.error.url,
   }
 }
@@ -74,9 +77,10 @@ function formatErrorStateMessage(message) {
   subject = `${subject} in ${message.error.context} ([details](${message.error.url}))`;
   return {
     subject,
-    message: `Error: ${message.error.message}`,
-    location: formatErrorLocation(message.error),
+    message: message.error.message,
+    stackTrace: formatErrorStackTrace(message.error),
     severity: message.error.severity,
+    status: message.error.status,
     url: message.error.url,
   }
 }

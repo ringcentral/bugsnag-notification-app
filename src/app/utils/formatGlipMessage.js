@@ -7,7 +7,8 @@ const {
 
 const FEEDBACK_URL = 'https://github.com/ringcentral/bugsnag-notification-app/issues/new';
 const DEFAULT_FOOTER = `[Feedback (Any suggestions, or issues about the Bugsnag notification app?)](${FEEDBACK_URL})`;
-const ICON_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/bugsnag.png';
+const ICON_URL = 'https://github.com/ringcentral/bugsnag-notification-app/blob/main/icon/bugsnag-white.png?raw=true';
+const FOOTER_ICON_URL = 'https://github.com/ringcentral/github-notification-app/blob/main/icons/feedback.png?raw=true';
 
 function formatErrorMessageIntoCard(message) {
   const errorMessage = formatErrorMessage(message);
@@ -18,22 +19,28 @@ function formatErrorMessageIntoCard(message) {
     intro: errorMessage.subject,
     fields: [
       {
-        title: "Unhandled error",
+        title: "Error",
         value: errorMessage.message,
-        style: "Long"
+        short: false
       },
       {
-        title: "Location",
-        value: errorMessage.location,
-        style: "Long"
+        title: "Stack Trace",
+        value: errorMessage.stackTrace,
+        short: false
       },
       {
         title: "Severity",
         value: errorMessage.severity,
-        style: "Long"
+        short: true
+      },
+      {
+        title: "Status",
+        value: errorMessage.status,
+        short: true
       }
     ],
     footer: DEFAULT_FOOTER,
+    footer_icon: FOOTER_ICON_URL,
   };
 }
 
@@ -46,22 +53,28 @@ function formatErrorStateMessageIntoCard(message) {
     intro: errorMessage.subject,
     fields: [
       {
-        title: "Unhandled error",
+        title: "Error",
         value: errorMessage.message,
-        style: "Long"
+        short: false
       },
       {
-        title: "Location",
-        value: errorMessage.location,
-        style: "Long"
+        title: "Stack Trace",
+        value: errorMessage.stackTrace,
+        short: false
       },
       {
         title: "Severity",
         value: errorMessage.severity,
-        style: "Long"
+        short: true
+      },
+      {
+        title: "Status",
+        value: errorMessage.status,
+        short: true
       }
     ],
     footer: DEFAULT_FOOTER,
+    footer_icon: FOOTER_ICON_URL,
   };
 }
 
@@ -103,6 +116,7 @@ function formatReleaseMessageIntoCard(message) {
     intro: releaseMessage.subject,
     fields,
     footer: DEFAULT_FOOTER,
+    footer_icon: FOOTER_ICON_URL,
   }
 }
 
@@ -119,6 +133,7 @@ function formatCommentMessageIntoCard(message) {
       style: "Long",
     }],
     footer: DEFAULT_FOOTER,
+    footer_icon: FOOTER_ICON_URL,
   };
 }
 
