@@ -6,7 +6,7 @@ function formatTriggerType(trigger) {
     return 'New error';
   }
   if (trigger.type === 'powerTen') {
-    return '10 events in the last hour';
+    return trigger.message;
   }
   if (trigger.type === 'errorEventFrequency') {
     return `Repeated error (${trigger.message})`;
