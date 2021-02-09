@@ -86,12 +86,14 @@ function formatErrorStateMessage(message) {
 }
 
 function formatCommentMessage(message) {
-  const subject = `**${formatTriggerType(message.trigger)}** on ${message.error.exceptionClass}: ${message.error.message} ([details](${message.error.url}))`;
+  const errorMessage = `${message.error.exceptionClass}: ${message.error.message}`;
+  const subject = `${message.user.name} commented on ${errorMessage} ([details](${message.error.url}))`;
 
   return {
     url: message.error.url,
     subject,
-    userName: message.user.name,
+    errorMessage,
+    stackTrace: formatErrorStackTrace(message.error),
     comment: message.comment.message,
   };
 }

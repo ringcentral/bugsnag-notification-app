@@ -112,7 +112,7 @@ function formatReleaseMessageIntoCard(message) {
   return {
     type: 'Card',
     fallback: releaseMessage.url,
-    color: "#2eb886",
+    color: '#2eb886',
     intro: releaseMessage.subject,
     fields,
     footer: DEFAULT_FOOTER,
@@ -125,12 +125,20 @@ function formatCommentMessageIntoCard(message) {
   return {
     type: 'Card',
     fallback: commentMessage.url,
-    color: "#2eb886",
+    color: '#ffa300',
     intro: commentMessage.subject,
     fields: [{
-      title: commentMessage.userName,
+      title: 'Error',
+      value: commentMessage.errorMessage,
+      short: false,
+    }, {
+      title: 'Stack Trace',
+      value: commentMessage.stackTrace,
+      short: false
+    }, {
+      title: 'Comment',
       value: commentMessage.comment,
-      style: "Long",
+      short: false,
     }],
     footer: DEFAULT_FOOTER,
     footer_icon: FOOTER_ICON_URL,
