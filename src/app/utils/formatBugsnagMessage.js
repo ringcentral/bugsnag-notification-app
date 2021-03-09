@@ -47,8 +47,13 @@ function formatReleaseMessage(message) {
 function formatErrorStackTrace(error) {
   let stackTrace = [];
   if (error.stackTrace) {
+    let line = 0;
     error.stackTrace.forEach((stack) => {
-      stackTrace.push(`*  ${stack.file}:${stack.lineNumber} - ${stack.method}`);
+      line++;
+      if (line > 10) {
+        return;
+      }
+      stackTrace.push(`• ${stack.file}:${stack.lineNumber} - ${stack.method}`);
     });
   } else {
     stackTrace.push(error.requestUrl);
