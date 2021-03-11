@@ -53,7 +53,7 @@ function formatErrorStackTrace(error) {
       if (line > 10) {
         return;
       }
-      stackTrace.push(`• ${stack.file}:${stack.lineNumber} - ${stack.method}`);
+      stackTrace.push(`* ${stack.file}:${stack.lineNumber} - ${stack.method}`);
     });
   } else {
     stackTrace.push(error.requestUrl);
