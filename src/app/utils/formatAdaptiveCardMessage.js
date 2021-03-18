@@ -33,7 +33,14 @@ function formatErrorMessageIntoCard(message) {
   const errorMessage = formatErrorMessage(message);
   let string = errorString.replace("{{subject}}", errorMessage.subject);
   string = string.replace("{{message}}", errorMessage.message);
-  string = string.replace("{{location}}", errorMessage.location && errorMessage.location.split('\n').join(' '));
+  let stackTrace = errorMessage.stackTrace;
+  if (stackTrace) {
+    stackTrace = stackTrace.split("\n").join("\\n")
+  }
+  string = string.replace("{{stackTrace}}", stackTrace);
+  string = string.replace("{{severity}}", errorMessage.severity);
+  string = string.replace("{{status}}", errorMessage.status);
+  string = string.replace("{{url}}", errorMessage.url);
   return JSON.parse(string);
 }
 
