@@ -9,7 +9,8 @@
                 {
                     "type": "TextBlock",
                     "text": "{{subject}}",
-                    "size": "Medium"
+                    "size": "Medium",
+                    "wrap": true
                 },
                 {
                     "type": "ColumnSet",
@@ -53,7 +54,8 @@
                     "type": "TextBlock",
                     "text": "{{stackTrace}}",
                     "size": "Medium",
-                    "spacing": "None"
+                    "spacing": "None",
+                    "wrap": true
                 },
                 {
                     "type": "FactSet",

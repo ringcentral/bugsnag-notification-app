@@ -19,8 +19,8 @@ function formatErrorMessageIntoCard(message) {
     intro: errorMessage.subject,
     fields: [
       {
-        title: "Error",
-        value: errorMessage.message,
+        title: errorMessage.message,
+        value: "",
         short: false
       },
       {
@@ -53,8 +53,8 @@ function formatErrorStateMessageIntoCard(message) {
     intro: errorMessage.subject,
     fields: [
       {
-        title: "Error",
-        value: errorMessage.message,
+        title: errorMessage.message,
+        value: "",
         short: false
       },
       {
