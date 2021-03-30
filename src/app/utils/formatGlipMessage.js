@@ -20,11 +20,6 @@ function formatErrorMessageIntoCard(message) {
     fields: [
       {
         title: errorMessage.message,
-        value: "",
-        short: false
-      },
-      {
-        title: "Stack Trace",
         value: errorMessage.stackTrace,
         short: false
       },
@@ -54,11 +49,6 @@ function formatErrorStateMessageIntoCard(message) {
     fields: [
       {
         title: errorMessage.message,
-        value: "",
-        short: false
-      },
-      {
-        title: "Stack Trace",
         value: errorMessage.stackTrace,
         short: false
       },
@@ -128,11 +118,7 @@ function formatCommentMessageIntoCard(message) {
     color: '#ffa300',
     intro: commentMessage.subject,
     fields: [{
-      title: 'Error',
-      value: commentMessage.errorMessage,
-      short: false,
-    }, {
-      title: 'Stack Trace',
+      title: commentMessage.errorMessage,
       value: commentMessage.stackTrace,
       short: false
     }, {
