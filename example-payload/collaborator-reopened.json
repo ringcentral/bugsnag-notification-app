@@ -1,0 +1,220 @@
+{
+  "account": {
+    "id": "5f7303028af952000e73ef64",
+    "name": "Embbnux",
+    "url": "https://app.bugsnag.com/account/embbnux?i=wh&m=rm"
+  },
+  "project": {
+    "id": "5f73031fb91aad0014229623",
+    "name": "Test App",
+    "url": "https://app.bugsnag.com/embbnux/test-app?i=wh&m=rm"
+  },
+  "trigger": {
+    "type": "errorStateManualChange",
+    "message": "Fixed error reopened by Embbnux Ji",
+    "stateChange": "reopened"
+  },
+  "user": {
+    "id": "5f7303038af952000e73ef66",
+    "name": "Embbnux Ji",
+    "email": "embbnux@embbnux.com"
+  },
+  "error": {
+    "id": "606d746000773c6f51b90000",
+    "errorId": "6045ce3cc35e2a0017a23f8e",
+    "exceptionClass": "UnsuppportedError",
+    "message": "object b is undefined",
+    "context": "article/new#create",
+    "appVersion": "1.0.16",
+    "releaseStage": "staging",
+    "occurrences": 32,
+    "firstReceived": "2021-03-08T07:11:56.000Z",
+    "receivedAt": "2021-04-07T08:59:12.159Z",
+    "requestUrl": "http://example.com/users/19/settings",
+    "userId": "19",
+    "url": "https://app.bugsnag.com/embbnux/test-app/errors/6045ce3cc35e2a0017a23f8e?event_id=606d746000773c6f51b90000&i=wh&m=rm",
+    "severity": "error",
+    "status": "open",
+    "unhandled": true,
+    "app": {
+      "id": "com.bugsnag.android.example.debug",
+      "version": "1.0.16",
+      "versionCode": "12",
+      "codeBundleId": "1.0-1234",
+      "buildUUID": "BE5BA3D0-971C-4418-9ECF-E2D1ABCB66BE",
+      "releaseStage": "staging",
+      "type": "rails",
+      "dsymUUIDs": [
+        "e6173678256785afd940392abee"
+      ],
+      "duration": 1275,
+      "durationInForeground": 983,
+      "inForeground": true
+    },
+    "device": {
+      "hostname": "web1.internal",
+      "id": "fd124e87760c4281aef",
+      "manufacturer": "LGE",
+      "model": "Nexus 6P",
+      "modelNumber": "600",
+      "osName": "android",
+      "osVersion": "8.0.1",
+      "freeMemory": 183879616,
+      "totalMemory": 201326592,
+      "freeDisk": 13478064128,
+      "browserName": "Chrome",
+      "browserVersion": "61.0.3163.100",
+      "jailbroken": false,
+      "orientation": "portrait",
+      "time": "2018-08-07T10:16:34.564Z"
+    },
+    "user": {
+      "id": "19",
+      "name": "Robert Hawkins",
+      "email": "bob@example.com"
+    },
+    "metaData": {},
+    "stackTrace": [
+      {
+        "file": "/home/test/test/test/ruby/2.6.6/controllers/auth/articles_controller.rb",
+        "lineNumber": "1",
+        "columnNumber": "111",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/home/test/test/test/ruby/2.6.6/controllers/auth/users_controller.rb",
+        "lineNumber": "2",
+        "columnNumber": "111",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "2",
+        "columnNumber": "111",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "4",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "5",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "6",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "7",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "8",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "9",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "10",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      },
+      {
+        "file": "/controllers/auth/test_controller.rb",
+        "lineNumber": "11",
+        "columnNumber": "110",
+        "method": "new",
+        "inProject": true,
+        "code": {
+          "1": "def a",
+          "2": "print b",
+          "3": "end"
+        }
+      }
+    ],
+    "breadcrumbs": [
+      {
+        "name": "Open menu",
+        "timestamp": "2020-07-19T19:17:27.000Z",
+        "type": "navigation",
+        "metaData": {}
+      }
+    ]
+  }
+}

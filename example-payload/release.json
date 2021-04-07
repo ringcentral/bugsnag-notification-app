@@ -1,0 +1,30 @@
+{
+  "account": {
+    "id": "5f7303028af952000e73ef64",
+    "name": "Embbnux",
+    "url": "https://app.bugsnag.com/account/embbnux?i=wh&m=nr"
+  },
+  "project": {
+    "id": "5f73031fb91aad0014229623",
+    "name": "Test App",
+    "url": "https://app.bugsnag.com/embbnux/test-app?i=wh&m=nr"
+  },
+  "trigger": {
+    "type": "release",
+    "message": "New release"
+  },
+  "release": {
+    "id": "606d7070670412e9d928912f",
+    "version": "0.1.44",
+    "releaseStage": "production",
+    "url": "https://app.bugsnag.com/embbnux/test-app/release_groups/606d7070f03afb6dc72db094/releases/606d7070670412e9d928912f?i=wh&m=nr",
+    "releaseTime": "2021-04-07T08:42:24.538Z",
+    "releasedBy": "Embbnux Ji",
+    "sourceControl": {
+      "provider": "github",
+      "revision": "42ce59f",
+      "revisionUrl": "https://github.com/owner/repo/tree/42ce59f",
+      "diffUrl": "https://github.com/owner/repo/compare/42ce59f...42ce59f"
+    }
+  }
+}
