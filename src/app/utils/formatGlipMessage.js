@@ -8,10 +8,34 @@ const {
 const FEEDBACK_URL = 'https://github.com/ringcentral/bugsnag-notification-app/issues/new';
 const DEFAULT_FOOTER = `[Feedback (Any suggestions, or issues about the Bugsnag notification app?)](${FEEDBACK_URL})`;
 const ICON_URL = 'https://github.com/ringcentral/bugsnag-notification-app/blob/main/icon/bugsnag-white.png?raw=true';
-const FOOTER_ICON_URL = 'https://github.com/ringcentral/github-notification-app/blob/main/icons/feedback.png?raw=true';
+const FOOTER_ICON_URL = 'https://github.com/ringcentral/bugsnag-notification-app/blob/main/icon/feedback.png?raw=true';
+const THUMB_ICON_BASE_URL = 'https://github.com/ringcentral/bugsnag-notification-app/blob/main/icon';
+const THUMB_ICON_URL = {
+  collaborator_fixed: `${THUMB_ICON_BASE_URL}/collaborator-fixed.png?raw=true`,
+  collaborator_reopened: `${THUMB_ICON_BASE_URL}/collaborator-reopened.png?raw=true`,
+  collaborator_snoozed: `${THUMB_ICON_BASE_URL}/collaborator-snooze.png?raw=true`,
+  collaborator: `${THUMB_ICON_BASE_URL}/collaborator.png?raw=true`,
+  comment: `${THUMB_ICON_BASE_URL}/comment.png?raw=true`,
+  error: `${THUMB_ICON_BASE_URL}/error.png?raw=true`,
+  general: `${THUMB_ICON_BASE_URL}/general.png?raw=true`,
+  new: `${THUMB_ICON_BASE_URL}/new.png?raw=true`,
+  release: `${THUMB_ICON_BASE_URL}/release.png?raw=true`,
+  reopened: `${THUMB_ICON_BASE_URL}/reopened.png?raw=true`,
+  repeated: `${THUMB_ICON_BASE_URL}/repeated.png?raw=true`,
+};
 
 function formatErrorMessageIntoCard(message) {
   const errorMessage = formatErrorMessage(message);
+  let thumbUrl = THUMB_ICON_URL.error;
+  if (message.trigger.type === 'errorEventFrequency' || message.trigger.type === 'powerTen') {
+    thumbUrl = THUMB_ICON_URL.repeated;
+  }
+  if (message.trigger.type === 'reopened') {
+    thumbUrl = THUMB_ICON_URL.reopened;
+  }
+  if (message.trigger.type === 'firstException') {
+    thumbUrl = THUMB_ICON_URL.new;
+  }
   return {
     type: 'Card',
     fallback: errorMessage.url,
@@ -36,11 +60,13 @@ function formatErrorMessageIntoCard(message) {
     ],
     footer: DEFAULT_FOOTER,
     footer_icon: FOOTER_ICON_URL,
+    thumb_url: thumbUrl,
   };
 }
 
 function formatErrorStateMessageIntoCard(message) {
   const errorMessage = formatErrorStateMessage(message);
+  const thumbUrl = THUMB_ICON_URL[`collaborator_${message.trigger.stateChange}`];
   return {
     type: 'Card',
     fallback: errorMessage.url,
@@ -65,6 +91,7 @@ function formatErrorStateMessageIntoCard(message) {
     ],
     footer: DEFAULT_FOOTER,
     footer_icon: FOOTER_ICON_URL,
+    thumb_url: thumbUrl || THUMB_ICON_URL.collaborator,
   };
 }
 
@@ -107,6 +134,7 @@ function formatReleaseMessageIntoCard(message) {
     fields,
     footer: DEFAULT_FOOTER,
     footer_icon: FOOTER_ICON_URL,
+    thumb_url: THUMB_ICON_URL.release,
   }
 }
 
@@ -128,6 +156,7 @@ function formatCommentMessageIntoCard(message) {
     }],
     footer: DEFAULT_FOOTER,
     footer_icon: FOOTER_ICON_URL,
+    thumb_url: THUMB_ICON_URL.comment,
   };
 }
 
