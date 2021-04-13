@@ -35,7 +35,7 @@
                             "items": [
                                 {
                                     "type": "Image",
-                                    "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/82%20-%20Errors%20Copy.png",
+                                    "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/error.png?",
                                     "size": "Medium"
                                 }
                             ]
@@ -44,11 +44,55 @@
                     "separator": true
                 },
                 {
-                    "type": "TextBlock",
-                    "text": "Stack Trace",
-                    "weight": "Bolder",
-                    "size": "Medium",
-                    "spacing": "None"
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Stack Trace",
+                                    "weight": "Bolder",
+                                    "size": "Medium",
+                                    "spacing": "None"
+                                }
+                            ],
+                            "width": "stretch",
+                            "height": "stretch"
+                        },
+                        {
+                            "type": "Column",
+                            "spacing": "Small",
+                            "isVisible": false,
+                            "selectAction": {
+                                "type": "Action.ToggleVisibility",
+                                "targetElements": [
+                                    "moreStackTrace",
+                                    "chevronDown",
+                                    "chevronUp"
+                                ]
+                            },
+                            "verticalContentAlignment": "Center",
+                            "items": [
+                                {
+                                    "type": "Image",
+                                    "id": "chevronDown",
+                                    "url": "https://adaptivecards.io/content/down.png",
+                                    "width": "20px",
+                                    "altText": "Stack trace collapsed"
+                                },
+                                {
+                                    "type": "Image",
+                                    "id": "chevronUp",
+                                    "url": "https://adaptivecards.io/content/up.png",
+                                    "width": "20px",
+                                    "altText": "Stack trace expanded",
+                                    "isVisible": false
+                                }
+                            ],
+                            "width": "auto"
+                        }
+                    ]
                 },
                 {
                     "type": "TextBlock",
@@ -56,6 +100,14 @@
                     "size": "Medium",
                     "spacing": "None",
                     "wrap": true
+                },
+                {
+                    "type": "TextBlock",
+                    "wrap": true,
+                    "text": "{{moreStackTrace}}",
+                    "isVisible": false,
+                    "id": "moreStackTrace",
+                    "spacing": "Small"
                 },
                 {
                     "type": "FactSet",

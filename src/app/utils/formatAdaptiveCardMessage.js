@@ -34,14 +34,26 @@ function formatErrorMessageIntoCard(message) {
   let string = errorString.replace("{{subject}}", errorMessage.subject);
   string = string.replace("{{message}}", errorMessage.message);
   let stackTrace = errorMessage.stackTrace;
+  let moreStackTrace = '';
   if (stackTrace) {
-    stackTrace = stackTrace.split("\n").join("\\n")
+    const stackTraceLines = stackTrace.split("\n");
+    if (stackTraceLines.length > 5) {
+      stackTrace = stackTraceLines.slice(0, 5).join("\\n")
+      moreStackTrace = stackTraceLines.slice(5).join("\\n")
+    } else {
+      stackTrace = stackTraceLines.join("\\n")
+    }
   }
   string = string.replace("{{stackTrace}}", stackTrace);
+  string = string.replace("{{moreStackTrace}}", moreStackTrace);
   string = string.replace("{{severity}}", errorMessage.severity);
   string = string.replace("{{status}}", errorMessage.status);
   string = string.replace("{{url}}", errorMessage.url);
-  return JSON.parse(string);
+  const card = JSON.parse(string);
+  if (moreStackTrace.length > 0) {
+    delete card.body[0].items[2].columns[1].isVisible; //  set view more button visible
+  }
+  return card;
 }
 
 function formatTeamsMessage(bugsnapMessage) {
