@@ -4,7 +4,8 @@ const { Webhook } = require('./models/webhook');
 const cookieSession = require('cookie-session');
 
 const { formatGlipMessage } = require('./utils/formatGlipMessage');
-const { formatTeamsMessage } = require('./utils/formatAdaptiveCardMessage');
+const { formatTeamsMessage, formatAdaptiveCardMessage } = require('./utils/formatAdaptiveCardMessage');
+const { cleanUnsupportedProperty } = require("./utils/cleanUnsupportedProperty");
 
 exports.appExtend = (app) => {
   app.set('views', path.resolve(__dirname, './views'));
@@ -27,6 +28,27 @@ exports.appExtend = (app) => {
     const body = req.body;
     // console.log(JSON.stringify(body, null, 2));
     const message = formatGlipMessage(body);
+    // console.log(JSON.stringify(message, null, 2));
+    await axios.post(webhookRecord.rc_webhook, message, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    res.send('ok');
+  });
+
+  app.post('/notify_v2/:id', async (req, res) => {
+    const id = req.params.id;
+    const webhookRecord = await Webhook.findByPk(id);
+    if (!webhookRecord) {
+      res.end(404);
+      return;
+    }
+    const body = req.body;
+    // console.log(JSON.stringify(body, null, 2));
+    const message = cleanUnsupportedProperty(formatAdaptiveCardMessage(body));
+    // console.log(webhookRecord.rc_webhook);
     // console.log(JSON.stringify(message, null, 2));
     await axios.post(webhookRecord.rc_webhook, message, {
       headers: {

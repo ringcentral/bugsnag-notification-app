@@ -21,19 +21,8 @@ function formatReleaseMessageIntoCard(message) {
   return JSON.parse(string);
 }
 
-function formatCommentMessageIntoCard(message) {
-  const commentMessage = formatCommentMessage(message);
-  let string = commentString.replace("{{subject}}", commentMessage.subject);
-  string = string.replace("{{name}}", commentMessage.userName);
-  string = string.replace("{{comment}}", commentMessage.comment);
-  return JSON.parse(string);
-}
-
-function formatErrorMessageIntoCard(message) {
-  const errorMessage = formatErrorMessage(message);
-  let string = errorString.replace("{{subject}}", errorMessage.subject);
-  string = string.replace("{{message}}", errorMessage.message);
-  let stackTrace = errorMessage.stackTrace;
+function splitStackTrace(originalStackTrace) {
+  let stackTrace = originalStackTrace;
   let moreStackTrace = '';
   if (stackTrace) {
     const stackTraceLines = stackTrace.split("\n");
@@ -44,6 +33,26 @@ function formatErrorMessageIntoCard(message) {
       stackTrace = stackTraceLines.join("\\n")
     }
   }
+  return { stackTrace, moreStackTrace };
+}
+
+function formatCommentMessageIntoCard(message) {
+  const commentMessage = formatCommentMessage(message);
+  let string = commentString.replace("{{subject}}", commentMessage.subject);
+  string = string.replace("{{comment}}", commentMessage.comment);
+  string = string.replace("{{errorMessage}}", commentMessage.errorMessage);
+  const { stackTrace, moreStackTrace } = splitStackTrace(commentMessage.stackTrace);
+  string = string.replace("{{stackTrace}}", stackTrace);
+  string = string.replace("{{moreStackTrace}}", moreStackTrace);
+  string = string.replace("{{url}}", commentMessage.url);
+  return JSON.parse(string);
+}
+
+function formatErrorMessageIntoCard(message) {
+  const errorMessage = formatErrorMessage(message);
+  let string = errorString.replace("{{subject}}", errorMessage.subject);
+  string = string.replace("{{message}}", errorMessage.message);
+  const { stackTrace, moreStackTrace } = splitStackTrace(errorMessage.stackTrace);
   string = string.replace("{{stackTrace}}", stackTrace);
   string = string.replace("{{moreStackTrace}}", moreStackTrace);
   string = string.replace("{{severity}}", errorMessage.severity);
@@ -55,6 +64,7 @@ function formatErrorMessageIntoCard(message) {
   }
   return card;
 }
+
 
 function formatTeamsMessage(bugsnapMessage) {
   const attachments = []
@@ -111,7 +121,6 @@ function formatAdaptiveCardMessage(bugsnapMessage) {
     }
   }
   return {
-    title,
     attachments,
   };
 }

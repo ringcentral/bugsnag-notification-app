@@ -1,44 +1,170 @@
 {
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "type": "AdaptiveCard",
-  "version": "1.0",
-  "body": [
-      {
-          "type": "Container",
-          "id": "40743a50-8790-be5c-3e9d-80502d3116f4",
-          "padding": "None",
-          "items": [
-              {
-                  "type": "TextBlock",
-                  "id": "54290a1d-0a4d-ea78-d4fa-3ea610a48713",
-                  "text": "{{subject}}",
-                  "wrap": true
-              },
-              {
-                  "type": "Container",
-                  "id": "282da278-1b2e-19e8-2ab4-4df567b911df",
-                  "padding": "Small",
-                  "items": [
-                      {
-                          "type": "TextBlock",
-                          "id": "bab593b2-fda5-3662-b0a6-4b229638793c",
-                          "text": "{{name}}",
-                          "wrap": true,
-                          "weight": "Bolder"
-                      },
-                      {
-                          "type": "TextBlock",
-                          "id": "cb250e97-52f4-2288-9426-3ba88eb5d350",
-                          "text": "{{comment}}",
-                          "wrap": true
-                      }
-                  ],
-                  "style": "emphasis"
-              }
-          ]
-      }
-  ],
-  "padding": "Default",
-  "@type": "AdaptiveCard",
-  "@context": "http://schema.org/extensions"
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.2",
+    "body": [
+        {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "{{subject}}",
+                    "size": "Medium",
+                    "wrap": true
+                },
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "{{errorMessage}}",
+                                    "weight": "Bolder",
+                                    "wrap": true
+                                }
+                            ],
+                            "height": "stretch",
+                            "verticalContentAlignment": "Center"
+                        },
+                        {
+                            "type": "Column",
+                            "width": "auto",
+                            "items": [
+                                {
+                                    "type": "Image",
+                                    "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/error.png?",
+                                    "size": "Medium"
+                                }
+                            ]
+                        }
+                    ],
+                    "separator": true
+                },
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Stack Trace",
+                                    "weight": "Bolder",
+                                    "size": "Medium",
+                                    "spacing": "None"
+                                }
+                            ],
+                            "width": "stretch",
+                            "height": "stretch"
+                        },
+                        {
+                            "type": "Column",
+                            "spacing": "Small",
+                            "isVisible": false,
+                            "selectAction": {
+                                "type": "Action.ToggleVisibility",
+                                "targetElements": [
+                                    "moreStackTrace",
+                                    "chevronDown",
+                                    "chevronUp"
+                                ]
+                            },
+                            "verticalContentAlignment": "Center",
+                            "items": [
+                                {
+                                    "type": "Image",
+                                    "id": "chevronDown",
+                                    "url": "https://adaptivecards.io/content/down.png",
+                                    "width": "20px",
+                                    "altText": "Stack trace collapsed"
+                                },
+                                {
+                                    "type": "Image",
+                                    "id": "chevronUp",
+                                    "url": "https://adaptivecards.io/content/up.png",
+                                    "width": "20px",
+                                    "altText": "Stack trace expanded",
+                                    "isVisible": false
+                                }
+                            ],
+                            "width": "auto"
+                        }
+                    ]
+                },
+                {
+                    "type": "TextBlock",
+                    "text": "{{stackTrace}}",
+                    "size": "Medium",
+                    "spacing": "None",
+                    "wrap": true
+                },
+                {
+                    "type": "TextBlock",
+                    "wrap": true,
+                    "text": "{{moreStackTrace}}",
+                    "isVisible": false,
+                    "id": "moreStackTrace",
+                    "spacing": "Small"
+                },
+                {
+                    "type": "TextBlock",
+                    "text": "Comment",
+                    "weight": "Bolder",
+                    "size": "Medium",
+                    "spacing": "None"
+                },
+                {
+                    "type": "TextBlock",
+                    "wrap": true,
+                    "text": "{{comment}}",
+                    "spacing": "Small"
+                }
+            ],
+            "style": "default"
+        },
+        {
+            "type": "ActionSet",
+            "actions": [
+                {
+                    "type": "Action.OpenUrl",
+                    "title": "View in Bugsnag",
+                    "url": "{{url}}"
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "https://github.com/ringcentral/github-notification-app/blob/main/icons/feedback-32.png?raw=true",
+                            "size": "Small",
+                            "style": "Person",
+                            "width": "16px"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "[Feedback (Any suggestions, or issues about the Bugsnag notification app?)](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
+                            "weight": "Lighter",
+                            "wrap": true,
+                            "size": "Small"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
