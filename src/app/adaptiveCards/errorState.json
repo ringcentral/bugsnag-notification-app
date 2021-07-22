@@ -15,7 +15,7 @@
                             "items": [
                                 {
                                     "type": "Image",
-                                    "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/comment.png",
+                                    "url": "{{stateIcon}}",
                                     "height": "24px"
                                 }
                             ],
@@ -28,24 +28,14 @@
                                 {
                                     "type": "TextBlock",
                                     "text": "{{subject}}",
-                                    "wrap": true
+                                    "wrap": true,
+                                    "weight": "Bolder"
                                 }
                             ],
                             "verticalContentAlignment": "Center",
                             "spacing": "Small"
                         }
                     ]
-                },
-                {
-                    "type": "TextBlock",
-                    "text": "Comment",
-                    "wrap": true,
-                    "size": "Small"
-                },
-                {
-                    "type": "TextBlock",
-                    "text": "{{comment}}",
-                    "wrap": true
                 },
                 {
                     "type": "TextBlock",
@@ -282,10 +272,11 @@
                                     "actions": [
                                         {
                                             "type": "Action.OpenUrl",
-                                            "title": "Add comment",
+                                            "title": "View in Bugsnag",
                                             "url": "{{url}}"
                                         }
-                                    ]
+                                    ],
+                                    "isVisible": false
                                 }
                             ]
                         }
