@@ -20,7 +20,7 @@ function formatTriggerType(trigger) {
   return trigger.message;
 }
 
-function formatErrorStackTrace(error, bullet = '*') {
+function formatErrorStackTrace(error, bullet) {
   let stackTrace = [];
   if (error.stackTrace) {
     let line = 0;
@@ -29,7 +29,11 @@ function formatErrorStackTrace(error, bullet = '*') {
       if (line > 10) {
         return;
       }
-      stackTrace.push(`${bullet} ${stack.file}:${stack.lineNumber} - ${stack.method}`);
+      if (bullet) {
+        stackTrace.push(`${bullet} ${stack.file}:${stack.lineNumber} - ${stack.method}`);
+      } else {
+        stackTrace.push(`${stack.file}:${stack.lineNumber} - ${stack.method}`);
+      }
     });
   } else {
     stackTrace.push(error.requestUrl);
@@ -69,7 +73,7 @@ function formatErrorMessage(message) {
   return {
     subject,
     message: message.error.message,
-    stackTrace: formatErrorStackTrace(message.error),
+    stackTrace: formatErrorStackTrace(message.error, '*'),
     severity: message.error.severity,
     status: message.error.status,
     url: message.error.url,
@@ -83,7 +87,7 @@ function formatErrorStateMessage(message) {
   return {
     subject,
     message: message.error.message,
-    stackTrace: formatErrorStackTrace(message.error),
+    stackTrace: formatErrorStackTrace(message.error, '*'),
     severity: message.error.severity,
     status: message.error.status,
     url: message.error.url,
@@ -98,7 +102,7 @@ function formatCommentMessage(message) {
     url: message.error.url,
     subject,
     errorMessage,
-    stackTrace: formatErrorStackTrace(message.error),
+    stackTrace: formatErrorStackTrace(message.error, '*'),
     comment: message.comment.message,
   };
 }
@@ -135,7 +139,7 @@ function formatErrorMessageV2(message) {
     subject,
     type: message.error.type,
     message: `[${message.error.message}](${message.error.url})`,
-    stackTrace: formatErrorStackTrace(message.error, '-'),
+    stackTrace: formatErrorStackTrace(message.error),
     severity: message.error.severity,
     status: message.error.status,
     url: message.error.url,
@@ -149,7 +153,7 @@ function formatErrorStateMessageV2(message) {
   return {
     subject,
     message: message.error.message,
-    stackTrace: formatErrorStackTrace(message.error, '-'),
+    stackTrace: formatErrorStackTrace(message.error),
     releaseStage: message.error.releaseStage,
     severity: message.error.severity,
     project: `[${message.project.name}](${message.project.url})`,
@@ -165,7 +169,7 @@ function formatCommentMessageV2(message) {
   return {
     url: message.error.url,
     subject,
-    stackTrace: formatErrorStackTrace(message.error, '-'),
+    stackTrace: formatErrorStackTrace(message.error),
     comment: message.comment.message,
     releaseStage: message.error.releaseStage,
     severity: message.error.severity,
