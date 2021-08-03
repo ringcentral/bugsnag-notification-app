@@ -1,9 +1,11 @@
 const path = require('path');
 const axios = require('axios');
+const { Bugsnag } = require('./utils/bugsnag');
 const { Webhook } = require('./models/webhook');
+const { AuthToken } = require('./models/authToken');
 const cookieSession = require('cookie-session');
 
-const { formatAdaptiveCardMessage } = require('./utils/formatAdaptiveCardMessage');
+const { formatAdaptiveCardMessage, createAuthTokenRequestCard } = require('./utils/formatAdaptiveCardMessage');
 const { formatGlipMessage } = require('./utils/formatGlipMessage');
 
 exports.appExtend = (app) => {
@@ -21,7 +23,8 @@ exports.appExtend = (app) => {
     const id = req.params.id;
     const webhookRecord = await Webhook.findByPk(id);
     if (!webhookRecord) {
-      res.end(404);
+      res.send('Not found');
+      res.status(404);
       return;
     }
     const body = req.body;
@@ -41,7 +44,8 @@ exports.appExtend = (app) => {
     const id = req.params.id;
     const webhookRecord = await Webhook.findByPk(id);
     if (!webhookRecord) {
-      res.end(404);
+      res.send('Not found');
+      res.status(404);
       return;
     }
     const body = req.body;
@@ -54,6 +58,82 @@ exports.appExtend = (app) => {
         'Content-Type': 'application/json'
       }
     });
+    res.send('ok');
+  });
+
+  app.post('/interactive-messages', async (req, res) => {
+    const body = req.body;
+    if (!body.data || !body.user) {
+      res.send('Params error');
+      res.status(400);
+      return;
+    }
+    let authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
+    const reqType = body.data.submitType;
+    if (reqType === 'saveAuthToken') {
+      if (authToken) {
+        authToken.data = body.data.token;
+        await authToken.save();
+      } else {
+        authToken = await AuthToken.create({
+          id: `${body.user.accountId}-${body.user.id}`,
+          data: body.data.token,
+        });
+      }
+      res.send('ok');
+      return;
+    }
+    const webhookId = body.data.webhookId;
+    const webhookRecord = await Webhook.findByPk(webhookId);
+    if (!webhookRecord) {
+      res.send('Not found');
+      res.status(404);
+      return;
+    }
+    if (!authToken || !authToken.data || authToken.data.length == 0) {
+      await axios.post(webhookRecord.rc_webhook, createAuthTokenRequestCard(), {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      res.send('ok');
+      return;
+    }
+    const bugsnag = new Bugsnag({
+      authToken: authToken.data,
+      projectId: body.data.projectId,
+      errorId: body.data.errorId,
+    });
+    try {
+      if (reqType === 'makeAsFixed') {
+        await bugsnag.makeAsFixed();
+      }
+    } catch (e) {
+      if (e.response) {
+        if (e.response.status === 401) {
+          authToken.data = '';
+          await authToken.save();
+          await axios.post(webhookRecord.rc_webhook, createAuthTokenRequestCard(), {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            }
+          });
+        } else if (e.response.status === 403) {
+          await axios.post(webhookRecord.rc_webhook, {
+            title: `Hi ${body.user.firstName}, your Bugsnag role doesn't have permission to perform this action.`,
+          }, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            }
+          });
+        }
+      } else {
+        console.error(e);
+      }
+    }
     res.send('ok');
   });
 

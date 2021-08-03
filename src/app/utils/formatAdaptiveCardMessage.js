@@ -13,6 +13,8 @@ const errorTemplate = require('../adaptiveCards/error.json');
 const errorString = JSON.stringify(errorTemplate, null, 2);
 const errorStateTemplate = require('../adaptiveCards/errorState.json');
 const errorStateString = JSON.stringify(errorStateTemplate, null, 2);
+const authTokenTemplate = require('../adaptiveCards/authToken.json');
+const authTokenString = JSON.stringify(authTokenTemplate, null, 2);
 const THUMB_ICON_BASE_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/';
 
 const THUMB_ICON_URL = {
@@ -208,5 +210,14 @@ function formatAdaptiveCardMessage(bugsnagMessage) {
   };
 }
 
+function createAuthTokenRequestCard() {
+  const string = authTokenString;
+  const card = JSON.parse(string);
+  return {
+    attachments: [card],
+  };
+}
+
 exports.formatAdaptiveCardMessage = formatAdaptiveCardMessage;
 exports.formatTeamsMessage = formatTeamsMessage;
+exports.createAuthTokenRequestCard = createAuthTokenRequestCard;
