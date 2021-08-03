@@ -29,12 +29,6 @@ html
       p 6. Update your Webhook <strong>Notify me when</strong> setting
       p
         img(src='https://apps.ringcentral.com/integration/bugsnag/bugsnag02.png')
-      p 7. (Optional) Generate Personal auth token in <strong>Bugsnag</strong/>>><strong>Account Settings</strong>>><strong>Personal auth tokens</strong>, then set it here.
-      .authTokenArea
-          input.input#authToken(type='text' value=authToken placeholder='Bugsnag personal auth token')
-          button.button#authCancelBtn Cancel
-          button.button#authBtn(data-type='save') Save
-      p Personal auth token is required for <strong>Mark as fixed</strong>, <strong>Snooze 1hr</strong> and <strong>Ignore</strong> actions. (<strong>Notice</strong>: Action features are still on <strong>Development</strong> now)
       p
         a(href='https://github.com/ringcentral/bugsnag-notification-app/issues/new' target="_blank" rel='noopener noreferrer') Feedback (Any suggestions, or issues about the Bugsnag notification app?
     script.
@@ -45,61 +39,6 @@ html
         webhookInput.select();
         webhookInput.setSelectionRange(0, 99999);
         document.execCommand("copy");
-      });
-      var authTokenInput = window.document.getElementById('authToken');
-      var authTokenBtn = window.document.getElementById('authBtn');
-      var authTokenCancelBtn = window.document.getElementById('authCancelBtn');
-      var originalAuthToken = authTokenInput.value;
-      if (originalAuthToken) {
-        authTokenBtn.setAttribute('data-type', 'edit');
-        authTokenBtn.innerHTML = 'Edit';
-        authTokenInput.setAttribute('readonly', true);
-      }
-      authTokenBtn.addEventListener('click', function() {
-        const type = authTokenBtn.getAttribute('data-type');
-        if (type === 'saving') {
-          return;
-        }
-        if (type === 'edit') {
-          authTokenBtn.setAttribute('data-type', 'save');
-          authTokenBtn.innerHTML = 'Save';
-          authTokenInput.removeAttribute('readonly');
-          authTokenInput.value = '';
-          authTokenInput.focus();
-          authTokenCancelBtn.style.display = 'inline-block';
-          return;
-        }
-        const authToken = authTokenInput.value;
-        authTokenBtn.setAttribute('data-type', 'saving');
-        authTokenBtn.innerHTML = 'Saving';
-        authTokenInput.setAttribute('readonly', true);
-        authTokenCancelBtn.style.display = 'none';
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        // update uri: '/webhook/:id'
-        fetch(`${window.location.pathname.replace('new', webhookId)}?_csrf=${csrfToken}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ authToken })
-        }).then(function () {
-          authTokenBtn.setAttribute('data-type', 'edit');
-          authTokenBtn.innerHTML = 'Edit';
-          authTokenInput.value = (new Array(authToken.length)).fill('*').join('');
-        }).catch(function (e) {
-          console.error(e);
-          authTokenBtn.setAttribute('data-type', 'Save');
-          authTokenBtn.innerHTML = 'save';
-          authTokenCancelBtn.style.display = 'inline-block';
-          authTokenInput.removeAttribute('readonly');
-        })
-      });
-      authTokenCancelBtn.addEventListener('click', function() {
-        authTokenBtn.setAttribute('data-type', 'edit');
-        authTokenBtn.innerHTML = 'Edit';
-        authTokenInput.setAttribute('readonly', true);
-        authTokenInput.value = originalAuthToken;
-        authTokenCancelBtn.style.display = 'none';
       });
       var rcPostMessage = new RcPostMessage.PostMessageApp();
       rcPostMessage.handle('INTEGRATION_SUBMIT_CHANNEL', function () {

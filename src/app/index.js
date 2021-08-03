@@ -142,7 +142,7 @@ exports.appExtend = (app) => {
     req.session.csrfToken = csrfToken;
     const glipWebhookUri = req.query.webhook;
     let webhookRecord = {};
-    if (glipWebhookUri) {
+    if (glipWebhookUri && glipWebhookUri.indexOf('https://') === 0) {
       try {
         if (Webhook.getOne) {
           const webhookRecords = await Webhook.getOne({
@@ -170,37 +170,10 @@ exports.appExtend = (app) => {
         return;
       }
     }
-    let authToken = webhookRecord.bs_auth_token || '';
-    if (authToken && authToken.length > 0) {
-      authToken = (new Array(authToken.length)).fill('*').join('');
-    }
     res.render('new', {
       webhookUri: `${process.env.APP_SERVER}/notify/${webhookRecord.id}`,
       webhookId: webhookRecord.id,
-      authToken,
       csrfToken,
     });
-  });
-
-  app.post('/webhook/:id', async (req, res) => {
-    const id = req.params.id;
-    if (!id) {
-      res.end(404);
-      return;
-    }
-    const csrf = req.query._csrf;
-    if (!csrf || csrf !== req.session.csrfToken) {
-      res.end(403);
-      return;
-    }
-    const webhookRecord = await Webhook.findByPk(id);
-    if (!webhookRecord) {
-      res.end(404);
-      return;
-    }
-    webhookRecord.bs_auth_token = req.body.authToken;
-    await webhookRecord.save();
-    res.send({ result: 'ok' });
-    res.end(200);
   });
 }
