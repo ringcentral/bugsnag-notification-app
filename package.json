@@ -21,7 +21,6 @@
     "sqlite3": "^5.0.0"
   },
   "dependencies": {
-    "cookie-session": "^1.4.0",
     "dotenv": "6.2.0",
     "dynamo-sequelize": "^0.8.1",
     "glip-integration-js": "^0.2.0",

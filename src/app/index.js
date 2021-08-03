@@ -3,7 +3,6 @@ const axios = require('axios');
 const { Bugsnag } = require('./utils/bugsnag');
 const { Webhook } = require('./models/webhook');
 const { AuthToken } = require('./models/authToken');
-const cookieSession = require('cookie-session');
 
 const { formatAdaptiveCardMessage, createAuthTokenRequestCard } = require('./utils/formatAdaptiveCardMessage');
 const { formatGlipMessage } = require('./utils/formatGlipMessage');
@@ -11,14 +10,6 @@ const { formatGlipMessage } = require('./utils/formatGlipMessage');
 exports.appExtend = (app) => {
   app.set('views', path.resolve(__dirname, './views'));
   app.set('view engine', 'pug');
-  // cookie session config
-  app.use(cookieSession({
-    name: 'session',
-    keys: [process.env.APP_SERVER_SECRET_KEY],
-    httpOnly: true,
-    signed: true,
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
-  }));
   app.post('/notify/:id', async (req, res) => {
     const id = req.params.id;
     const webhookRecord = await Webhook.findByPk(id);
@@ -138,42 +129,52 @@ exports.appExtend = (app) => {
   });
 
   app.get('/webhook/new', async (req, res) => {
-    const csrfToken = Math.random().toString(36);
-    req.session.csrfToken = csrfToken;
     const glipWebhookUri = req.query.webhook;
-    let webhookRecord = {};
-    if (glipWebhookUri && glipWebhookUri.indexOf('https://') === 0) {
-      try {
-        if (Webhook.getOne) {
-          const webhookRecords = await Webhook.getOne({
-            where: {
-              rc_webhook: glipWebhookUri,
-            }
-          });
-          webhookRecord = webhookRecords[0];
-        } else {
-          webhookRecord = await Webhook.findOne({
-            where: {
-              rc_webhook: glipWebhookUri,
-            }
-          });
-        }
-        if (!webhookRecord) {
-          webhookRecord = await Webhook.create({
-            rc_webhook: glipWebhookUri,
-          });
-        }
-      } catch (e) {
-        console.error(e);
-        res.send('Internal server error');
-        res.end(500);
-        return;
-      }
+    if (!glipWebhookUri || glipWebhookUri.indexOf('https://') !== 0) {
+      res.send('Webhook uri is required.');
+      res.status(404);
+      return;
     }
     res.render('new', {
+      glipWebhookUri,
+    });
+  });
+
+  app.post('/webhooks', async (req, res) => {
+    const glipWebhookUri = req.body.webhook;
+    if (!glipWebhookUri || glipWebhookUri.indexOf('https://') !== 0) {
+      res.send('Params error');
+      res.status(400);
+      return;
+    }
+    try {
+      if (Webhook.getOne) {
+        const webhookRecords = await Webhook.getOne({
+          where: {
+            rc_webhook: glipWebhookUri,
+          }
+        });
+        webhookRecord = webhookRecords[0];
+      } else {
+        webhookRecord = await Webhook.findOne({
+          where: {
+            rc_webhook: glipWebhookUri,
+          }
+        });
+      }
+      if (!webhookRecord) {
+        webhookRecord = await Webhook.create({
+          rc_webhook: glipWebhookUri,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      res.send('Internal server error');
+      res.end(500);
+      return;
+    }
+    res.json({
       webhookUri: `${process.env.APP_SERVER}/notify/${webhookRecord.id}`,
-      webhookId: webhookRecord.id,
-      csrfToken,
     });
   });
 }
