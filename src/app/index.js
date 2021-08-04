@@ -41,7 +41,7 @@ exports.appExtend = (app) => {
     }
     const body = req.body;
     // console.log(JSON.stringify(body, null, 2));
-    const message = formatAdaptiveCardMessage(body);
+    const message = formatAdaptiveCardMessage(body, id);
     // console.log(JSON.stringify(message, null, 2));
     await axios.post(webhookRecord.rc_webhook, message, {
       headers: {
@@ -60,8 +60,8 @@ exports.appExtend = (app) => {
       return;
     }
     let authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
-    const reqType = body.data.submitType;
-    if (reqType === 'saveAuthToken') {
+    const action = body.data.action;
+    if (action === 'saveAuthToken') {
       if (authToken) {
         authToken.data = body.data.token;
         await authToken.save();
@@ -97,7 +97,7 @@ exports.appExtend = (app) => {
       errorId: body.data.errorId,
     });
     try {
-      if (reqType === 'makeAsFixed') {
+      if (action === 'fix') {
         await bugsnag.makeAsFixed();
       }
     } catch (e) {

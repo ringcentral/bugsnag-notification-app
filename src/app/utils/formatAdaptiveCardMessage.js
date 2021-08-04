@@ -71,7 +71,7 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function formatErrorMessageIntoCard(message) {
+function formatErrorMessageIntoCard(message, webhookId) {
   const errorMessage = formatErrorMessageV2(message);
   let string = errorString.replace("{{subject}}", errorMessage.subject);
   let thumbUrl = THUMB_ICON_URL.error;
@@ -96,6 +96,9 @@ function formatErrorMessageIntoCard(message) {
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
   string = string.replace("{{severityIcon}}", severityIconUrl);
   string = string.replace("{{url}}", errorMessage.url);
+  string = string.replace("{{errorId}}", errorMessage.errorId);
+  string = string.replace("{{projectId}}", errorMessage.projectId);
+  string = string.replace("{{webhookId}}", webhookId);
   const card = JSON.parse(string);
   if (moreStackTrace.length > 0) {
     delete card.body[0].items[4].isVisible; //  set view more button visible
@@ -146,43 +149,7 @@ function formatCommentMessageIntoCard(message) {
   return JSON.parse(string);
 }
 
-function formatTeamsMessage(bugsnagMessage) {
-  const attachments = []
-  if (bugsnagMessage.release) {
-    const releaseCard = formatReleaseMessageIntoCard(bugsnagMessage);
-    attachments.push({
-      contentType: "application/vnd.microsoft.card.adaptive",
-      contentUrl: null,
-      content: releaseCard,
-    });
-  }
-  if (bugsnagMessage.comment) {
-    const commentCard = formatCommentMessageIntoCard(bugsnagMessage);
-    attachments.push({
-      contentType: "application/vnd.microsoft.card.adaptive",
-      contentUrl: null,
-      content: commentCard,
-   });
-  } else if (bugsnagMessage.error) {
-    const errorCard = formatErrorMessageIntoCard(bugsnagMessage);
-    attachments.push({
-      contentType: "application/vnd.microsoft.card.adaptive",
-      contentUrl: null,
-      content: errorCard,
-    });
-  }
-  if (attachments.length === 0) {
-    return {
-      text: `**${bugsnagMessage.trigger.message}** for [${bugsnagMessage.project.name}](${bugsnagMessage.project.url})`,
-    }
-  }
-  return {
-    type: 'message',
-    attachments,
-  };
-}
-
-function formatAdaptiveCardMessage(bugsnagMessage) {
+function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
   const attachments = []
   if (bugsnagMessage.release) {
     const releaseCard = formatReleaseMessageIntoCard(bugsnagMessage);
@@ -196,7 +163,7 @@ function formatAdaptiveCardMessage(bugsnagMessage) {
     if (bugsnagMessage.trigger.type === 'errorStateManualChange') {
       errorCard = formatErrorStateMessageIntoCard(bugsnagMessage);
     } else {
-      errorCard = formatErrorMessageIntoCard(bugsnagMessage);
+      errorCard = formatErrorMessageIntoCard(bugsnagMessage, webhookId);
     }
     attachments.push(errorCard);
   }
@@ -219,5 +186,4 @@ function createAuthTokenRequestCard() {
 }
 
 exports.formatAdaptiveCardMessage = formatAdaptiveCardMessage;
-exports.formatTeamsMessage = formatTeamsMessage;
 exports.createAuthTokenRequestCard = createAuthTokenRequestCard;

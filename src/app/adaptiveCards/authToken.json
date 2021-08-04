@@ -71,7 +71,7 @@
                                                     "type": "Action.Submit",
                                                     "title": "Submit",
                                                     "data": {
-                                                        "x": 13
+                                                        "action": "saveAuthToken"
                                                     }
                                                 }
                                             ]

@@ -143,6 +143,8 @@ function formatErrorMessageV2(message) {
     severity: message.error.severity,
     status: message.error.status,
     url: message.error.url,
+    errorId: message.error.errorId,
+    projectId: message.project.id,
   };
 }
 
