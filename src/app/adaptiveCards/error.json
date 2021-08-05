@@ -253,11 +253,11 @@
                                             }
                                         },
                                         {
-                                            "type": "Action.Submit",
-                                            "title": "Snooze 1hr",
-                                            "data": {
-                                                "action": "snooze"
-                                            }
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Snooze",
+                                            "targetElements": [
+                                                "snoozeForm"
+                                            ]
                                         },
                                         {
                                             "type": "Action.Submit",
@@ -276,6 +276,68 @@
                 }
             ],
             "horizontalAlignment": "Center"
+        },
+        {
+            "type": "ColumnSet",
+            "id": "snoozeForm",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "stretch"
+                },
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "snoozeType",
+                            "style": "compact",
+                            "value": "snooze1hr",
+                            "choices": [
+                                {
+                                    "title": "Snooze 1 hour",
+                                    "value": "snooze1hr"
+                                },
+                                {
+                                    "title": "Snooze 6 hours",
+                                    "value": "snooze6hr"
+                                },
+                                {
+                                    "title": "Snooze 1 day",
+                                    "value": "snooze1d"
+                                }
+                            ]
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                },
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "Container",
+                            "items": [
+                                {
+                                    "type": "ActionSet",
+                                    "actions": [
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Submit",
+                                            "data": {
+                                                "action": "snooze"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "width": "auto",
+                    "verticalContentAlignment": "Center"
+                }
+            ],
+            "isVisible": false
         }
     ]
 }
