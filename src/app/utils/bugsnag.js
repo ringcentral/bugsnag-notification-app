@@ -12,6 +12,10 @@ class Bugsnag {
     return this._sendRequest({ operation: 'fix' });
   }
 
+  ignore() {
+    return this._sendRequest({ operation: 'ignore' });
+  }
+
   _sendRequest(body) {
     return axios.patch(
       this._apiUrl,

@@ -53,6 +53,7 @@ exports.appExtend = (app) => {
   });
 
   app.post('/interactive-messages', async (req, res) => {
+    // TODO: verify message with shared secret
     const body = req.body;
     if (!body.data || !body.user) {
       res.send('Params error');
@@ -99,6 +100,9 @@ exports.appExtend = (app) => {
     try {
       if (action === 'fix') {
         await bugsnag.makeAsFixed();
+      }
+      if (action === 'ignore') {
+        await bugsnag.ignore();
       }
     } catch (e) {
       if (e.response) {
