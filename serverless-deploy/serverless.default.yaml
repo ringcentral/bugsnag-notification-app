@@ -3,9 +3,10 @@ service:
 provider:
   stage: ${opt:stage, 'prod'}
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   region: us-east-1
   memorySize: 256
+  timeout: 30
   environment: ${file(./env.yml)}
   profile: default
   excludeDevDependencies: true
@@ -36,6 +37,7 @@ package:
     - 'node_modules/**'
 functions:
   app:
+    timeout: 30
     handler: lambda.app
     # role: arn:aws:iam::111111:role/xxxx-prod-us-east-1-lambdaRole
     events:
