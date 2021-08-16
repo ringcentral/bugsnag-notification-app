@@ -1,5 +1,6 @@
 const path = require('path');
 const axios = require('axios');
+const crypto = require('crypto');
 const { Bugsnag } = require('./utils/bugsnag');
 const { Webhook } = require('./models/webhook');
 const { AuthToken } = require('./models/authToken');
@@ -54,6 +55,14 @@ exports.appExtend = (app) => {
 
   app.post('/interactive-messages', async (req, res) => {
     // TODO: verify message with shared secret
+    // const SHARED_SECRET = process.env.INTERACTIVE_MESSAGES_SHARED_SECRET;
+    // const signature = req.get('X-Glip-Signature', 'sha1=');
+    // const encryptedBody =
+    //   crypto.createHmac('sha1', SHARED_SECRET).update(JSON.stringify(req.body)).digest('hex');
+    // if (encryptedBody !== signature) {
+    //   res.status(401).send();
+    //   return
+    // }
     const body = req.body;
     if (!body.data || !body.user) {
       res.send('Params error');
