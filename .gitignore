@@ -1,7 +1,7 @@
 .env
 node_modules
 *.sqlite
-
+.DS_Store
 serverless-deploy/env.yml
 serverless-deploy/serverless.yml
 serverless-deploy/*.json
