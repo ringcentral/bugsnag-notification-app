@@ -1,0 +1,104 @@
+{
+    "account": {
+      "id": "5f7303028af952000e73ef64",
+      "name": "Embbnux",
+      "url": "https://app.bugsnag.com/account/embbnux?i=wh&m=sn"
+    },
+    "project": {
+      "id": "5f73031fb91aad0014229623",
+      "name": "Test App",
+      "url": "https://app.bugsnag.com/embbnux/test-app?i=wh&m=sn"
+    },
+    "trigger": {
+      "type": "errorStateManualChange",
+      "message": "Error snoozed until this occurs at least 10 times/hour by Embbnux Ji",
+      "snoozeRule": {
+        "ruleValue": 10
+      },
+      "stateChange": "snoozed"
+    },
+    "user": {
+      "id": "5f7303038af952000e73ef66",
+      "name": "Embbnux Ji",
+      "email": "embbnux@embbnux.com"
+    },
+    "error": {
+      "id": "6108f86d007fa4d878ab0000",
+      "errorId": "61022180410d35000861cc78",
+      "exceptionClass": "Undefined method",
+      "message": "Unable to connect to Undefined",
+      "context": "auth/auth#create",
+      "appVersion": "1.0.12",
+      "releaseStage": "staging",
+      "occurrences": 10,
+      "firstReceived": "2021-07-29T03:33:20.000Z",
+      "receivedAt": "2021-08-03T08:03:57.942Z",
+      "requestUrl": "http://example.com/users/19/settings",
+      "userId": "19",
+      "url": "https://app.bugsnag.com/embbnux/test-app/errors/61022180410d35000861cc78?event_id=6108f86d007fa4d878ab0000&i=wh&m=sn",
+      "severity": "error",
+      "status": "snoozed",
+      "unhandled": true,
+      "app": {
+        "id": "com.bugsnag.android.example.debug",
+        "version": "1.0.12",
+        "versionCode": "12",
+        "codeBundleId": "1.0-1234",
+        "buildUUID": "BE5BA3D0-971C-4418-9ECF-E2D1ABCB66BE",
+        "releaseStage": "staging",
+        "type": "rails",
+        "dsymUUIDs": [
+          "e6173678256785afd940392abee"
+        ],
+        "duration": 1275,
+        "durationInForeground": 983,
+        "inForeground": true,
+        "binaryArch": "x86_64"
+      },
+      "device": {
+        "hostname": "web1.internal",
+        "id": "fd124e87760c4281aef",
+        "manufacturer": "LGE",
+        "model": "Nexus 6P",
+        "modelNumber": "600",
+        "osName": "android",
+        "osVersion": "8.0.1",
+        "freeMemory": 183879616,
+        "totalMemory": 201326592,
+        "freeDisk": 13478064128,
+        "browserName": "Chrome",
+        "browserVersion": "61.0.3163.100",
+        "jailbroken": false,
+        "orientation": "portrait",
+        "time": "2018-08-07T10:16:34.564Z"
+      },
+      "user": {
+        "id": "19",
+        "name": "Robert Hawkins",
+        "email": "bob@example.com"
+      },
+      "metaData": {},
+      "stackTrace": [
+        {
+          "file": "controllers/auth/auth_controller.rb",
+          "lineNumber": "124",
+          "columnNumber": "123",
+          "method": "create",
+          "inProject": true,
+          "code": {
+            "1": "def b",
+            "2": "raise 'something went wrong' if problem?",
+            "3": "end"
+          }
+        }
+      ],
+      "breadcrumbs": [
+        {
+          "name": "Open menu",
+          "timestamp": "2016-07-19T19:17:27.000Z",
+          "type": "navigation",
+          "metaData": {}
+        }
+      ]
+    }
+  }
