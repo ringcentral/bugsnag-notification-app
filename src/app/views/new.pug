@@ -45,7 +45,8 @@ html
           status: true,
         };
       });
-      fetch('/webhooks', {
+      var webhooksUri = window.location.pathname.replace('/webhook/new', '/webhooks');
+      fetch(webhoolsUri, {
         method: 'POST',
         credentials: 'include',
         headers: {
