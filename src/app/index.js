@@ -113,6 +113,9 @@ exports.appExtend = (app) => {
       if (action === 'ignore') {
         await bugsnag.ignore();
       }
+      if (action === 'snooze') {
+        await bugsnag.snooze({ type: body.data.snoozeType });
+      }
     } catch (e) {
       if (e.response) {
         if (e.response.status === 401) {

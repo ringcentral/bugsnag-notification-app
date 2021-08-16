@@ -1,5 +1,16 @@
 const axios = require('axios');
 
+function getSnoozeSeconds(type) {
+  const hour = 3600;
+  if (type === '6hr') {
+    return 6 * hour;
+  }
+  if (type === '1d') {
+    return 24 * hour;
+  }
+  return hour;
+}
+
 class Bugsnag {
   constructor({ authToken, projectId, errorId }) {
     this._authToken = authToken;
@@ -14,6 +25,16 @@ class Bugsnag {
 
   ignore() {
     return this._sendRequest({ operation: 'ignore' });
+  }
+
+  snooze({ type }) {
+    return this._sendRequest({
+      operation: 'snooze',
+      reopen_rules: {
+        reopen_if: 'occurs_after',
+        seconds: getSnoozeSeconds(type),
+      },
+    });
   }
 
   _sendRequest(body) {

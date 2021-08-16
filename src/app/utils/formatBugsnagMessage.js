@@ -151,7 +151,15 @@ function formatErrorMessageV2(message) {
 function formatErrorStateMessageV2(message) {
   let subject = `${message.user.name} marked`;
   subject = `${subject} \\"[${message.error.message}](${message.error.url})\\"`;
-  subject = `${subject} ${message.trigger.stateChange}`;
+  if (message.trigger.stateChange === 'snoozed') {
+    const stateChange =
+      message.trigger.message.replace('Error ', '').replace(` by ${message.user.name}`, '');
+    subject = `${subject} ${stateChange}`;
+  } else if (message.trigger.stateChange === 'snoozeCancelled') {
+    subject = `${subject} snooze canceled`;
+  } else {
+    subject = `${subject} ${message.trigger.stateChange}`;
+  }
   return {
     subject,
     message: message.error.message,

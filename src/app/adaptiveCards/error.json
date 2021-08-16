@@ -292,19 +292,19 @@
                             "type": "Input.ChoiceSet",
                             "id": "snoozeType",
                             "style": "compact",
-                            "value": "snooze1hr",
+                            "value": "1hr",
                             "choices": [
                                 {
                                     "title": "Snooze 1 hour",
-                                    "value": "snooze1hr"
+                                    "value": "1hr"
                                 },
                                 {
                                     "title": "Snooze 6 hours",
-                                    "value": "snooze6hr"
+                                    "value": "6hr"
                                 },
                                 {
                                     "title": "Snooze 1 day",
-                                    "value": "snooze1d"
+                                    "value": "1d"
                                 }
                             ]
                         }
