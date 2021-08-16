@@ -222,6 +222,24 @@
                     "type": "Column",
                     "items": [
                         {
+                            "type": "Input.Text",
+                            "id": "errorId",
+                            "value": "{{errorId}}",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "projectId",
+                            "value": "{{projectId}}",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "webhookId",
+                            "value": "{{webhookId}}",
+                            "isVisible": false
+                        },
+                        {
                             "type": "Container",
                             "items": [
                                 {
@@ -235,6 +253,38 @@
                                     ]
                                 }
                             ]
+                        },
+                        {
+                            "type": "Container",
+                            "isVisible": false,
+                            "items": [
+                                {
+                                    "type": "ActionSet",
+                                    "actions": [
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Make as fixed",
+                                            "data": {
+                                                "action": "fix"
+                                            }
+                                        },
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Snooze",
+                                            "targetElements": [
+                                                "snoozeForm"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Ignore",
+                                            "data": {
+                                                "action": "ignore"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ],
                     "width": "auto",
@@ -242,6 +292,68 @@
                 }
             ],
             "horizontalAlignment": "Center"
+        },
+        {
+            "type": "ColumnSet",
+            "id": "snoozeForm",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "stretch"
+                },
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "snoozeType",
+                            "style": "compact",
+                            "value": "1hr",
+                            "choices": [
+                                {
+                                    "title": "Snooze 1 hour",
+                                    "value": "1hr"
+                                },
+                                {
+                                    "title": "Snooze 6 hours",
+                                    "value": "6hr"
+                                },
+                                {
+                                    "title": "Snooze 1 day",
+                                    "value": "1d"
+                                }
+                            ]
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                },
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "Container",
+                            "items": [
+                                {
+                                    "type": "ActionSet",
+                                    "actions": [
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Submit",
+                                            "data": {
+                                                "action": "snooze"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "width": "auto",
+                    "verticalContentAlignment": "Center"
+                }
+            ],
+            "isVisible": false
         }
     ]
 }

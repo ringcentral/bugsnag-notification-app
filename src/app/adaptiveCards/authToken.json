@@ -1,0 +1,91 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.3",
+    "body": [
+        {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "Hi, please input your Bugsnag personal auth token to use interactive buttons. Generate it in the **My Account** section of [Bugsnag settings](https://app.bugsnag.com/settings/my-account)",
+                    "wrap": true
+                },
+                {
+                    "id": "token",
+                    "type": "Input.Text",
+                    "isRequired": true,
+                    "errorMessage": "Auth token is required",
+                    "placeholder": "Personal auth token"
+                },
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "ColumnSet",
+                                    "columns": [
+                                        {
+                                            "type": "Column",
+                                            "width": "14px",
+                                            "items": [
+                                                {
+                                                    "type": "Image",
+                                                    "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/feedback.png",
+                                                    "height": "12px"
+                                                }
+                                            ],
+                                            "verticalContentAlignment": "Center"
+                                        },
+                                        {
+                                            "type": "Column",
+                                            "items": [
+                                                {
+                                                    "type": "TextBlock",
+                                                    "text": "[Feedback](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
+                                                    "wrap": true,
+                                                    "size": "Small"
+                                                }
+                                            ],
+                                            "width": "stretch",
+                                            "verticalContentAlignment": "Center"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "verticalContentAlignment": "Bottom"
+                        },
+                        {
+                            "type": "Column",
+                            "items": [
+                                {
+                                    "type": "Container",
+                                    "items": [
+                                        {
+                                            "type": "ActionSet",
+                                            "actions": [
+                                                {
+                                                    "type": "Action.Submit",
+                                                    "title": "Submit",
+                                                    "data": {
+                                                        "action": "saveAuthToken"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "width": "auto",
+                            "verticalContentAlignment": "Bottom"
+                        }
+                    ],
+                    "horizontalAlignment": "Center"
+                }
+            ]
+        }
+    ]
+}
