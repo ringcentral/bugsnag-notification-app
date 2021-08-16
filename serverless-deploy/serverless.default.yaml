@@ -60,6 +60,19 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    rcWebhooksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: bugsnag-rc-notification-rc-webhooks
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     authTokensTable:
       Type: AWS::DynamoDB::Table
       Properties:

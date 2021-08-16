@@ -3,6 +3,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const { Bugsnag } = require('./utils/bugsnag');
 const { Webhook } = require('./models/webhook');
+const { RCWebhook } = require('./models/rc-webhook');
 const { AuthToken } = require('./models/authToken');
 
 const { formatAdaptiveCardMessage, createAuthTokenRequestCard } = require('./utils/formatAdaptiveCardMessage');
@@ -157,40 +158,64 @@ exports.appExtend = (app) => {
   });
 
   app.post('/webhooks', async (req, res) => {
-    const glipWebhookUri = req.body.webhook;
-    if (!glipWebhookUri || glipWebhookUri.indexOf('https://') !== 0) {
+    const rcWebhookUri = req.body.webhook;
+    if (!rcWebhookUri || rcWebhookUri.indexOf('https://') !== 0) {
       res.send('Params error');
       res.status(400);
       return;
     }
+    let rcWebhook;
+    let bugsnagWebhook;
     try {
-      if (Webhook.getOne) {
-        const webhookRecords = await Webhook.getOne({
-          where: {
-            rc_webhook: glipWebhookUri,
-          }
-        });
-        webhookRecord = webhookRecords[0];
+      // We split RCWebhook and Webhook for querying in dynamodb
+      rcWebhook = await RCWebhook.findByPk(rcWebhookUri);
+      if (rcWebhook) {
+        bugsnagWebhook = await Webhook.findByPk(rcWebhook.bugsnag_webhook_id);
       } else {
-        webhookRecord = await Webhook.findOne({
-          where: {
-            rc_webhook: glipWebhookUri,
-          }
+        rcWebhook = await RCWebhook.create({
+          id: rcWebhookUri,
         });
       }
-      if (!webhookRecord) {
-        webhookRecord = await Webhook.create({
-          rc_webhook: glipWebhookUri,
+      if (!bugsnagWebhook) {
+        bugsnagWebhook = await Webhook.create({
+          rc_webhook: rcWebhookUri,
         });
+        rcWebhook.bugsnag_webhook_id = bugsnagWebhook.id;
+        await rcWebhook.save();
       }
+      res.json({
+        webhookUri: `${process.env.APP_SERVER}/notify/${bugsnagWebhook.id}`,
+      });
     } catch (e) {
       console.error(e);
+      res.status(500);
       res.send('Internal server error');
-      res.end(500);
       return;
     }
-    res.json({
-      webhookUri: `${process.env.APP_SERVER}/notify/${webhookRecord.id}`,
-    });
+  });
+
+  app.get('/migration/webhooks', async (req, res) => {
+    const SHARED_SECRET = process.env.INTERACTIVE_MESSAGES_SHARED_SECRET;
+    if (req.query.token !== SHARED_SECRET) {
+      res.status(401).send();
+      return;
+    }
+    const distData = [];
+    try {
+      const webhooks = await Webhook.findAll();
+      for (const webhook of webhooks) {
+        const rcWebhook = await RCWebhook.findByPk(webhook.rc_webhook);
+        if (!rcWebhook) {
+          await RCWebhook.create({ id: webhook.rc_webhook, bugsnag_webhook_id: webhook.id });
+        } else if (rcWebhook.bugsnag_webhook_id !== webhook.id) {
+          distData.push(webhook.id);
+        }
+      }
+      res.status(200).send(`dist data: ${distData.join(',')}`);
+    } catch (e) {
+      console.error(e);
+      res.status(500);
+      res.send('Internal server error');
+    }
   });
 }
