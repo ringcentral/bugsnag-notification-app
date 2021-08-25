@@ -16,8 +16,8 @@ exports.appExtend = (app) => {
     const id = req.params.id;
     const webhookRecord = await Webhook.findByPk(id);
     if (!webhookRecord) {
-      res.send('Not found');
       res.status(404);
+      res.send('Not found');
       return;
     }
     const body = req.body;
@@ -37,8 +37,8 @@ exports.appExtend = (app) => {
     const id = req.params.id;
     const webhookRecord = await Webhook.findByPk(id);
     if (!webhookRecord) {
-      res.send('Not found');
       res.status(404);
+      res.send('Not found');
       return;
     }
     const body = req.body;
@@ -51,23 +51,33 @@ exports.appExtend = (app) => {
         'Content-Type': 'application/json'
       }
     });
+    res.status(200);
     res.send('ok');
   });
 
   app.post('/interactive-messages', async (req, res) => {
-    // TODO: verify message with shared secret
-    // const SHARED_SECRET = process.env.INTERACTIVE_MESSAGES_SHARED_SECRET;
-    // const signature = req.get('X-Glip-Signature', 'sha1=');
-    // const encryptedBody =
-    //   crypto.createHmac('sha1', SHARED_SECRET).update(JSON.stringify(req.body)).digest('hex');
-    // if (encryptedBody !== signature) {
-    //   res.status(401).send();
-    //   return
-    // }
+    const SHARED_SECRET = process.env.INTERACTIVE_MESSAGES_SHARED_SECRET;
+    if (SHARED_SECRET) {
+      const signature = req.get('X-Glip-Signature', 'sha1=');
+      const encryptedBody =
+        crypto.createHmac('sha1', SHARED_SECRET).update(JSON.stringify(req.body)).digest('hex');
+      if (encryptedBody !== signature) {
+        res.status(401).send();
+        return;
+      }
+    }
     const body = req.body;
+    // console.log(JSON.stringify(body, null, 2));
     if (!body.data || !body.user) {
-      res.send('Params error');
       res.status(400);
+      res.send('Params error');
+      return;
+    }
+    const webhookId = body.data.webhookId;
+    const webhookRecord = await Webhook.findByPk(webhookId);
+    if (!webhookRecord) {
+      res.status(404);
+      res.send('Not found');
       return;
     }
     let authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
@@ -82,23 +92,29 @@ exports.appExtend = (app) => {
           data: body.data.token,
         });
       }
-      res.send('ok');
-      return;
-    }
-    const webhookId = body.data.webhookId;
-    const webhookRecord = await Webhook.findByPk(webhookId);
-    if (!webhookRecord) {
-      res.send('Not found');
-      res.status(404);
-      return;
-    }
-    if (!authToken || !authToken.data || authToken.data.length == 0) {
-      await axios.post(webhookRecord.rc_webhook, createAuthTokenRequestCard(), {
+      await axios.post(webhookRecord.rc_webhook, {
+        title: `Hi ${body.user.firstName} ${body.user.lastName}, your personal token is saved. Please click action button again.`
+      }, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         }
       });
+      res.status(200);
+      res.send('ok');
+      return;
+    }
+    if (!authToken || !authToken.data || authToken.data.length == 0) {
+      await axios.post(webhookRecord.rc_webhook,
+        createAuthTokenRequestCard({ webhookId }),
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      res.status(200);
       res.send('ok');
       return;
     }
@@ -122,7 +138,7 @@ exports.appExtend = (app) => {
         if (e.response.status === 401) {
           authToken.data = '';
           await authToken.save();
-          await axios.post(webhookRecord.rc_webhook, createAuthTokenRequestCard(), {
+          await axios.post(webhookRecord.rc_webhook, createAuthTokenRequestCard({ webhookId }), {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json'
@@ -147,9 +163,15 @@ exports.appExtend = (app) => {
 
   app.get('/webhook/new', async (req, res) => {
     const glipWebhookUri = req.query.webhook;
-    if (!glipWebhookUri || glipWebhookUri.indexOf('https://') !== 0) {
-      res.send('Webhook uri is required.');
+    if (
+      !glipWebhookUri ||
+      (
+        glipWebhookUri.indexOf('https://') !== 0 &&
+        glipWebhookUri.indexOf('http://') !== 0
+      )
+    ) {
       res.status(404);
+      res.send('Webhook uri is required.');
       return;
     }
     res.render('new', {
@@ -159,9 +181,14 @@ exports.appExtend = (app) => {
 
   app.post('/webhooks', async (req, res) => {
     const rcWebhookUri = req.body.webhook;
-    if (!rcWebhookUri || rcWebhookUri.indexOf('https://') !== 0) {
-      res.send('Params error');
+    if (
+      !rcWebhookUri ||
+      (
+        rcWebhookUri.indexOf('https://') !== 0 &&
+        rcWebhookUri.indexOf('http://') !== 0
+      )) {
       res.status(400);
+      res.send('Params error');
       return;
     }
     let rcWebhook;
@@ -191,31 +218,6 @@ exports.appExtend = (app) => {
       res.status(500);
       res.send('Internal server error');
       return;
-    }
-  });
-
-  app.get('/migration/webhooks', async (req, res) => {
-    const SHARED_SECRET = process.env.INTERACTIVE_MESSAGES_SHARED_SECRET;
-    if (req.query.token !== SHARED_SECRET) {
-      res.status(401).send();
-      return;
-    }
-    const distData = [];
-    try {
-      const webhooks = await Webhook.findAll();
-      for (const webhook of webhooks) {
-        const rcWebhook = await RCWebhook.findByPk(webhook.rc_webhook);
-        if (!rcWebhook) {
-          await RCWebhook.create({ id: webhook.rc_webhook, bugsnag_webhook_id: webhook.id });
-        } else if (rcWebhook.bugsnag_webhook_id !== webhook.id) {
-          distData.push(webhook.id);
-        }
-      }
-      res.status(200).send(`dist data: ${distData.join(',')}`);
-    } catch (e) {
-      console.error(e);
-      res.status(500);
-      res.send('Internal server error');
     }
   });
 }

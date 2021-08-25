@@ -145,6 +145,7 @@ function formatErrorMessageV2(message) {
     url: message.error.url,
     errorId: message.error.errorId,
     projectId: message.project.id,
+    triggerType: message.trigger.type,
   };
 }
 
@@ -170,6 +171,7 @@ function formatErrorStateMessageV2(message) {
     status: message.error.status,
     stateChange: message.trigger.stateChange,
     url: message.error.url,
+    triggerType: message.trigger.type,
   };
 }
 

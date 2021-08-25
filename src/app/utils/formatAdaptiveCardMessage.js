@@ -15,8 +15,9 @@ const errorStateTemplate = require('../adaptiveCards/errorState.json');
 const errorStateString = JSON.stringify(errorStateTemplate, null, 2);
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
 const authTokenString = JSON.stringify(authTokenTemplate, null, 2);
-const THUMB_ICON_BASE_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/';
 
+const ICON_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/bugsnag-white.png';
+const THUMB_ICON_BASE_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/';
 const THUMB_ICON_URL = {
   collaborator_fixed: `${THUMB_ICON_BASE_URL}/collaborator-fixed.png`,
   collaborator_reopened: `${THUMB_ICON_BASE_URL}/collaborator-reopened.png`,
@@ -38,8 +39,7 @@ const THUMB_ICON_URL = {
   severity_info: `${THUMB_ICON_BASE_URL}/info.dot.png`,
 };
 
-function formatReleaseMessageIntoCard(message) {
-  const releaseMessage = formatReleaseMessageV2(message);
+function formatReleaseMessageIntoCard(releaseMessage) {
   let string = releaseString.replace("{{subject}}", releaseMessage.subject);
   string = string.replace("{{version}}", releaseMessage.version);
   string = string.replace("{{by}}", releaseMessage.by || 'none');
@@ -71,17 +71,16 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function formatErrorMessageIntoCard(message, webhookId) {
-  const errorMessage = formatErrorMessageV2(message);
+function formatErrorMessageIntoCard(errorMessage, webhookId) {
   let string = errorString.replace("{{subject}}", errorMessage.subject);
   let thumbUrl = THUMB_ICON_URL.error;
-  if (message.trigger.type === 'errorEventFrequency' || message.trigger.type === 'powerTen') {
+  if (errorMessage.triggerType === 'errorEventFrequency' || errorMessage.triggerType === 'powerTen') {
     thumbUrl = THUMB_ICON_URL.repeated;
   }
-  if (message.trigger.type === 'reopened') {
+  if (errorMessage.triggerType === 'reopened') {
     thumbUrl = THUMB_ICON_URL.reopened;
   }
-  if (message.trigger.type === 'firstException') {
+  if (errorMessage.triggerType === 'firstException') {
     thumbUrl = THUMB_ICON_URL.new;
   }
   string = string.replace("{{errorIcon}}", thumbUrl);
@@ -106,8 +105,7 @@ function formatErrorMessageIntoCard(message, webhookId) {
   return card;
 }
 
-function formatErrorStateMessageIntoCard(message) {
-  const errorMessage = formatErrorStateMessageV2(message);
+function formatErrorStateMessageIntoCard(errorMessage) {
   let string = errorStateString.replace("{{subject}}", errorMessage.subject);
   const { stackTrace, moreStackTrace } = splitStackTrace(errorMessage.stackTrace);
   const iconUrl = THUMB_ICON_URL[`collaborator_${errorMessage.stateChange}`] || THUMB_ICON_URL['collaborator'];
@@ -130,8 +128,7 @@ function formatErrorStateMessageIntoCard(message) {
   return card;
 }
 
-function formatCommentMessageIntoCard(message) {
-  const commentMessage = formatCommentMessageV2(message);
+function formatCommentMessageIntoCard(commentMessage) {
   let string = commentString.replace("{{subject}}", commentMessage.subject);
   string = string.replace("{{comment}}", commentMessage.comment);
   const { stackTrace, moreStackTrace } = splitStackTrace(commentMessage.stackTrace);
@@ -151,19 +148,24 @@ function formatCommentMessageIntoCard(message) {
 
 function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
   const attachments = []
+  let formattedMessage;
   if (bugsnagMessage.release) {
-    const releaseCard = formatReleaseMessageIntoCard(bugsnagMessage);
+    formattedMessage = formatReleaseMessageV2(bugsnagMessage);
+    const releaseCard = formatReleaseMessageIntoCard(formattedMessage);
     attachments.push(releaseCard);
   }
   if (bugsnagMessage.comment) {
-    const commentCard = formatCommentMessageIntoCard(bugsnagMessage);
+    formattedMessage = formatCommentMessageV2(bugsnagMessage);
+    const commentCard = formatCommentMessageIntoCard(formattedMessage);
     attachments.push(commentCard);
   } else if (bugsnagMessage.error) {
     let errorCard
     if (bugsnagMessage.trigger.type === 'errorStateManualChange') {
-      errorCard = formatErrorStateMessageIntoCard(bugsnagMessage);
+      formattedMessage = formatErrorStateMessageV2(bugsnagMessage);
+      errorCard = formatErrorStateMessageIntoCard(formattedMessage);
     } else {
-      errorCard = formatErrorMessageIntoCard(bugsnagMessage, webhookId);
+      formattedMessage = formatErrorMessageV2(bugsnagMessage);
+      errorCard = formatErrorMessageIntoCard(formattedMessage, webhookId);
     }
     attachments.push(errorCard);
   }
@@ -173,15 +175,19 @@ function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
     };
   }
   return {
+    // title: formattedMessage && formattedMessage.subject,
     attachments,
+    icon: ICON_URL,
   };
 }
 
-function createAuthTokenRequestCard() {
-  const string = authTokenString;
+function createAuthTokenRequestCard({ webhookId }) {
+  let string = authTokenString;
+  string = string.replace("{{webhookId}}", webhookId);
   const card = JSON.parse(string);
   return {
     attachments: [card],
+    icon: ICON_URL,
   };
 }
 

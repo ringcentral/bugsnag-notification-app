@@ -246,22 +246,6 @@
                                     "type": "ActionSet",
                                     "actions": [
                                         {
-                                            "type": "Action.OpenUrl",
-                                            "title": "View in Bugsnag",
-                                            "url": "{{url}}"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "type": "Container",
-                            "isVisible": false,
-                            "items": [
-                                {
-                                    "type": "ActionSet",
-                                    "actions": [
-                                        {
                                             "type": "Action.Submit",
                                             "title": "Make as fixed",
                                             "data": {
