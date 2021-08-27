@@ -247,7 +247,7 @@
                                     "actions": [
                                         {
                                             "type": "Action.Submit",
-                                            "title": "Make as fixed",
+                                            "title": "Mark as fixed",
                                             "data": {
                                                 "action": "fix"
                                             }

@@ -6,7 +6,11 @@ const { Webhook } = require('./models/webhook');
 const { RCWebhook } = require('./models/rc-webhook');
 const { AuthToken } = require('./models/authToken');
 
-const { formatAdaptiveCardMessage, createAuthTokenRequestCard } = require('./utils/formatAdaptiveCardMessage');
+const {
+  formatAdaptiveCardMessage,
+  createAuthTokenRequestCard,
+  createMessageCard,
+} = require('./utils/formatAdaptiveCardMessage');
 const { formatGlipMessage } = require('./utils/formatGlipMessage');
 
 exports.appExtend = (app) => {
@@ -92,9 +96,9 @@ exports.appExtend = (app) => {
           data: body.data.token,
         });
       }
-      await axios.post(webhookRecord.rc_webhook, {
-        title: `Hi ${body.user.firstName} ${body.user.lastName}, your personal token is saved. Please click action button again.`
-      }, {
+      await axios.post(webhookRecord.rc_webhook, createMessageCard({
+        message: `Hi ${body.user.firstName} ${body.user.lastName}, your personal token is saved. Please click action button again.`
+      }), {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
@@ -145,9 +149,9 @@ exports.appExtend = (app) => {
             }
           });
         } else if (e.response.status === 403) {
-          await axios.post(webhookRecord.rc_webhook, {
-            title: `Hi ${body.user.firstName}, your Bugsnag role doesn't have permission to perform this action.`,
-          }, {
+          await axios.post(webhookRecord.rc_webhook, createMessageCard({
+            message: `Hi ${body.user.firstName}, your Bugsnag role doesn't have permission to perform this action.`,
+          }), {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json'
