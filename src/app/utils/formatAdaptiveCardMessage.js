@@ -191,5 +191,14 @@ function createAuthTokenRequestCard({ webhookId }) {
   };
 }
 
+function createMessageCard({ message }) {
+  return {
+    icon: ICON_URL,
+    title: message,
+    activity: 'Bugsnag'
+  }
+}
+
 exports.formatAdaptiveCardMessage = formatAdaptiveCardMessage;
 exports.createAuthTokenRequestCard = createAuthTokenRequestCard;
+exports.createMessageCard = createMessageCard;
