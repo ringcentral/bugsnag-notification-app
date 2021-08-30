@@ -187,6 +187,8 @@ function formatCommentMessageV2(message) {
     severity: message.error.severity,
     project: `[${message.project.name}](${message.project.url})`,
     status: message.error.status,
+    errorId: message.error.errorId,
+    projectId: message.project.id,
   };
 }
 

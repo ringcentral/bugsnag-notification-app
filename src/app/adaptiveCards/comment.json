@@ -232,6 +232,16 @@
             ]
         },
         {
+            "type": "Input.Text",
+            "id": "comment",
+            "label": "Comment",
+            "placeholder": "Add a comment",
+            "maxLength": 500,
+            "isMultiline": true,
+            "isVisible": false,
+            "isRequired": true
+        },
+        {
             "type": "ColumnSet",
             "columns": [
                 {
@@ -279,13 +289,45 @@
                             "items": [
                                 {
                                     "type": "ActionSet",
+                                    "id": "actions",
                                     "actions": [
                                         {
-                                            "type": "Action.OpenUrl",
+                                            "type": "Action.ToggleVisibility",
                                             "title": "Add comment",
-                                            "url": "{{url}}"
+                                            "targetElements": [
+                                                "submitActions",
+                                                "comment",
+                                                "actions"
+                                            ]
                                         }
                                     ]
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "submitActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "actions",
+                                                "comment",
+                                                "submitActions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Submit",
+                                            "data": {
+                                                "action": "comment",
+                                                "webhookId": "{{webhookId}}",
+                                                "projectId": "{{projectId}}",
+                                                "errorId": "{{errorId}}"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ],
+                                    "isVisible": false
                                 }
                             ]
                         }

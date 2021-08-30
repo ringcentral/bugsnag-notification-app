@@ -179,6 +179,35 @@
             ]
         },
         {
+            "type": "Input.ChoiceSet",
+            "id": "snoozeType",
+            "style": "compact",
+            "value": "1hr",
+            "choices": [
+                {
+                    "title": "Snooze 1 hour",
+                    "value": "1hr"
+                },
+                {
+                    "title": "Snooze 6 hours",
+                    "value": "6hr"
+                },
+                {
+                    "title": "Snooze 1 day",
+                    "value": "1d"
+                }
+            ],
+            "isVisible": false
+        },
+        {
+            "type": "Input.Text",
+            "id": "comment",
+            "placeholder": "Add a comment (optional)",
+            "maxLength": 500,
+            "isMultiline": true,
+            "isVisible": false
+        },
+        {
             "type": "ColumnSet",
             "columns": [
                 {
@@ -244,19 +273,98 @@
                             "items": [
                                 {
                                     "type": "ActionSet",
+                                    "id": "actions",
                                     "actions": [
                                         {
-                                            "type": "Action.Submit",
+                                            "type": "Action.ToggleVisibility",
                                             "title": "Mark as fixed",
-                                            "data": {
-                                                "action": "fix"
-                                            }
+                                            "targetElements": [
+                                                "comment",
+                                                "actions",
+                                                "fixActions"
+                                            ]
                                         },
                                         {
                                             "type": "Action.ToggleVisibility",
                                             "title": "Snooze",
                                             "targetElements": [
-                                                "snoozeForm"
+                                                "comment",
+                                                "snoozeType",
+                                                "actions",
+                                                "snoozeActions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Ignore",
+                                            "targetElements": [
+                                                "comment",
+                                                "actions",
+                                                "ignoreActions"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "fixActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "comment",
+                                                "fixActions",
+                                                "actions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Mark as fixed",
+                                            "data": {
+                                                "action": "fix"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ],
+                                    "isVisible": false
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "snoozeActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "comment",
+                                                "snoozeType",
+                                                "snoozeActions",
+                                                "actions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Snooze",
+                                            "data": {
+                                                "action": "snooze"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ],
+                                    "isVisible": false
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "ignoreActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "comment",
+                                                "ignoreActions",
+                                                "actions"
                                             ]
                                         },
                                         {
@@ -264,9 +372,11 @@
                                             "title": "Ignore",
                                             "data": {
                                                 "action": "ignore"
-                                            }
+                                            },
+                                            "style": "positive"
                                         }
-                                    ]
+                                    ],
+                                    "isVisible": false
                                 }
                             ]
                         }
@@ -276,68 +386,6 @@
                 }
             ],
             "horizontalAlignment": "Center"
-        },
-        {
-            "type": "ColumnSet",
-            "id": "snoozeForm",
-            "columns": [
-                {
-                    "type": "Column",
-                    "width": "stretch"
-                },
-                {
-                    "type": "Column",
-                    "items": [
-                        {
-                            "type": "Input.ChoiceSet",
-                            "id": "snoozeType",
-                            "style": "compact",
-                            "value": "1hr",
-                            "choices": [
-                                {
-                                    "title": "Snooze 1 hour",
-                                    "value": "1hr"
-                                },
-                                {
-                                    "title": "Snooze 6 hours",
-                                    "value": "6hr"
-                                },
-                                {
-                                    "title": "Snooze 1 day",
-                                    "value": "1d"
-                                }
-                            ]
-                        }
-                    ],
-                    "verticalContentAlignment": "Center"
-                },
-                {
-                    "type": "Column",
-                    "items": [
-                        {
-                            "type": "Container",
-                            "items": [
-                                {
-                                    "type": "ActionSet",
-                                    "actions": [
-                                        {
-                                            "type": "Action.Submit",
-                                            "title": "Submit",
-                                            "data": {
-                                                "action": "snooze"
-                                            },
-                                            "style": "positive"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    "width": "auto",
-                    "verticalContentAlignment": "Center"
-                }
-            ],
-            "isVisible": false
         }
     ]
 }
