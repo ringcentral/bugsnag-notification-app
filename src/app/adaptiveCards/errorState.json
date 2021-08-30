@@ -59,6 +59,7 @@
                 },
                 {
                     "type": "Container",
+                    "id": "shoreMoreButtons",
                     "items": [
                         {
                             "type": "TextBlock",
@@ -222,6 +223,35 @@
             ]
         },
         {
+            "type": "Input.ChoiceSet",
+            "id": "snoozeType",
+            "style": "compact",
+            "value": "1hr",
+            "choices": [
+                {
+                    "title": "Snooze 1 hour",
+                    "value": "1hr"
+                },
+                {
+                    "title": "Snooze 6 hours",
+                    "value": "6hr"
+                },
+                {
+                    "title": "Snooze 1 day",
+                    "value": "1d"
+                }
+            ],
+            "isVisible": false
+        },
+        {
+            "type": "Input.Text",
+            "id": "comment",
+            "placeholder": "Add a comment (optional)",
+            "maxLength": 500,
+            "isMultiline": true,
+            "isVisible": false
+        },
+        {
             "type": "ColumnSet",
             "columns": [
                 {
@@ -265,15 +295,170 @@
                     "type": "Column",
                     "items": [
                         {
+                            "type": "Input.Text",
+                            "id": "errorId",
+                            "value": "{{errorId}}",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "projectId",
+                            "value": "{{projectId}}",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "webhookId",
+                            "value": "{{webhookId}}",
+                            "isVisible": false
+                        },
+                        {
                             "type": "Container",
                             "items": [
                                 {
                                     "type": "ActionSet",
+                                    "id": "openActions",
                                     "actions": [
                                         {
-                                            "type": "Action.OpenUrl",
-                                            "title": "View in Bugsnag",
-                                            "url": "{{url}}"
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Reopen",
+                                            "targetElements": [
+                                                "openSubmitActions",
+                                                "comment",
+                                                "openActions"
+                                            ]
+                                        }
+                                    ],
+                                    "isVisible": false
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "openSubmitActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "openActions",
+                                                "comment",
+                                                "openSubmitActions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Reopen",
+                                            "data": {
+                                                "action": "open"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ],
+                                    "isVisible": false
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "actions",
+                                    "isVisible": false,
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Mark as fixed",
+                                            "targetElements": [
+                                                "comment",
+                                                "actions",
+                                                "fixActions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Snooze",
+                                            "targetElements": [
+                                                "comment",
+                                                "snoozeType",
+                                                "actions",
+                                                "snoozeActions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Ignore",
+                                            "targetElements": [
+                                                "comment",
+                                                "actions",
+                                                "ignoreActions"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "fixActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "comment",
+                                                "fixActions",
+                                                "actions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Mark as fixed",
+                                            "data": {
+                                                "action": "fix"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ],
+                                    "isVisible": false
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "snoozeActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "comment",
+                                                "snoozeType",
+                                                "snoozeActions",
+                                                "actions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Snooze",
+                                            "data": {
+                                                "action": "snooze"
+                                            },
+                                            "style": "positive"
+                                        }
+                                    ],
+                                    "isVisible": false
+                                },
+                                {
+                                    "type": "ActionSet",
+                                    "id": "ignoreActions",
+                                    "actions": [
+                                        {
+                                            "type": "Action.ToggleVisibility",
+                                            "title": "Cancel",
+                                            "targetElements": [
+                                                "comment",
+                                                "ignoreActions",
+                                                "actions"
+                                            ]
+                                        },
+                                        {
+                                            "type": "Action.Submit",
+                                            "title": "Ignore",
+                                            "data": {
+                                                "action": "ignore"
+                                            },
+                                            "style": "positive"
                                         }
                                     ],
                                     "isVisible": false

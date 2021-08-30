@@ -57,6 +57,7 @@
                 },
                 {
                     "type": "Container",
+                    "id": "shoreMoreButtons",
                     "items": [
                         {
                             "type": "TextBlock",
