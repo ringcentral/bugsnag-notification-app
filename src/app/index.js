@@ -137,6 +137,9 @@ exports.appExtend = (app) => {
       if (action === 'snooze') {
         await bugsnag.snooze({ type: body.data.snoozeType });
       }
+      if (body.data.comment) {
+        await bugsnag.comment({ message: body.data.comment });
+      }
     } catch (e) {
       if (e.response) {
         if (e.response.status === 401) {

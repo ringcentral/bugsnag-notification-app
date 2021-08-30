@@ -128,7 +128,7 @@ function formatErrorStateMessageIntoCard(errorMessage) {
   return card;
 }
 
-function formatCommentMessageIntoCard(commentMessage) {
+function formatCommentMessageIntoCard(commentMessage, webhookId) {
   let string = commentString.replace("{{subject}}", commentMessage.subject);
   string = string.replace("{{comment}}", commentMessage.comment);
   const { stackTrace, moreStackTrace } = splitStackTrace(commentMessage.stackTrace);
@@ -142,7 +142,9 @@ function formatCommentMessageIntoCard(commentMessage) {
   string = string.replace("{{statusIcon}}", statusIconUrl);
   const severityIconUrl = THUMB_ICON_URL[`severity_${commentMessage.severity}`] || THUMB_ICON_URL['severity_info'];
   string = string.replace("{{severityIcon}}", severityIconUrl);
-  string = string.replace("{{url}}", commentMessage.url);
+  string = string.replace("{{errorId}}", commentMessage.errorId);
+  string = string.replace("{{projectId}}", commentMessage.projectId);
+  string = string.replace("{{webhookId}}", webhookId);
   return JSON.parse(string);
 }
 
@@ -156,7 +158,7 @@ function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
   }
   if (bugsnagMessage.comment) {
     formattedMessage = formatCommentMessageV2(bugsnagMessage);
-    const commentCard = formatCommentMessageIntoCard(formattedMessage);
+    const commentCard = formatCommentMessageIntoCard(formattedMessage, webhookId);
     attachments.push(commentCard);
   } else if (bugsnagMessage.error) {
     let errorCard

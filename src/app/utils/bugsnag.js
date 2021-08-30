@@ -20,15 +20,15 @@ class Bugsnag {
   }
 
   makeAsFixed() {
-    return this._sendRequest({ operation: 'fix' });
+    return this._updateError({ operation: 'fix' });
   }
 
   ignore() {
-    return this._sendRequest({ operation: 'ignore' });
+    return this._updateError({ operation: 'ignore' });
   }
 
   snooze({ type }) {
-    return this._sendRequest({
+    return this._updateError({
       operation: 'snooze',
       reopen_rules: {
         reopen_if: 'occurs_after',
@@ -37,18 +37,28 @@ class Bugsnag {
     });
   }
 
-  _sendRequest(body) {
+  comment({ message }) {
+    return axios.post(
+      `${this._apiUrl}/comments`,
+      { message },
+      { headers: this._getHeaders() },
+    );
+  }
+
+  _updateError(body) {
     return axios.patch(
       this._apiUrl,
       body,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `token ${this._authToken}`,
-        },
-      }
+      { headers: this._getHeaders() },
     );
+  }
+
+  _getHeaders() {
+    return {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `token ${this._authToken}`,
+    };
   }
 }
 
