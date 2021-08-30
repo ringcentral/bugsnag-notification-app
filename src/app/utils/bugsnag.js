@@ -27,6 +27,10 @@ class Bugsnag {
     return this._updateError({ operation: 'ignore' });
   }
 
+  open() {
+    return this._updateError({ operation: 'open' });
+  }
+
   snooze({ type }) {
     return this._updateError({
       operation: 'snooze',

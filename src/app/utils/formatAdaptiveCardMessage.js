@@ -4,6 +4,7 @@ const {
   formatCommentMessageV2,
   formatErrorStateMessageV2,
 } = require('./formatBugsnagMessage');
+const { findItemInAdaptiveCard } = require('./findItemInAdaptiveCard');
 
 const releaseTemplate = require('../adaptiveCards/release.json');
 const releaseString = JSON.stringify(releaseTemplate, null, 2);
@@ -100,12 +101,13 @@ function formatErrorMessageIntoCard(errorMessage, webhookId) {
   string = string.replace("{{webhookId}}", webhookId);
   const card = JSON.parse(string);
   if (moreStackTrace.length > 0) {
-    delete card.body[0].items[4].isVisible; //  set view more button visible
+    const viewMore = findItemInAdaptiveCard(card, 'shoreMoreButtons');
+    delete viewMore.isVisible; //  set view more button visible
   }
   return card;
 }
 
-function formatErrorStateMessageIntoCard(errorMessage) {
+function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
   let string = errorStateString.replace("{{subject}}", errorMessage.subject);
   const { stackTrace, moreStackTrace } = splitStackTrace(errorMessage.stackTrace);
   const iconUrl = THUMB_ICON_URL[`collaborator_${errorMessage.stateChange}`] || THUMB_ICON_URL['collaborator'];
@@ -120,10 +122,20 @@ function formatErrorStateMessageIntoCard(errorMessage) {
   string = string.replace("{{statusIcon}}", statusIconUrl);
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
   string = string.replace("{{severityIcon}}", severityIconUrl);
-  string = string.replace("{{url}}", errorMessage.url);
+  string = string.replace("{{errorId}}", errorMessage.errorId);
+  string = string.replace("{{projectId}}", errorMessage.projectId);
+  string = string.replace("{{webhookId}}", webhookId);
   const card = JSON.parse(string);
   if (moreStackTrace.length > 0) {
-    delete card.body[0].items[4].isVisible; //  set view more button visible
+    const viewMore = findItemInAdaptiveCard(card, 'shoreMoreButtons');
+    delete viewMore.isVisible; //  set view more button visible
+  }
+  if (errorMessage.status === 'open') {
+    const actions = findItemInAdaptiveCard(card, 'actions');
+    delete actions.isVisible;
+  } else {
+    const actions = findItemInAdaptiveCard(card, 'openActions');
+    delete actions.isVisible;
   }
   return card;
 }
@@ -164,7 +176,7 @@ function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
     let errorCard
     if (bugsnagMessage.trigger.type === 'errorStateManualChange') {
       formattedMessage = formatErrorStateMessageV2(bugsnagMessage);
-      errorCard = formatErrorStateMessageIntoCard(formattedMessage);
+      errorCard = formatErrorStateMessageIntoCard(formattedMessage, webhookId);
     } else {
       formattedMessage = formatErrorMessageV2(bugsnagMessage);
       errorCard = formatErrorMessageIntoCard(formattedMessage, webhookId);

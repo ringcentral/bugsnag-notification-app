@@ -137,6 +137,9 @@ exports.appExtend = (app) => {
       if (action === 'snooze') {
         await bugsnag.snooze({ type: body.data.snoozeType });
       }
+      if (action === 'open') {
+        await bugsnag.open();
+      }
       if (body.data.comment) {
         await bugsnag.comment({ message: body.data.comment });
       }
@@ -165,6 +168,7 @@ exports.appExtend = (app) => {
         console.error(e);
       }
     }
+    res.status(200);
     res.send('ok');
   });
 
