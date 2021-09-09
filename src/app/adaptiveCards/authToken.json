@@ -72,7 +72,7 @@
                                                     "title": "Submit",
                                                     "data": {
                                                         "action": "saveAuthToken",
-                                                        "webhookId": "{{webhookId}}"
+                                                        "webhookId": "${webhookId}"
                                                     }
                                                 }
                                             ]

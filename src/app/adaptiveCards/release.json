@@ -28,7 +28,7 @@
                                 {
                                     "type": "TextBlock",
                                     "id": "52a1f88f-bb25-b7e9-c6b6-595de8a5fc1d",
-                                    "text": "{{subject}}",
+                                    "text": "${subject}",
                                     "wrap": true
                                 }
                             ],
@@ -64,7 +64,7 @@
                                                 {
                                                     "type": "TextBlock",
                                                     "id": "893f910c-7687-d86a-5bcc-ad31dcaf6fe2",
-                                                    "text": "{{version}}",
+                                                    "text": "${version}",
                                                     "wrap": true
                                                 }
                                             ]
@@ -93,7 +93,7 @@
                                                                 },
                                                                 {
                                                                     "type": "TextBlock",
-                                                                    "text": "{{by}}",
+                                                                    "text": "${by}",
                                                                     "wrap": true
                                                                 }
                                                             ]
@@ -127,7 +127,7 @@
                                                 {
                                                     "type": "TextBlock",
                                                     "id": "971300b7-f303-2ef0-c883-da2eec1eb02c",
-                                                    "text": "{{stage}}",
+                                                    "text": "${stage}",
                                                     "wrap": true
                                                 }
                                             ]
@@ -151,7 +151,7 @@
                                                 {
                                                     "type": "TextBlock",
                                                     "id": "a5d45a9d-5a33-37b6-9f93-936a8943441b",
-                                                    "text": "{{commit}}",
+                                                    "text": "${commit}",
                                                     "wrap": true
                                                 }
                                             ]
@@ -215,7 +215,7 @@
                                                 {
                                                     "type": "Action.OpenUrl",
                                                     "title": "View Release",
-                                                    "url": "{{url}}"
+                                                    "url": "${url}"
                                                 }
                                             ]
                                         }

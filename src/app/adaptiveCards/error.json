@@ -15,7 +15,7 @@
                             "items": [
                                 {
                                     "type": "Image",
-                                    "url": "{{errorIcon}}",
+                                    "url": "${errorIcon}",
                                     "height": "24px"
                                 }
                             ],
@@ -27,7 +27,7 @@
                             "items": [
                                 {
                                     "type": "TextBlock",
-                                    "text": "{{subject}}",
+                                    "text": "${subject}",
                                     "wrap": true
                                 }
                             ],
@@ -38,19 +38,19 @@
                 },
                 {
                     "type": "TextBlock",
-                    "text": "{{message}}",
+                    "text": "${message}",
                     "wrap": true
                 },
                 {
                     "type": "TextBlock",
-                    "text": "{{stackTrace}}",
+                    "text": "${stackTrace}",
                     "spacing": "Small",
                     "wrap": true
                 },
                 {
                     "type": "TextBlock",
                     "wrap": true,
-                    "text": "{{moreStackTrace}}",
+                    "text": "${moreStackTrace}",
                     "isVisible": false,
                     "id": "moreStackTrace",
                     "spacing": "None"
@@ -108,7 +108,7 @@
                                             "items": [
                                                 {
                                                     "type": "Image",
-                                                    "url": "{{statusIcon}}",
+                                                    "url": "${statusIcon}",
                                                     "height": "16px"
                                                 }
                                             ],
@@ -120,9 +120,8 @@
                                             "items": [
                                                 {
                                                     "type": "TextBlock",
-                                                    "text": "{{status}}",
-                                                    "wrap": true,
-                                                    "color": "Dark"
+                                                    "text": "${status}",
+                                                    "wrap": true
                                                 }
                                             ],
                                             "spacing": "Small",
@@ -151,7 +150,7 @@
                                             "items": [
                                                 {
                                                     "type": "Image",
-                                                    "url": "{{severityIcon}}",
+                                                    "url": "${severityIcon}",
                                                     "height": "16px"
                                                 }
                                             ],
@@ -163,9 +162,8 @@
                                             "items": [
                                                 {
                                                     "type": "TextBlock",
-                                                    "text": "{{severity}}",
-                                                    "wrap": true,
-                                                    "color": "Dark"
+                                                    "text": "${severity}",
+                                                    "wrap": true
                                                 }
                                             ],
                                             "spacing": "Small",
@@ -180,213 +178,158 @@
             ]
         },
         {
-            "type": "Input.ChoiceSet",
-            "id": "snoozeType",
-            "style": "compact",
-            "value": "1hr",
-            "choices": [
+            "type": "Container",
+            "items": [
                 {
-                    "title": "Snooze 1 hour",
-                    "value": "1hr"
-                },
-                {
-                    "title": "Snooze 6 hours",
-                    "value": "6hr"
-                },
-                {
-                    "title": "Snooze 1 day",
-                    "value": "1d"
+                    "type": "ActionSet",
+                    "id": "actions",
+                    "actions": [
+                        {
+                            "type": "Action.ShowCard",
+                            "title": "Mark as fixed",
+                            "card": {
+                                "type": "AdaptiveCard",
+                                "version": "1.3",
+                                "body": [
+                                    {
+                                        "type": "Input.Text",
+                                        "id": "fixComment",
+                                        "placeholder": "Add a comment (optional)",
+                                        "maxLength": 500,
+                                        "isMultiline": true,
+                                        "isVisible": true
+                                    }
+                                ],
+                                "actions": [
+                                    {
+                                        "type": "Action.Submit",
+                                        "title": "Mark as fixed",
+                                        "data": {
+                                            "action": "fix",
+                                            "webhookId": "${webhookId}",
+                                            "projectId": "${projectId}",
+                                            "errorId": "${errorId}"
+                                        },
+                                        "style": "positive"
+                                    }
+                                ]
+                              }
+                        },
+                        {
+                            "type": "Action.ShowCard",
+                            "title": "Snooze",
+                            "card": {
+                                "type": "AdaptiveCard",
+                                "version": "1.3",
+                                "body": [
+                                    {
+                                        "type": "Input.ChoiceSet",
+                                        "id": "snoozeType",
+                                        "style": "compact",
+                                        "value": "1hr",
+                                        "choices": [
+                                            {
+                                                "title": "Snooze 1 hour",
+                                                "value": "1hr"
+                                            },
+                                            {
+                                                "title": "Snooze 6 hours",
+                                                "value": "6hr"
+                                            },
+                                            {
+                                                "title": "Snooze 1 day",
+                                                "value": "1d"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Input.Text",
+                                        "id": "snoozeComment",
+                                        "placeholder": "Add a comment (optional)",
+                                        "maxLength": 500,
+                                        "isMultiline": true
+                                    }
+                                ],
+                                "actions": [
+                                    {
+                                        "type": "Action.Submit",
+                                        "title": "Snooze",
+                                        "data": {
+                                            "action": "snooze",
+                                            "webhookId": "${webhookId}",
+                                            "projectId": "${projectId}",
+                                            "errorId": "${errorId}"
+                                        },
+                                        "style": "positive"
+                                    }
+                                ]
+                              }
+                        },
+                        {
+                            "type": "Action.ShowCard",
+                            "title": "Ignore",
+                            "card": {
+                                "type": "AdaptiveCard",
+                                "version": "1.3",
+                                "body": [
+                                    {
+                                        "type": "Input.Text",
+                                        "id": "ignoreComment",
+                                        "placeholder": "Add a comment (optional)",
+                                        "maxLength": 500,
+                                        "isMultiline": true,
+                                        "isVisible": true
+                                    }
+                                ],
+                                "actions": [
+                                    {
+                                        "type": "Action.Submit",
+                                        "title": "Ignore",
+                                        "data": {
+                                            "action": "ignore",
+                                            "webhookId": "${webhookId}",
+                                            "projectId": "${projectId}",
+                                            "errorId": "${errorId}"
+                                        },
+                                        "style": "positive"
+                                    }
+                                ]
+                              }
+                        }
+                    ],
+                    "isVisible": true
                 }
-            ],
-            "isVisible": false
-        },
-        {
-            "type": "Input.Text",
-            "id": "comment",
-            "placeholder": "Add a comment (optional)",
-            "maxLength": 500,
-            "isMultiline": true,
-            "isVisible": false
+            ]
         },
         {
             "type": "ColumnSet",
             "columns": [
                 {
                     "type": "Column",
-                    "width": "stretch",
+                    "width": "14px",
                     "items": [
                         {
-                            "type": "ColumnSet",
-                            "columns": [
-                                {
-                                    "type": "Column",
-                                    "width": "14px",
-                                    "items": [
-                                        {
-                                            "type": "Image",
-                                            "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/feedback.png",
-                                            "height": "12px"
-                                        }
-                                    ],
-                                    "verticalContentAlignment": "Center"
-                                },
-                                {
-                                    "type": "Column",
-                                    "items": [
-                                        {
-                                            "type": "TextBlock",
-                                            "text": "[Feedback](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
-                                            "wrap": true,
-                                            "size": "Small"
-                                        }
-                                    ],
-                                    "width": "stretch",
-                                    "verticalContentAlignment": "Center"
-                                }
-                            ]
+                            "type": "Image",
+                            "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/feedback.png",
+                            "height": "12px"
                         }
                     ],
-                    "verticalContentAlignment": "Bottom"
+                    "verticalContentAlignment": "Center"
                 },
                 {
                     "type": "Column",
                     "items": [
                         {
-                            "type": "Input.Text",
-                            "id": "errorId",
-                            "value": "{{errorId}}",
-                            "isVisible": false
-                        },
-                        {
-                            "type": "Input.Text",
-                            "id": "projectId",
-                            "value": "{{projectId}}",
-                            "isVisible": false
-                        },
-                        {
-                            "type": "Input.Text",
-                            "id": "webhookId",
-                            "value": "{{webhookId}}",
-                            "isVisible": false
-                        },
-                        {
-                            "type": "Container",
-                            "items": [
-                                {
-                                    "type": "ActionSet",
-                                    "id": "actions",
-                                    "actions": [
-                                        {
-                                            "type": "Action.ToggleVisibility",
-                                            "title": "Mark as fixed",
-                                            "targetElements": [
-                                                "comment",
-                                                "actions",
-                                                "fixActions"
-                                            ]
-                                        },
-                                        {
-                                            "type": "Action.ToggleVisibility",
-                                            "title": "Snooze",
-                                            "targetElements": [
-                                                "comment",
-                                                "snoozeType",
-                                                "actions",
-                                                "snoozeActions"
-                                            ]
-                                        },
-                                        {
-                                            "type": "Action.ToggleVisibility",
-                                            "title": "Ignore",
-                                            "targetElements": [
-                                                "comment",
-                                                "actions",
-                                                "ignoreActions"
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "ActionSet",
-                                    "id": "fixActions",
-                                    "actions": [
-                                        {
-                                            "type": "Action.ToggleVisibility",
-                                            "title": "Cancel",
-                                            "targetElements": [
-                                                "comment",
-                                                "fixActions",
-                                                "actions"
-                                            ]
-                                        },
-                                        {
-                                            "type": "Action.Submit",
-                                            "title": "Mark as fixed",
-                                            "data": {
-                                                "action": "fix"
-                                            },
-                                            "style": "positive"
-                                        }
-                                    ],
-                                    "isVisible": false
-                                },
-                                {
-                                    "type": "ActionSet",
-                                    "id": "snoozeActions",
-                                    "actions": [
-                                        {
-                                            "type": "Action.ToggleVisibility",
-                                            "title": "Cancel",
-                                            "targetElements": [
-                                                "comment",
-                                                "snoozeType",
-                                                "snoozeActions",
-                                                "actions"
-                                            ]
-                                        },
-                                        {
-                                            "type": "Action.Submit",
-                                            "title": "Snooze",
-                                            "data": {
-                                                "action": "snooze"
-                                            },
-                                            "style": "positive"
-                                        }
-                                    ],
-                                    "isVisible": false
-                                },
-                                {
-                                    "type": "ActionSet",
-                                    "id": "ignoreActions",
-                                    "actions": [
-                                        {
-                                            "type": "Action.ToggleVisibility",
-                                            "title": "Cancel",
-                                            "targetElements": [
-                                                "comment",
-                                                "ignoreActions",
-                                                "actions"
-                                            ]
-                                        },
-                                        {
-                                            "type": "Action.Submit",
-                                            "title": "Ignore",
-                                            "data": {
-                                                "action": "ignore"
-                                            },
-                                            "style": "positive"
-                                        }
-                                    ],
-                                    "isVisible": false
-                                }
-                            ]
+                            "type": "TextBlock",
+                            "text": "[Feedback](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
+                            "wrap": true,
+                            "size": "Small"
                         }
                     ],
-                    "width": "auto",
-                    "verticalContentAlignment": "Bottom"
+                    "width": "stretch",
+                    "verticalContentAlignment": "Center"
                 }
-            ],
-            "horizontalAlignment": "Center"
+            ]
         }
     ]
 }

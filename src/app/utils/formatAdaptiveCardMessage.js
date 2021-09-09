@@ -1,3 +1,4 @@
+const { Template } = require('adaptivecards-templating');
 const {
   formatReleaseMessageV2,
   formatErrorMessageV2,
@@ -7,15 +8,15 @@ const {
 const { findItemInAdaptiveCard } = require('./findItemInAdaptiveCard');
 
 const releaseTemplate = require('../adaptiveCards/release.json');
-const releaseString = JSON.stringify(releaseTemplate, null, 2);
+const releaseTemplateString = JSON.stringify(releaseTemplate, null, 2);
 const commentTemplate = require('../adaptiveCards/comment.json');
-const commentString = JSON.stringify(commentTemplate, null, 2);
+const commentTemplateString = JSON.stringify(commentTemplate, null, 2);
 const errorTemplate = require('../adaptiveCards/error.json');
-const errorString = JSON.stringify(errorTemplate, null, 2);
+const errorTemplateString = JSON.stringify(errorTemplate, null, 2);
 const errorStateTemplate = require('../adaptiveCards/errorState.json');
-const errorStateString = JSON.stringify(errorStateTemplate, null, 2);
+const errorStateTemplateString = JSON.stringify(errorStateTemplate, null, 2);
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
-const authTokenString = JSON.stringify(authTokenTemplate, null, 2);
+const authTokenTemplateString = JSON.stringify(authTokenTemplate, null, 2);
 
 const ICON_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/bugsnag-white.png';
 const THUMB_ICON_BASE_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/';
@@ -40,14 +41,23 @@ const THUMB_ICON_URL = {
   severity_info: `${THUMB_ICON_BASE_URL}/info.dot.png`,
 };
 
+function getAdaptiveCardFromTemplate(cardTemplate, params) {
+  const template = new Template(cardTemplate);
+  const card = template.expand({
+    $root: params
+  });
+  return JSON.parse(card);
+}
+
 function formatReleaseMessageIntoCard(releaseMessage) {
-  let string = releaseString.replace("{{subject}}", releaseMessage.subject);
-  string = string.replace("{{version}}", releaseMessage.version);
-  string = string.replace("{{by}}", releaseMessage.by || 'none');
-  string = string.replace("{{stage}}", releaseMessage.stage);
-  string = string.replace("{{commit}}", releaseMessage.commit || 'none');
-  string = string.replace("{{url}}", releaseMessage.url);
-  return JSON.parse(string);
+  return getAdaptiveCardFromTemplate(releaseTemplateString, {
+    subject: releaseMessage.subject,
+    version: releaseMessage.version,
+    by: releaseMessage.by || 'none',
+    stage: releaseMessage.stage,
+    commit: releaseMessage.commit || 'none',
+    url: releaseMessage.url,
+  });
 }
 
 function splitStackTrace(originalStackTrace) {
@@ -73,7 +83,6 @@ function capitalizeFirstLetter(string) {
 }
 
 function formatErrorMessageIntoCard(errorMessage, webhookId) {
-  let string = errorString.replace("{{subject}}", errorMessage.subject);
   let thumbUrl = THUMB_ICON_URL.error;
   if (errorMessage.triggerType === 'errorEventFrequency' || errorMessage.triggerType === 'powerTen') {
     thumbUrl = THUMB_ICON_URL.repeated;
@@ -84,22 +93,24 @@ function formatErrorMessageIntoCard(errorMessage, webhookId) {
   if (errorMessage.triggerType === 'firstException') {
     thumbUrl = THUMB_ICON_URL.new;
   }
-  string = string.replace("{{errorIcon}}", thumbUrl);
-  string = string.replace("{{message}}", errorMessage.message);
   const { stackTrace, moreStackTrace } = splitStackTrace(errorMessage.stackTrace);
-  string = string.replace("{{stackTrace}}", stackTrace);
-  string = string.replace("{{moreStackTrace}}", moreStackTrace);
-  string = string.replace("{{severity}}", capitalizeFirstLetter(errorMessage.severity));
-  string = string.replace("{{status}}", capitalizeFirstLetter(errorMessage.status));
   const statusIconUrl = THUMB_ICON_URL[`status_${errorMessage.status}`] || THUMB_ICON_URL['status_open'];
-  string = string.replace("{{statusIcon}}", statusIconUrl);
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
-  string = string.replace("{{severityIcon}}", severityIconUrl);
-  string = string.replace("{{url}}", errorMessage.url);
-  string = string.replace("{{errorId}}", errorMessage.errorId);
-  string = string.replace("{{projectId}}", errorMessage.projectId);
-  string = string.replace("{{webhookId}}", webhookId);
-  const card = JSON.parse(string);
+  const card = getAdaptiveCardFromTemplate(errorTemplateString, {
+    subject: errorMessage.subject,
+    errorIcon: thumbUrl,
+    message: errorMessage.message,
+    stackTrace,
+    moreStackTrace,
+    severity: capitalizeFirstLetter(errorMessage.severity),
+    status: capitalizeFirstLetter(errorMessage.status),
+    statusIcon: statusIconUrl,
+    severityIcon: severityIconUrl,
+    url: errorMessage.url,
+    errorId: errorMessage.errorId,
+    projectId: errorMessage.projectId,
+    webhookId: webhookId,
+  });
   if (moreStackTrace.length > 0) {
     const viewMore = findItemInAdaptiveCard(card, 'shoreMoreButtons');
     delete viewMore.isVisible; //  set view more button visible
@@ -108,24 +119,25 @@ function formatErrorMessageIntoCard(errorMessage, webhookId) {
 }
 
 function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
-  let string = errorStateString.replace("{{subject}}", errorMessage.subject);
   const { stackTrace, moreStackTrace } = splitStackTrace(errorMessage.stackTrace);
   const iconUrl = THUMB_ICON_URL[`collaborator_${errorMessage.stateChange}`] || THUMB_ICON_URL['collaborator'];
-  string = string.replace("{{stateIcon}}", iconUrl);
-  string = string.replace("{{stackTrace}}", stackTrace);
-  string = string.replace("{{moreStackTrace}}", moreStackTrace);
-  string = string.replace("{{releaseStage}}", capitalizeFirstLetter(errorMessage.releaseStage));
-  string = string.replace("{{project}}", errorMessage.project);
-  string = string.replace("{{severity}}", capitalizeFirstLetter(errorMessage.severity));
-  string = string.replace("{{status}}", capitalizeFirstLetter(errorMessage.status));
   const statusIconUrl = THUMB_ICON_URL[`status_${errorMessage.status}`] || THUMB_ICON_URL['status_open'];
-  string = string.replace("{{statusIcon}}", statusIconUrl);
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
-  string = string.replace("{{severityIcon}}", severityIconUrl);
-  string = string.replace("{{errorId}}", errorMessage.errorId);
-  string = string.replace("{{projectId}}", errorMessage.projectId);
-  string = string.replace("{{webhookId}}", webhookId);
-  const card = JSON.parse(string);
+  const card = getAdaptiveCardFromTemplate(errorStateTemplateString, {
+    subject: errorMessage.subject,
+    stateIcon: iconUrl,
+    stackTrace,
+    moreStackTrace,
+    releaseStage: capitalizeFirstLetter(errorMessage.releaseStage),
+    project: errorMessage.project,
+    severity: capitalizeFirstLetter(errorMessage.severity),
+    status: capitalizeFirstLetter(errorMessage.status),
+    statusIcon: statusIconUrl,
+    severityIcon: severityIconUrl,
+    errorId: errorMessage.errorId,
+    projectId: errorMessage.projectId,
+    webhookId: webhookId,
+  });
   if (moreStackTrace.length > 0) {
     const viewMore = findItemInAdaptiveCard(card, 'shoreMoreButtons');
     delete viewMore.isVisible; //  set view more button visible
@@ -141,23 +153,24 @@ function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
 }
 
 function formatCommentMessageIntoCard(commentMessage, webhookId) {
-  let string = commentString.replace("{{subject}}", commentMessage.subject);
-  string = string.replace("{{comment}}", commentMessage.comment);
   const { stackTrace, moreStackTrace } = splitStackTrace(commentMessage.stackTrace);
-  string = string.replace("{{stackTrace}}", stackTrace);
-  string = string.replace("{{moreStackTrace}}", moreStackTrace);
-  string = string.replace("{{releaseStage}}", capitalizeFirstLetter(commentMessage.releaseStage));
-  string = string.replace("{{project}}", commentMessage.project);
-  string = string.replace("{{severity}}", capitalizeFirstLetter(commentMessage.severity));
-  string = string.replace("{{status}}", capitalizeFirstLetter(commentMessage.status));
   const statusIconUrl = THUMB_ICON_URL[`status_${commentMessage.status}`] || THUMB_ICON_URL['status_open'];
-  string = string.replace("{{statusIcon}}", statusIconUrl);
   const severityIconUrl = THUMB_ICON_URL[`severity_${commentMessage.severity}`] || THUMB_ICON_URL['severity_info'];
-  string = string.replace("{{severityIcon}}", severityIconUrl);
-  string = string.replace("{{errorId}}", commentMessage.errorId);
-  string = string.replace("{{projectId}}", commentMessage.projectId);
-  string = string.replace("{{webhookId}}", webhookId);
-  return JSON.parse(string);
+  return getAdaptiveCardFromTemplate(commentTemplateString, {
+    subject: commentMessage.subject,
+    comment: commentMessage.comment,
+    stackTrace,
+    moreStackTrace,
+    releaseStage: capitalizeFirstLetter(commentMessage.releaseStage),
+    project: commentMessage.project,
+    severity: capitalizeFirstLetter(commentMessage.severity),
+    status: capitalizeFirstLetter(commentMessage.status),
+    statusIcon: statusIconUrl,
+    severityIcon: severityIconUrl,
+    errorId: commentMessage.errorId,
+    projectId: commentMessage.projectId,
+    webhookId,
+  });
 }
 
 function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
@@ -196,9 +209,9 @@ function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
 }
 
 function createAuthTokenRequestCard({ webhookId }) {
-  let string = authTokenString;
-  string = string.replace("{{webhookId}}", webhookId);
-  const card = JSON.parse(string);
+  const card = getAdaptiveCardFromTemplate(authTokenTemplateString, {
+    webhookId,
+  });
   return {
     attachments: [card],
     icon: ICON_URL,

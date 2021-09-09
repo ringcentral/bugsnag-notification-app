@@ -48,7 +48,7 @@ exports.appExtend = (app) => {
     const body = req.body;
     // console.log(JSON.stringify(body, null, 2));
     const message = formatAdaptiveCardMessage(body, id);
-    // console.log(JSON.stringify(message, null, 2));
+    // console.log(JSON.stringify(message.attachments[0], null, 2));
     await axios.post(webhookRecord.rc_webhook, message, {
       headers: {
         Accept: 'application/json',
@@ -140,8 +140,15 @@ exports.appExtend = (app) => {
       if (action === 'open') {
         await bugsnag.open();
       }
-      if (body.data.comment) {
-        await bugsnag.comment({ message: body.data.comment });
+      const comment = (
+        body.data.fixComment ||
+        body.data.snoozeComment ||
+        body.data.ignoreComment ||
+        body.data.openComment ||
+        body.data.comment
+      );
+      if (comment) {
+        await bugsnag.comment({ message: comment });
       }
     } catch (e) {
       if (e.response) {
