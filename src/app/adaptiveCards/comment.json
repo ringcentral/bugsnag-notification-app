@@ -27,7 +27,7 @@
                             "items": [
                                 {
                                     "type": "TextBlock",
-                                    "text": "{{subject}}",
+                                    "text": "${subject}",
                                     "wrap": true
                                 }
                             ],
@@ -44,7 +44,7 @@
                 },
                 {
                     "type": "TextBlock",
-                    "text": "{{comment}}",
+                    "text": "${comment}",
                     "wrap": true
                 },
                 {
@@ -55,14 +55,14 @@
                 },
                 {
                     "type": "TextBlock",
-                    "text": "{{stackTrace}}",
+                    "text": "${stackTrace}",
                     "spacing": "Small",
                     "wrap": true
                 },
                 {
                     "type": "TextBlock",
                     "wrap": true,
-                    "text": "{{moreStackTrace}}",
+                    "text": "${moreStackTrace}",
                     "isVisible": false,
                     "id": "moreStackTrace",
                     "spacing": "None"
@@ -112,9 +112,8 @@
                                 },
                                 {
                                     "type": "TextBlock",
-                                    "text": "{{releaseStage}}",
-                                    "wrap": true,
-                                    "color": "Dark"
+                                    "text": "${releaseStage}",
+                                    "wrap": true
                                 }
                             ]
                         },
@@ -130,7 +129,7 @@
                                 },
                                 {
                                     "type": "TextBlock",
-                                    "text": "{{project}}",
+                                    "text": "${project}",
                                     "wrap": true,
                                     "color": "Dark"
                                 }
@@ -160,7 +159,7 @@
                                             "items": [
                                                 {
                                                     "type": "Image",
-                                                    "url": "{{statusIcon}}",
+                                                    "url": "${statusIcon}",
                                                     "height": "16px"
                                                 }
                                             ],
@@ -172,7 +171,7 @@
                                             "items": [
                                                 {
                                                     "type": "TextBlock",
-                                                    "text": "{{status}}",
+                                                    "text": "${status}",
                                                     "wrap": true,
                                                     "color": "Dark"
                                                 }
@@ -203,7 +202,7 @@
                                             "items": [
                                                 {
                                                     "type": "Image",
-                                                    "url": "{{severityIcon}}",
+                                                    "url": "${severityIcon}",
                                                     "height": "16px"
                                                 }
                                             ],
@@ -215,7 +214,7 @@
                                             "items": [
                                                 {
                                                     "type": "TextBlock",
-                                                    "text": "{{severity}}",
+                                                    "text": "${severity}",
                                                     "wrap": true,
                                                     "color": "Dark"
                                                 }
@@ -320,9 +319,9 @@
                                             "title": "Submit",
                                             "data": {
                                                 "action": "comment",
-                                                "webhookId": "{{webhookId}}",
-                                                "projectId": "{{projectId}}",
-                                                "errorId": "{{errorId}}"
+                                                "webhookId": "${webhookId}",
+                                                "projectId": "${projectId}",
+                                                "errorId": "${errorId}"
                                             },
                                             "style": "positive"
                                         }
