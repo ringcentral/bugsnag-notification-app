@@ -229,16 +229,48 @@
                                         "value": "1hr",
                                         "choices": [
                                             {
-                                                "title": "Snooze 1 hour",
+                                                "title": "After 1 hour",
                                                 "value": "1hr"
                                             },
                                             {
-                                                "title": "Snooze 6 hours",
+                                                "title": "After 6 hours",
                                                 "value": "6hr"
                                             },
                                             {
-                                                "title": "Snooze 1 day",
+                                                "title": "After 1 day",
                                                 "value": "1d"
+                                            },
+                                            {
+                                                "title": "Again 1 time",
+                                                "value": "1_time"
+                                            },
+                                            {
+                                                "title": "Again 10 times",
+                                                "value": "10_times"
+                                            },
+                                            {
+                                                "title": "Again 100 times",
+                                                "value": "100_times"
+                                            },
+                                            {
+                                                "title": "Again 1000 times",
+                                                "value": "1000_times"
+                                            },
+                                            {
+                                                "title": "Least 1 time per hr",
+                                                "value": "1_in_1_hr"
+                                            },
+                                            {
+                                                "title": "Least 10 times per hr",
+                                                "value": "10_in_1_hr"
+                                            },
+                                            {
+                                                "title": "Least 100 times per hr",
+                                                "value": "100_in_1_hr"
+                                            },
+                                            {
+                                                "title": "Least 1000 times per hr",
+                                                "value": "1000_in_1_hr"
                                             }
                                         ]
                                     },

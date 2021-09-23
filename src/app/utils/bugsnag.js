@@ -11,6 +11,24 @@ function getSnoozeSeconds(type) {
   return hour;
 }
 
+function getReopenRules(type) {
+  const rules = {};
+  if (type.indexOf('in') > -1) {
+    rules.reopen_if = 'n_occurrences_in_m_hours';
+    const parsed = type.split('_');
+    rules.occurrences = Number.parseInt(parsed[0]);
+    rules.hours = Number.parseInt(parsed[2]);
+  } else if (type.indexOf('time') > -1) {
+    rules.reopen_if = 'n_additional_occurrences';
+    const parsed = type.split('_');
+    rules.additional_occurrences = Number.parseInt(parsed[0]);
+  } else {
+    rules.reopen_if = 'occurs_after';
+    rules.seconds = getSnoozeSeconds(type);
+  }
+  return rules;
+}
+
 class Bugsnag {
   constructor({ authToken, projectId, errorId }) {
     this._authToken = authToken;
@@ -34,10 +52,7 @@ class Bugsnag {
   snooze({ type }) {
     return this._updateError({
       operation: 'snooze',
-      reopen_rules: {
-        reopen_if: 'occurs_after',
-        seconds: getSnoozeSeconds(type),
-      },
+      reopen_rules: getReopenRules(type),
     });
   }
 
