@@ -11,53 +11,57 @@ const {
   createAuthTokenRequestCard,
   createMessageCard,
 } = require('./utils/formatAdaptiveCardMessage');
-const { formatGlipMessage } = require('./utils/formatGlipMessage');
+// const { formatGlipMessage } = require('./utils/formatGlipMessage');
+
+// V2 API for adaptive cards
+const notifyV2 = async (req, res) => {
+  const id = req.params.id;
+  const webhookRecord = await Webhook.findByPk(id);
+  if (!webhookRecord) {
+    res.status(404);
+    res.send('Not found');
+    return;
+  }
+  const body = req.body;
+  // console.log(JSON.stringify(body, null, 2));
+  const message = formatAdaptiveCardMessage(body, id);
+  // console.log(JSON.stringify(message.attachments[0], null, 2));
+  await axios.post(webhookRecord.rc_webhook, message, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  res.status(200);
+  res.send('ok');
+};
+
+// const notifyV1 = async (req, res) => {
+//   const id = req.params.id;
+//   const webhookRecord = await Webhook.findByPk(id);
+//   if (!webhookRecord) {
+//     res.status(404);
+//     res.send('Not found');
+//     return;
+//   }
+//   const body = req.body;
+//   // console.log(JSON.stringify(body, null, 2));
+//   const message = formatGlipMessage(body);
+//   // console.log(JSON.stringify(message, null, 2));
+//   await axios.post(webhookRecord.rc_webhook, message, {
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json'
+//     }
+//   });
+//   res.send('ok');
+// };
 
 exports.appExtend = (app) => {
   app.set('views', path.resolve(__dirname, './views'));
   app.set('view engine', 'pug');
-  app.post('/notify/:id', async (req, res) => {
-    const id = req.params.id;
-    const webhookRecord = await Webhook.findByPk(id);
-    if (!webhookRecord) {
-      res.status(404);
-      res.send('Not found');
-      return;
-    }
-    const body = req.body;
-    // console.log(JSON.stringify(body, null, 2));
-    const message = formatGlipMessage(body);
-    // console.log(JSON.stringify(message, null, 2));
-    await axios.post(webhookRecord.rc_webhook, message, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    res.send('ok');
-  });
-  // V2 API for adaptive cards
-  app.post('/notify_v2/:id', async (req, res) => {
-    const id = req.params.id;
-    const webhookRecord = await Webhook.findByPk(id);
-    if (!webhookRecord) {
-      res.status(404);
-      res.send('Not found');
-      return;
-    }
-    const body = req.body;
-    // console.log(JSON.stringify(body, null, 2));
-    const message = formatAdaptiveCardMessage(body, id);
-    // console.log(JSON.stringify(message.attachments[0], null, 2));
-    await axios.post(webhookRecord.rc_webhook, message, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    res.status(200);
-    res.send('ok');
-  });
+  app.post('/notify/:id', notifyV2);
+  app.post('/notify_v2/:id', notifyV2);
 
   app.post('/interactive-messages', async (req, res) => {
     const SHARED_SECRET = process.env.INTERACTIVE_MESSAGES_SHARED_SECRET;

@@ -39,7 +39,7 @@ describe('Notify', () => {
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(repeatedErrorData);
     expect(res.status).toEqual(200);
-    expect(requestBody.title).toContain('Repeated error (10 events in 1h)');
+    expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
 
@@ -71,22 +71,6 @@ describe('Notify', () => {
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(releaseData);
     expect(res.status).toEqual(200);
-    expect(requestBody.title).toContain('**New release** in **production**');
-    scope.done();
-  });
-
-  it('should get 200 with release message at v2', async () => {
-    const scope = nock('http://test.com')
-      .post('/webhook/12121')
-      .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
-    const res = await request(server)
-      .post(`/notify_v2/${bugsnagWebhookRecord.id}`)
-      .send(releaseData);
-    expect(res.status).toEqual(200);
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
@@ -103,22 +87,6 @@ describe('Notify', () => {
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(commentData);
     expect(res.status).toEqual(200);
-    expect(requestBody.title).toContain('Embbnux Ji commented on UnsuppportedError');
-    scope.done();
-  });
-
-  it('should get 200 with comment message at v2', async () => {
-    const scope = nock('http://test.com')
-      .post('/webhook/12121')
-      .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
-    const res = await request(server)
-      .post(`/notify_v2/${bugsnagWebhookRecord.id}`)
-      .send(commentData);
-    expect(res.status).toEqual(200);
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
@@ -133,22 +101,6 @@ describe('Notify', () => {
     });
     const res = await request(server)
       .post(`/notify/${bugsnagWebhookRecord.id}`)
-      .send(collaboratorFixedData);
-    expect(res.status).toEqual(200);
-    expect(requestBody.title).toContain('Collaborator state change (fixed) by Embbnux Ji');
-    scope.done();
-  });
-
-  it('should get 200 with collaborator message at v2', async () => {
-    const scope = nock('http://test.com')
-      .post('/webhook/12121')
-      .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
-    const res = await request(server)
-      .post(`/notify_v2/${bugsnagWebhookRecord.id}`)
       .send(collaboratorFixedData);
     expect(res.status).toEqual(200);
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
