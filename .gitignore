@@ -11,3 +11,4 @@ serverless-deploy/node_modules
 serverless-deploy/.serverless
 
 *.log
+coverage
