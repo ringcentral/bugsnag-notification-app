@@ -1,9 +1,9 @@
 const { Template } = require('adaptivecards-templating');
 const {
-  formatReleaseMessageV2,
-  formatErrorMessageV2,
-  formatCommentMessageV2,
-  formatErrorStateMessageV2,
+  formatReleaseMessage,
+  formatErrorMessage,
+  formatCommentMessage,
+  formatErrorStateMessage,
 } = require('./formatBugsnagMessage');
 const { findItemInAdaptiveCard } = require('./findItemInAdaptiveCard');
 
@@ -181,21 +181,21 @@ function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
   const attachments = []
   let formattedMessage;
   if (bugsnagMessage.release) {
-    formattedMessage = formatReleaseMessageV2(bugsnagMessage);
+    formattedMessage = formatReleaseMessage(bugsnagMessage);
     const releaseCard = formatReleaseMessageIntoCard(formattedMessage);
     attachments.push(releaseCard);
   }
   if (bugsnagMessage.comment) {
-    formattedMessage = formatCommentMessageV2(bugsnagMessage);
+    formattedMessage = formatCommentMessage(bugsnagMessage);
     const commentCard = formatCommentMessageIntoCard(formattedMessage, webhookId);
     attachments.push(commentCard);
   } else if (bugsnagMessage.error) {
     let errorCard
     if (bugsnagMessage.trigger.type === 'errorStateManualChange') {
-      formattedMessage = formatErrorStateMessageV2(bugsnagMessage);
+      formattedMessage = formatErrorStateMessage(bugsnagMessage);
       errorCard = formatErrorStateMessageIntoCard(formattedMessage, webhookId);
     } else {
-      formattedMessage = formatErrorMessageV2(bugsnagMessage);
+      formattedMessage = formatErrorMessage(bugsnagMessage);
       errorCard = formatErrorMessageIntoCard(formattedMessage, webhookId);
     }
     attachments.push(errorCard);

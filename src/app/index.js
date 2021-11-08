@@ -12,7 +12,6 @@ const {
   createAuthTokenRequestCard,
   createMessageCard,
 } = require('./utils/formatAdaptiveCardMessage');
-// const { formatGlipMessage } = require('./utils/formatGlipMessage');
 
 // V2 API for adaptive cards
 const notifyV2 = async (req, res) => {
@@ -38,27 +37,6 @@ const notifyV2 = async (req, res) => {
   res.status(200);
   res.send('ok');
 };
-
-// const notifyV1 = async (req, res) => {
-//   const id = req.params.id;
-//   const webhookRecord = await Webhook.findByPk(id);
-//   if (!webhookRecord) {
-//     res.status(404);
-//     res.send('Not found');
-//     return;
-//   }
-//   const body = req.body;
-//   // console.log(JSON.stringify(body, null, 2));
-//   const message = formatGlipMessage(body);
-//   // console.log(JSON.stringify(message, null, 2));
-//   await axios.post(webhookRecord.rc_webhook, message, {
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json'
-//     }
-//   });
-//   res.send('ok');
-// };
 
 exports.appExtend = (app) => {
   app.set('views', path.resolve(__dirname, './views'));
