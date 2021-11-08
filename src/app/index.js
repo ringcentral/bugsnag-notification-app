@@ -1,6 +1,7 @@
 const path = require('path');
 const axios = require('axios');
 const crypto = require('crypto');
+const { requestWithoutWaitingResponse } = require('./utils/requestWithoutWaitingResponse');
 const { Bugsnag } = require('./utils/bugsnag');
 const { Webhook } = require('./models/webhook');
 const { RCWebhook } = require('./models/rc-webhook');
@@ -26,11 +27,13 @@ const notifyV2 = async (req, res) => {
   // console.log(JSON.stringify(body, null, 2));
   const message = formatAdaptiveCardMessage(body, id);
   // console.log(JSON.stringify(message.attachments[0], null, 2));
-  await axios.post(webhookRecord.rc_webhook, message, {
+  await requestWithoutWaitingResponse(webhookRecord.rc_webhook, {
+    method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify(message)
   });
   res.status(200);
   res.send('ok');
