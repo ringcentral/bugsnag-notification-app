@@ -12,6 +12,15 @@ const collaboratorFixedData = require('../example-payload/collaborator-fixed.jso
 
 axios.defaults.adapter = require('axios/lib/adapters/http')
 
+async function getRequestBody(scope) {
+  return new Promise((resolve, reject) => {
+    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
+      requestBody = JSON.parse(reqBody);
+      resolve(requestBody);
+    });
+  });
+}
+
 describe('Notify', () => {
   const webhook = 'http://test.com/webhook/12121';
   let bugsnagWebhookRecord;
@@ -31,14 +40,12 @@ describe('Notify', () => {
     const scope = nock('http://test.com')
       .post('/webhook/12121')
       .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
+    const requestBodyPromise = getRequestBody(scope);
     const res = await request(server)
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(repeatedErrorData);
     expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
@@ -47,14 +54,12 @@ describe('Notify', () => {
     const scope = nock('http://test.com')
       .post('/webhook/12121')
       .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
+    const requestBodyPromise = getRequestBody(scope);
     const res = await request(server)
       .post(`/notify_v2/${bugsnagWebhookRecord.id}`)
       .send(repeatedErrorData);
     expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
@@ -63,14 +68,12 @@ describe('Notify', () => {
     const scope = nock('http://test.com')
       .post('/webhook/12121')
       .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
+    const requestBodyPromise = getRequestBody(scope);
     const res = await request(server)
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(releaseData);
     expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
@@ -79,14 +82,12 @@ describe('Notify', () => {
     const scope = nock('http://test.com')
       .post('/webhook/12121')
       .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
+    const requestBodyPromise = getRequestBody(scope);
     const res = await request(server)
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(commentData);
     expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
@@ -95,14 +96,12 @@ describe('Notify', () => {
     const scope = nock('http://test.com')
       .post('/webhook/12121')
       .reply(200, { result: 'OK' });
-    let requestBody = null;
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-    });
+    const requestBodyPromise = getRequestBody(scope);
     const res = await request(server)
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(collaboratorFixedData);
     expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
     scope.done();
   });
