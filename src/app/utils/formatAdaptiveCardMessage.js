@@ -51,6 +51,7 @@ function getAdaptiveCardFromTemplate(cardTemplate, params) {
 
 function formatReleaseMessageIntoCard(releaseMessage) {
   return getAdaptiveCardFromTemplate(releaseTemplateString, {
+    summary: releaseMessage.summary,
     subject: releaseMessage.subject,
     version: releaseMessage.version,
     by: releaseMessage.by || 'none',
@@ -98,6 +99,7 @@ function formatErrorMessageIntoCard(errorMessage, webhookId) {
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
   const card = getAdaptiveCardFromTemplate(errorTemplateString, {
     subject: errorMessage.subject,
+    summary: errorMessage.summary,
     errorIcon: thumbUrl,
     message: errorMessage.message,
     stackTrace,
@@ -125,6 +127,7 @@ function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
   const card = getAdaptiveCardFromTemplate(errorStateTemplateString, {
     subject: errorMessage.subject,
+    summary: errorMessage.summary,
     stateIcon: iconUrl,
     stackTrace,
     moreStackTrace,
@@ -158,6 +161,7 @@ function formatCommentMessageIntoCard(commentMessage, webhookId) {
   const severityIconUrl = THUMB_ICON_URL[`severity_${commentMessage.severity}`] || THUMB_ICON_URL['severity_info'];
   return getAdaptiveCardFromTemplate(commentTemplateString, {
     subject: commentMessage.subject,
+    summary: commentMessage.summary,
     comment: commentMessage.comment,
     stackTrace,
     moreStackTrace,

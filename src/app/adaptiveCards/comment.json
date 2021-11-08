@@ -1,6 +1,7 @@
 {
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
+    "fallbackText": "${summary}",
     "version": "1.3",
     "body": [
         {
