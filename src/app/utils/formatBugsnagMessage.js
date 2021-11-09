@@ -38,7 +38,6 @@ function formatErrorStackTrace(error, bullet) {
   } else {
     stackTrace.push(error.requestUrl);
   }
-  stackTrace = stackTrace.join('\n');
   return stackTrace;
 }
 
@@ -71,7 +70,7 @@ function formatErrorMessage(message) {
   let subject = `**${formatTriggerType(message.trigger)}** in **${message.error.releaseStage}**`;
   subject = `${subject} from [${message.project.name}](${message.project.url})`;
   subject = `${subject} in ${message.error.context}`;
-  const summary = `${formatTriggerType(message.trigger)} in ${message.error.releaseStage} from ${message.project.name} in ${message.error.context}`;
+  const summary = `${formatTriggerType(message.trigger)} in ${message.error.releaseStage} from ${message.project.name} in "${message.error.context}"`;
   return {
     subject,
     summary,
@@ -90,8 +89,8 @@ function formatErrorMessage(message) {
 function formatErrorStateMessage(message) {
   let subject = `${message.user.name} marked`;
   let summary = `${message.user.name} marked`;
-  subject = `${subject} \\"[${message.error.message}](${message.error.url})\\"`;
-  summary = `${summary} \\"${message.error.message}\\"`;
+  subject = `${subject} "[${message.error.message}](${message.error.url})"`;
+  summary = `${summary} "${message.error.message}"`;
   if (message.trigger.stateChange === 'snoozed') {
     const stateChange =
       message.trigger.message.replace('Error ', '').replace(` by ${message.user.name}`, '');
@@ -123,7 +122,7 @@ function formatErrorStateMessage(message) {
 
 function formatCommentMessage(message) {
   const subject = `**${message.user.name} commented** on [${message.error.message}](${message.error.url})`;
-  const summary = `${message.user.name} commented on ${message.error.message}`;
+  const summary = `${message.user.name} commented on "${message.error.message}"`;
   return {
     url: message.error.url,
     subject,

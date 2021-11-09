@@ -57,16 +57,13 @@ function formatReleaseMessageIntoCard(releaseMessage) {
 }
 
 function splitStackTrace(originalStackTrace) {
-  let stackTrace = originalStackTrace;
+  let stackTrace = '';
   let moreStackTrace = '';
-  if (stackTrace) {
-    const stackTraceLines = stackTrace.split("\n");
-    if (stackTraceLines.length > 5) {
-      stackTrace = stackTraceLines.slice(0, 5).join("\\n")
-      moreStackTrace = stackTraceLines.slice(5).join("\\n")
-    } else {
-      stackTrace = stackTraceLines.join("\\n")
-    }
+  if (originalStackTrace.length > 5) {
+    stackTrace = originalStackTrace.slice(0, 5).join('\n');
+    moreStackTrace = originalStackTrace.slice(5).join('\n');
+  } else {
+    stackTrace = originalStackTrace.join('\n');
   }
   return { stackTrace, moreStackTrace };
 }
