@@ -16,10 +16,7 @@ const {
 // V2 API for adaptive cards
 const notifyV2 = async (req, res) => {
   const id = req.params.id;
-  const time = Date.now();
   const webhookRecord = await Webhook.findByPk(id);
-  const dbQueryTime = Date.now();
-  console.log('DB query time:', dbQueryTime - time);
   if (!webhookRecord) {
     res.status(404);
     res.send('Not found');
@@ -29,19 +26,15 @@ const notifyV2 = async (req, res) => {
   // console.log(JSON.stringify(body, null, 2));
   const message = formatAdaptiveCardMessage(body, id);
   // console.log(JSON.stringify(message.attachments[0], null, 2));
-  const data = JSON.stringify(message);
-  const formatTime = Date.now();
-  console.log('Message formation time:', formatTime - dbQueryTime);
+  // request without waiting response to reduce lambda function time
   await requestWithoutWaitingResponse(webhookRecord.rc_webhook, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    body: data,
+    body: JSON.stringify(message),
   });
-  const requestTime = Date.now();
-  console.log('RC webhook request time:', requestTime - formatTime);
   res.status(200);
   res.send('ok');
 };
