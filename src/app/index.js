@@ -26,13 +26,14 @@ const notifyV2 = async (req, res) => {
   // console.log(JSON.stringify(body, null, 2));
   const message = formatAdaptiveCardMessage(body, id);
   // console.log(JSON.stringify(message.attachments[0], null, 2));
+  // request without waiting response to reduce lambda function time
   await requestWithoutWaitingResponse(webhookRecord.rc_webhook, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(message)
+    body: JSON.stringify(message),
   });
   res.status(200);
   res.send('ok');

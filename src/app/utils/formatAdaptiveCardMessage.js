@@ -8,15 +8,10 @@ const {
 const { findItemInAdaptiveCard } = require('./findItemInAdaptiveCard');
 
 const releaseTemplate = require('../adaptiveCards/release.json');
-const releaseTemplateString = JSON.stringify(releaseTemplate, null, 2);
 const commentTemplate = require('../adaptiveCards/comment.json');
-const commentTemplateString = JSON.stringify(commentTemplate, null, 2);
 const errorTemplate = require('../adaptiveCards/error.json');
-const errorTemplateString = JSON.stringify(errorTemplate, null, 2);
 const errorStateTemplate = require('../adaptiveCards/errorState.json');
-const errorStateTemplateString = JSON.stringify(errorStateTemplate, null, 2);
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
-const authTokenTemplateString = JSON.stringify(authTokenTemplate, null, 2);
 
 const ICON_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/bugsnag-white.png';
 const THUMB_ICON_BASE_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/';
@@ -46,11 +41,11 @@ function getAdaptiveCardFromTemplate(cardTemplate, params) {
   const card = template.expand({
     $root: params
   });
-  return JSON.parse(card);
+  return card;
 }
 
 function formatReleaseMessageIntoCard(releaseMessage) {
-  return getAdaptiveCardFromTemplate(releaseTemplateString, {
+  return getAdaptiveCardFromTemplate(releaseTemplate, {
     summary: releaseMessage.summary,
     subject: releaseMessage.subject,
     version: releaseMessage.version,
@@ -62,16 +57,13 @@ function formatReleaseMessageIntoCard(releaseMessage) {
 }
 
 function splitStackTrace(originalStackTrace) {
-  let stackTrace = originalStackTrace;
+  let stackTrace = '';
   let moreStackTrace = '';
-  if (stackTrace) {
-    const stackTraceLines = stackTrace.split("\n");
-    if (stackTraceLines.length > 5) {
-      stackTrace = stackTraceLines.slice(0, 5).join("\\n")
-      moreStackTrace = stackTraceLines.slice(5).join("\\n")
-    } else {
-      stackTrace = stackTraceLines.join("\\n")
-    }
+  if (originalStackTrace.length > 5) {
+    stackTrace = originalStackTrace.slice(0, 5).join('\n');
+    moreStackTrace = originalStackTrace.slice(5).join('\n');
+  } else {
+    stackTrace = originalStackTrace.join('\n');
   }
   return { stackTrace, moreStackTrace };
 }
@@ -97,7 +89,7 @@ function formatErrorMessageIntoCard(errorMessage, webhookId) {
   const { stackTrace, moreStackTrace } = splitStackTrace(errorMessage.stackTrace);
   const statusIconUrl = THUMB_ICON_URL[`status_${errorMessage.status}`] || THUMB_ICON_URL['status_open'];
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
-  const card = getAdaptiveCardFromTemplate(errorTemplateString, {
+  const card = getAdaptiveCardFromTemplate(errorTemplate, {
     subject: errorMessage.subject,
     summary: errorMessage.summary,
     errorIcon: thumbUrl,
@@ -125,7 +117,7 @@ function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
   const iconUrl = THUMB_ICON_URL[`collaborator_${errorMessage.stateChange}`] || THUMB_ICON_URL['collaborator'];
   const statusIconUrl = THUMB_ICON_URL[`status_${errorMessage.status}`] || THUMB_ICON_URL['status_open'];
   const severityIconUrl = THUMB_ICON_URL[`severity_${errorMessage.severity}`] || THUMB_ICON_URL['severity_info'];
-  const card = getAdaptiveCardFromTemplate(errorStateTemplateString, {
+  const card = getAdaptiveCardFromTemplate(errorStateTemplate, {
     subject: errorMessage.subject,
     summary: errorMessage.summary,
     stateIcon: iconUrl,
@@ -159,7 +151,7 @@ function formatCommentMessageIntoCard(commentMessage, webhookId) {
   const { stackTrace, moreStackTrace } = splitStackTrace(commentMessage.stackTrace);
   const statusIconUrl = THUMB_ICON_URL[`status_${commentMessage.status}`] || THUMB_ICON_URL['status_open'];
   const severityIconUrl = THUMB_ICON_URL[`severity_${commentMessage.severity}`] || THUMB_ICON_URL['severity_info'];
-  return getAdaptiveCardFromTemplate(commentTemplateString, {
+  return getAdaptiveCardFromTemplate(commentTemplate, {
     subject: commentMessage.subject,
     summary: commentMessage.summary,
     comment: commentMessage.comment,
@@ -213,7 +205,7 @@ function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
 }
 
 function createAuthTokenRequestCard({ webhookId }) {
-  const card = getAdaptiveCardFromTemplate(authTokenTemplateString, {
+  const card = getAdaptiveCardFromTemplate(authTokenTemplate, {
     webhookId,
   });
   return {
