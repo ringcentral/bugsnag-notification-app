@@ -29,16 +29,19 @@ const notifyV2 = async (req, res) => {
   // console.log(JSON.stringify(body, null, 2));
   const message = formatAdaptiveCardMessage(body, id);
   // console.log(JSON.stringify(message.attachments[0], null, 2));
+  const data = JSON.stringify(message);
+  const formatTime = Date.now();
+  console.log('Message formation time:', formatTime - dbQueryTime);
   await requestWithoutWaitingResponse(webhookRecord.rc_webhook, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(message)
+    body: data,
   });
   const requestTime = Date.now();
-  console.log('RC webhook request time:', requestTime - dbQueryTime);
+  console.log('RC webhook request time:', requestTime - formatTime);
   res.status(200);
   res.send('ok');
 };
