@@ -16,7 +16,10 @@ const {
 // V2 API for adaptive cards
 const notifyV2 = async (req, res) => {
   const id = req.params.id;
+  const time = Date.now();
   const webhookRecord = await Webhook.findByPk(id);
+  const dbQueryTime = Date.now();
+  console.log('DB query time:', dbQueryTime - time);
   if (!webhookRecord) {
     res.status(404);
     res.send('Not found');
@@ -34,6 +37,8 @@ const notifyV2 = async (req, res) => {
     },
     body: JSON.stringify(message)
   });
+  const requestTime = Date.now();
+  console.log('RC webhook request time:', requestTime - dbQueryTime);
   res.status(200);
   res.send('ok');
 };
