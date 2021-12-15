@@ -2,8 +2,8 @@ const request = require('supertest');
 const nock = require('nock');
 const axios = require('axios');
 const { server } = require('../src/server');
-const { Webhook } = require('../src/app/models/webhook');
-const { RCWebhook } = require('../src/app/models/rc-webhook');
+const { Webhook } = require('../src/server/models/webhook');
+const { RCWebhook } = require('../src/server/models/rc-webhook');
 
 const repeatedErrorData = require('../example-payload/repeated-error.json');
 const powerTenErrorData = require('../example-payload/power-ten-error.json');

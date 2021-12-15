@@ -1,6 +1,6 @@
-const { Webhook } = require('../src/app/models/webhook');
-const { AuthToken } = require('../src/app/models/authToken');
-const { RCWebhook } = require('../src/app/models/rc-webhook');
+const { Webhook } = require('../src/server/models/webhook');
+const { AuthToken } = require('../src/server/models/authToken');
+const { RCWebhook } = require('../src/server/models/rc-webhook');
 
 jest.setTimeout(30000);
 
