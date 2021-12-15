@@ -180,6 +180,7 @@ exports.appExtend = (app) => {
     }
     res.render('new', {
       glipWebhookUri,
+      analyticsKey: process.env.SEGMENT_KEY,
     });
   });
 
