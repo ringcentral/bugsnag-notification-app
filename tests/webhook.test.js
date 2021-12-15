@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { server } = require('../src/server');
-const { Webhook } = require('../src/app/models/webhook');
-const { RCWebhook } = require('../src/app/models/rc-webhook');
+const { Webhook } = require('../src/server/models/webhook');
+const { RCWebhook } = require('../src/server/models/rc-webhook');
 
 describe('Webhook new', () => {
   it('should get 404 without webhook uri', async () => {
