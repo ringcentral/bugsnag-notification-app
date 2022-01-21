@@ -201,6 +201,7 @@ function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
     // title: formattedMessage && formattedMessage.subject,
     attachments,
     icon: ICON_URL,
+    activity: 'Bugsnag Add-in',
   };
 }
 
@@ -211,6 +212,7 @@ function createAuthTokenRequestCard({ webhookId }) {
   return {
     attachments: [card],
     icon: ICON_URL,
+    activity: 'Bugsnag Add-in',
   };
 }
 
@@ -218,7 +220,7 @@ function createMessageCard({ message }) {
   return {
     icon: ICON_URL,
     title: message,
-    activity: 'Bugsnag'
+    activity: 'Bugsnag Add-in',
   }
 }
 
