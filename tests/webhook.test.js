@@ -10,7 +10,7 @@ describe('Webhook new', () => {
   });
 
   it('should get new webhook page successfully', async () => {
-    const res = await request(server).get('/webhook/new?webhook=http://test.com');
+    const res = await request(server).get('/webhook/new?webhook=http://test.com/webhook_id');
     expect(res.status).toEqual(200);
   });
 });
@@ -22,19 +22,21 @@ describe('Webhook generate', () => {
   });
 
   it('should generate webhook successfully', async () => {
-    const webhook = 'http://test.com';
+    const webhookId = 'webhook_id';
+    const webhook = `http://test.com/${webhookId}`;
     const res = await request(server).post('/webhooks').send({ webhook });
     expect(res.status).toEqual(200);
     const webhookUri = res.body.webhookUri;
-    const rcWebhookRecord = await RCWebhook.findByPk(webhook);
+    const rcWebhookRecord = await RCWebhook.findByPk(webhookId);
     const bugsnagWebhookRecord = await Webhook.findByPk(rcWebhookRecord.bugsnag_webhook_id);
     expect(bugsnagWebhookRecord.rc_webhook).toEqual(webhook);
     expect(`${process.env.APP_SERVER}/notify/${bugsnagWebhookRecord.id}`).toEqual(webhookUri);
   });
 
   it('should reuse old webhook', async () => {
-    const webhook = 'http://test.com';
-    const existedRCWebhookRecord = await RCWebhook.findByPk(webhook);
+    const webhookId = 'webhook_id';
+    const webhook = `http://test.com/${webhookId}`;
+    const existedRCWebhookRecord = await RCWebhook.findByPk(webhookId);
     const res = await request(server).post('/webhooks').send({ webhook });
     expect(res.status).toEqual(200);
     const webhookUri = res.body.webhookUri;
