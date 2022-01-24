@@ -29,12 +29,13 @@ async function getRequestBody(scope) {
 }
 
 describe('Notify', () => {
-  const webhook = 'http://test.com/webhook/12121';
+  const webhookId = '12121';
+  const webhook = `http://test.com/webhook/${webhookId}`;
   let bugsnagWebhookRecord;
 
   beforeAll(async () => {
     await request(server).post('/webhooks').send({ webhook });
-    const rcWebhookRecord = await RCWebhook.findByPk(webhook);
+    const rcWebhookRecord = await RCWebhook.findByPk(webhookId);
     bugsnagWebhookRecord = await Webhook.findByPk(rcWebhookRecord.bugsnag_webhook_id);
   });
 
