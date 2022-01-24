@@ -63,7 +63,7 @@ resources:
     rcWebhooksTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: bugsnag-rc-notification-rc-webhooks
+        TableName: bugsnag-rc-notification-rcWebhooks
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
