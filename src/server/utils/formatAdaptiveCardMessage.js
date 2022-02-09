@@ -1,4 +1,4 @@
-const { Template } = require('adaptivecards-templating');
+const { getAdaptiveCardFromTemplate } = require('./getAdaptiveCardFromTemplate');
 const {
   formatReleaseMessage,
   formatErrorMessage,
@@ -35,14 +35,6 @@ const THUMB_ICON_URL = {
   severity_warning: `${THUMB_ICON_BASE_URL}/warning.dot.png`,
   severity_info: `${THUMB_ICON_BASE_URL}/info.dot.png`,
 };
-
-function getAdaptiveCardFromTemplate(cardTemplate, params) {
-  const template = new Template(cardTemplate);
-  const card = template.expand({
-    $root: params
-  });
-  return card;
-}
 
 function formatReleaseMessageIntoCard(releaseMessage) {
   return getAdaptiveCardFromTemplate(releaseTemplate, {

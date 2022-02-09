@@ -1,0 +1,91 @@
+{
+    "type": "AdaptiveCard",
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "Hi, please follow steps below to setup your Bugsnag project to connect with this bot.",
+            "wrap": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "1 . Sign into [Bugsnag](https://app.bugsnag.com/) and go to project setting page.",
+            "wrap": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "2 . Go to **Data forwarding** setting:",
+            "wrap": true
+        },
+        {
+            "type": "Image",
+            "url": "https://apps.ringcentral.com/integration/bugsnag/bugsnag01.png"
+        },
+        {
+            "type": "TextBlock",
+            "text": "3 . Click **Webhook**.",
+            "wrap": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "4 . In **Webhook URL** field, enter the following URL:",
+            "wrap": true
+        },
+        {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "${subscribeUrl}",
+                    "wrap": true
+                }
+            ],
+            "style": "emphasis"
+        },
+        {
+            "type": "TextBlock",
+            "text": "5 . Click **Save**.",
+            "wrap": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "6 . Update your Webhook **Notify me when** setting.",
+            "wrap": true
+        },
+        {
+            "type": "Image",
+            "url": "https://apps.ringcentral.com/integration/bugsnag/bugsnag02.png"
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "14px",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/feedback.png",
+                            "height": "12px"
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                },
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "[Feedback](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
+                            "wrap": true,
+                            "size": "Small"
+                        }
+                    ],
+                    "width": "stretch",
+                    "verticalContentAlignment": "Center"
+                }
+            ]
+        }
+    ],
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.3"
+}
