@@ -6,13 +6,12 @@ const {
   formatErrorStateMessage,
 } = require('./formatBugsnagMessage');
 const { findItemInAdaptiveCard } = require('./findItemInAdaptiveCard');
-const { ICON_URL, THUMB_ICON_URL } = require('./constants');
+const { THUMB_ICON_URL } = require('./constants');
 
 const releaseTemplate = require('../adaptiveCards/release.json');
 const commentTemplate = require('../adaptiveCards/comment.json');
 const errorTemplate = require('../adaptiveCards/error.json');
 const errorStateTemplate = require('../adaptiveCards/errorState.json');
-const authTokenTemplate = require('../adaptiveCards/authToken.json');
 
 function formatReleaseMessageIntoCard(releaseMessage) {
   return getAdaptiveCardFromTemplate(releaseTemplate, {
@@ -172,25 +171,4 @@ function formatBugsnagMessageIntoCard({
   return null;
 }
 
-function createAuthTokenRequestCard({ webhookId }) {
-  const card = getAdaptiveCardFromTemplate(authTokenTemplate, {
-    webhookId,
-  });
-  return {
-    attachments: [card],
-    icon: ICON_URL,
-    activity: 'Bugsnag Add-in',
-  };
-}
-
-function createMessageCard({ message }) {
-  return {
-    icon: ICON_URL,
-    title: message,
-    activity: 'Bugsnag Add-in',
-  }
-}
-
 exports.formatBugsnagMessageIntoCard = formatBugsnagMessageIntoCard;
-exports.createAuthTokenRequestCard = createAuthTokenRequestCard;
-exports.createMessageCard = createMessageCard;

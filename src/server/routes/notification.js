@@ -1,9 +1,9 @@
 const crypto = require('crypto');
-const axios = require('axios');
 const Bot = require('ringcentral-chatbot-core/dist/models/bot').default;
 
-const { ICON_URL } = require('../utils/constants');
 const { decodeToken } = require('../utils/jwt');
+const { sendAdaptiveCardToRCWebhook } = require('../utils/messageHelper');
+
 const { Webhook } = require('../models/webhook');
 const { notificationInteractiveMessages, botInteractiveMessagesHandler } = require('../handlers/interactiveMessages');
 
@@ -24,26 +24,14 @@ async function notification(req, res) {
     webhookId: id,
     messageType: 'Notification',
   });
-  // console.log(JSON.stringify(message.attachments[0], null, 2));
-  // request without waiting response to reduce lambda function time
-  let body;
-  if (card) {
-    body = { attachments: [card] };
-  } else {
-    const project = req.body.project;
-    body = {
-      title: `**${req.body.trigger && req.body.trigger.message}** for [${project && project.name}](${project && project.url})`,
-    };
-  }
-  body.icon = ICON_URL;
-  body.activity = 'Bugsnag Add-in';
+
   try {
-    await axios.post(webhookRecord.rc_webhook, body, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
+    const project = req.body.project;
+    await sendAdaptiveCardToRCWebhook(
+      webhookRecord.rc_webhook,
+      card,
+      `**${req.body.trigger && req.body.trigger.message}** for [${project && project.name}](${project && project.url})`,
+    );
     res.status(200);
     res.send('ok');
   } catch (e) {
@@ -69,8 +57,6 @@ async function botNotification(req, res) {
     messageType: 'Bot',
     botId,
   });
-  // console.log(JSON.stringify(message.attachments[0], null, 2));
-  // request without waiting response to reduce lambda function time
   try {
     const bot = await Bot.findByPk(botId);
     if (bot) {

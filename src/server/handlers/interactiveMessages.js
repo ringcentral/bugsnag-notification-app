@@ -1,4 +1,3 @@
-const axios = require('axios');
 const Bot = require('ringcentral-chatbot-core/dist/models/bot').default;
 
 const { Bugsnag } = require('../utils/bugsnag');
@@ -6,13 +5,33 @@ const { Webhook } = require('../models/webhook');
 const { AuthToken } = require('../models/authToken');
 
 const { generateToken } = require('../utils/jwt');
+const { sendAdaptiveCardToRCWebhook, sendTextMessageToRCWebhook } = require('../utils/messageHelper');
 const { getAdaptiveCardFromTemplate } = require('../utils/getAdaptiveCardFromTemplate');
 const subscribeCardTemplate = require('../adaptiveCards/subscribeCard.json');
+const authTokenTemplate = require('../adaptiveCards/authToken.json');
 
-const {
-  createAuthTokenRequestCard,
-  createMessageCard,
-} = require('../utils/formatAdaptiveCardMessage');
+async function saveAuthToken(authToken, body) {
+  if (authToken) {
+    authToken.data = body.data.token;
+    await authToken.save();
+    return;
+  }
+  await AuthToken.create({
+    id: `${body.user.accountId}-${body.user.id}`,
+    data: body.data.token,
+  });
+}
+
+async function sendAuthCardToRCWebhook(webhookUri, webhookId) {
+  await sendAdaptiveCardToRCWebhook(
+    webhookUri,
+    getAdaptiveCardFromTemplate(authTokenTemplate, {
+      webhookId,
+      messageType: 'Notification',
+      botId: null,
+    }),
+  )
+}
 
 async function notificationInteractiveMessages(req, res) {
   const body = req.body;
@@ -23,40 +42,20 @@ async function notificationInteractiveMessages(req, res) {
     res.send('Not found');
     return;
   }
-  let authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
+  const authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
   const action = body.data.action;
   if (action === 'saveAuthToken') {
-    if (authToken) {
-      authToken.data = body.data.token;
-      await authToken.save();
-    } else {
-      authToken = await AuthToken.create({
-        id: `${body.user.accountId}-${body.user.id}`,
-        data: body.data.token,
-      });
-    }
-    await axios.post(webhookRecord.rc_webhook, createMessageCard({
-      message: `Hi ${body.user.firstName} ${body.user.lastName}, your personal token is saved. Please click action button again.`
-    }), {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
+    await saveAuthToken(authToken, body);
+    await sendTextMessageToRCWebhook(
+      webhookRecord.rc_webhook,
+      `Hi ${body.user.firstName} ${body.user.lastName}, your personal token is saved. Please click action button again.`,
+    );
     res.status(200);
     res.send('ok');
     return;
   }
   if (!authToken || !authToken.data || authToken.data.length == 0) {
-    await axios.post(webhookRecord.rc_webhook,
-      createAuthTokenRequestCard({ webhookId }),
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    await sendAuthCardToRCWebhook(webhookRecord.rc_webhook, webhookId);
     res.status(200);
     res.send('ok');
     return;
@@ -94,21 +93,12 @@ async function notificationInteractiveMessages(req, res) {
       if (e.response.status === 401) {
         authToken.data = '';
         await authToken.save();
-        await axios.post(webhookRecord.rc_webhook, createAuthTokenRequestCard({ webhookId }), {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        });
+        await sendAuthCardToRCWebhook(webhookRecord.rc_webhook, webhookId);
       } else if (e.response.status === 403) {
-        await axios.post(webhookRecord.rc_webhook, createMessageCard({
-          message: `Hi ${body.user.firstName}, your Bugsnag role doesn't have permission to perform this action.`,
-        }), {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        });
+        await sendTextMessageToRCWebhook(
+          webhookRecord.rc_webhook,
+          `Hi ${body.user.firstName}, your Bugsnag role doesn't have permission to perform this action.`,
+        );
       }
     } else {
       console.error(e);
@@ -121,22 +111,41 @@ async function notificationInteractiveMessages(req, res) {
 async function botInteractiveMessagesHandler(req, res) {
   const body = req.body;
   const groupId = body.conversation.id;
+  const botId = body.data.botId;
   try {
-    const bot = await Bot.findByPk(body.data.botId);
-    if (bot) {
-      if (body.data.action === 'subscribe') {
-        const notifyId = generateToken({ botId: body.data.botId, groupId });
-        const subscribeCard = getAdaptiveCardFromTemplate(subscribeCardTemplate, {
-          subscribeUrl: `${process.env.RINGCENTRAL_CHATBOT_SERVER}/bot-notify/${notifyId}`,
-        });
-        await bot.sendAdaptiveCard(groupId, subscribeCard);
-      }
+    const bot = await Bot.findByPk(botId);
+    if (!bot) {
+      res.status(400);
+      res.send('Params error');
+      return;
     }
+    const action = body.data.action;
+    if ( action === 'subscribe') {
+      const notifyId = generateToken({ botId, groupId });
+      const subscribeCard = getAdaptiveCardFromTemplate(subscribeCardTemplate, {
+        subscribeUrl: `${process.env.RINGCENTRAL_CHATBOT_SERVER}/bot-notify/${notifyId}`,
+      });
+      await bot.sendAdaptiveCard(groupId, subscribeCard);
+    }
+    const authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
+    if (!authToken || !authToken.data || authToken.data.length == 0) {
+      await bot.sendAdaptiveCard(groupId, getAdaptiveCardFromTemplate(authTokenTemplate, {
+        botId,
+        messageType: 'Bot',
+        webhookId: null,
+      }));
+      res.status(200);
+      res.send('ok');
+      return;
+    }
+    console.log(action);
+    res.status(200);
+    res.send('ok');
   } catch (e) {
     console.error(e);
+    res.status(500);
+    res.send('ok');
   }
-  res.status(200);
-  res.send('ok');
 }
 
 exports.notificationInteractiveMessages = notificationInteractiveMessages;
