@@ -209,7 +209,9 @@
                                             "action": "fix",
                                             "webhookId": "${webhookId}",
                                             "projectId": "${projectId}",
-                                            "errorId": "${errorId}"
+                                            "errorId": "${errorId}",
+                                            "messageType": "${messageType}",
+                                            "botId": "${botId}"
                                         },
                                         "style": "positive"
                                     }
@@ -291,7 +293,9 @@
                                             "action": "snooze",
                                             "webhookId": "${webhookId}",
                                             "projectId": "${projectId}",
-                                            "errorId": "${errorId}"
+                                            "errorId": "${errorId}",
+                                            "messageType": "${messageType}",
+                                            "botId": "${botId}"
                                         },
                                         "style": "positive"
                                     }
@@ -322,7 +326,9 @@
                                             "action": "ignore",
                                             "webhookId": "${webhookId}",
                                             "projectId": "${projectId}",
-                                            "errorId": "${errorId}"
+                                            "errorId": "${errorId}",
+                                            "messageType": "${messageType}",
+                                            "botId": "${botId}"
                                         },
                                         "style": "positive"
                                     }
