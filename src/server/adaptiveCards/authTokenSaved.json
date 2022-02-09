@@ -8,7 +8,7 @@
             "items": [
                 {
                     "type": "TextBlock",
-                    "text": "Hi **${name}**, your Bugsnag personal token is saved. Please click previous action button again to have that action executed.",
+                    "text": "Hi **${name}**, your Bugsnag personal token is saved successfully. Please click previous action button again to have that action executed.",
                     "wrap": true
                 }
             ]
