@@ -9,6 +9,7 @@ const { sendAdaptiveCardToRCWebhook, sendTextMessageToRCWebhook } = require('../
 const { getAdaptiveCardFromTemplate } = require('../utils/getAdaptiveCardFromTemplate');
 const subscribeCardTemplate = require('../adaptiveCards/subscribeCard.json');
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
+const authTokenSavedTemplate = require('../adaptiveCards/authTokenSaved.json');
 
 async function saveAuthToken(authToken, body) {
   if (authToken) {
@@ -112,6 +113,7 @@ async function botInteractiveMessagesHandler(req, res) {
   const body = req.body;
   const groupId = body.conversation.id;
   const botId = body.data.botId;
+  const cardId = req.body.card.id;
   try {
     const bot = await Bot.findByPk(botId);
     if (!bot) {
@@ -128,6 +130,17 @@ async function botInteractiveMessagesHandler(req, res) {
       await bot.sendAdaptiveCard(groupId, subscribeCard);
     }
     const authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
+    if (action === 'saveAuthToken') {
+      await saveAuthToken(authToken, body);
+      const authSavedCard = getAdaptiveCardFromTemplate(
+        authTokenSavedTemplate,
+        { name: `${body.user.firstName} ${body.user.lastName}` },
+      );
+      await bot.updateAdaptiveCard(cardId, authSavedCard);
+      res.status(200);
+      res.send('ok');
+      return;
+    }
     if (!authToken || !authToken.data || authToken.data.length == 0) {
       await bot.sendAdaptiveCard(groupId, getAdaptiveCardFromTemplate(authTokenTemplate, {
         botId,

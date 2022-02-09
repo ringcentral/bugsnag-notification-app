@@ -1,0 +1,47 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.3",
+    "body": [
+        {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "Hi **${name}**, your Bugsnag personal token is saved. Please click previous action button again to have that action executed.",
+                    "wrap": true
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "14px",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/feedback.png",
+                            "height": "12px"
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                },
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "[Feedback](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
+                            "wrap": true,
+                            "size": "Small"
+                        }
+                    ],
+                    "width": "stretch",
+                    "verticalContentAlignment": "Center"
+                }
+            ]
+        }
+    ]
+}
