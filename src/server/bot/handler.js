@@ -17,6 +17,14 @@ async function botHandler({
       await botActions.sendSubscribeCard(bot, group.id);
       return;
     }
+    if (text === 'authorize') {
+      await botActions.sendAuthCard(bot, group.id);
+      return;
+    }
+    if (text === 'unauthorize') {
+      await botActions.sendUnauthorizedCard(bot, group.id);
+      return;
+    }
     await botActions.sendHelpCard(bot, group.id);
   }
 }

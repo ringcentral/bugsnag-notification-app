@@ -10,7 +10,7 @@ const { findItemInAdaptiveCard } = require('../utils/adaptiveCardHelper');
 const botActions = require('../bot/actions');
 const { getAdaptiveCardFromTemplate } = require('../utils/getAdaptiveCardFromTemplate');
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
-const authTokenSavedTemplate = require('../adaptiveCards/authTokenSaved.json');
+const messageCardTemplate = require('../adaptiveCards/message.json');
 const stateOperationLogTemplate = require('../adaptiveCards/stateOperationLog.json');
 
 async function saveAuthToken(authToken, body) {
@@ -51,7 +51,7 @@ async function notificationInteractiveMessages(req, res) {
     await saveAuthToken(authToken, body);
     await sendTextMessageToRCWebhook(
       webhookRecord.rc_webhook,
-      `Hi ${body.user.firstName} ${body.user.lastName}, your personal token is saved. Please click action button again.`,
+      `Hi ${body.user.firstName} ${body.user.lastName}, your personal token is saved. Please click previous action button again.`,
     );
     res.status(200);
     res.send('ok');
@@ -185,21 +185,35 @@ async function botInteractiveMessagesHandler(req, res) {
     const authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
     if (action === 'saveAuthToken') {
       await saveAuthToken(authToken, body);
-      const authSavedCard = getAdaptiveCardFromTemplate(
-        authTokenSavedTemplate,
-        { name: `${body.user.firstName} ${body.user.lastName}` },
+      const newCard = getAdaptiveCardFromTemplate(
+        messageCardTemplate,
+        {
+          message: `Hi **${body.user.firstName} ${body.user.lastName}**, your Bugsnag personal token is saved successfully. If you want to execute previously interactive actions, please click the action button again.`,
+        },
       );
-      await bot.updateAdaptiveCard(cardId, authSavedCard);
+      await bot.updateAdaptiveCard(cardId, newCard);
+      res.status(200);
+      res.send('ok');
+      return;
+    }
+    if (action === 'removeAuthToken') {
+      if (authToken) {
+        authToken.data = '';
+        await authToken.save();
+      }
+      const newCard = getAdaptiveCardFromTemplate(
+        messageCardTemplate,
+        {
+          message: `Hi **${body.user.firstName} ${body.user.lastName}**, your Bugsnag personal token is removed successfully.`,
+        },
+      );
+      await bot.updateAdaptiveCard(cardId, newCard);
       res.status(200);
       res.send('ok');
       return;
     }
     if (!authToken || !authToken.data || authToken.data.length == 0) {
-      await bot.sendAdaptiveCard(groupId, getAdaptiveCardFromTemplate(authTokenTemplate, {
-        botId,
-        messageType: 'Bot',
-        webhookId: null,
-      }));
+      botActions.sendAuthCard(bot, groupId);
       res.status(200);
       res.send('ok');
       return;

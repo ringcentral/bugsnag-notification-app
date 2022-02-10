@@ -13,7 +13,7 @@
         },
         {
             "type": "TextBlock",
-            "text": "You can also **mention** me with following commands to execute related actions. \n * help\n * subscribe",
+            "text": "You can also **mention** me with following commands to execute related actions. \n* help\n* subscribe\n* authorize\n* unauthorize",
             "wrap": true
         },
         {
