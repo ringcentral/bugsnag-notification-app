@@ -232,6 +232,13 @@
             ]
         },
         {
+            "type": "Container",
+            "id": "operationLog",
+            "style": "good",
+            "items": [],
+            "isVisible": false
+        },
+        {
             "type": "Input.Text",
             "id": "comment",
             "label": "Comment",

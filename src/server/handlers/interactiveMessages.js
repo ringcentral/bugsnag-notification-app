@@ -1,14 +1,17 @@
 const Bot = require('ringcentral-chatbot-core/dist/models/bot').default;
 
-const { Bugsnag } = require('../utils/bugsnag');
+const { Bugsnag, ACTION_DESCRIPTIONS, SNOOZE_TYPE_DESCRIPTIONS } = require('../utils/bugsnag');
 const { Webhook } = require('../models/webhook');
 const { AuthToken } = require('../models/authToken');
 
 const { sendAdaptiveCardToRCWebhook, sendTextMessageToRCWebhook } = require('../utils/messageHelper');
+const { findItemInAdaptiveCard } = require('../utils/adaptiveCardHelper');
+
 const botActions = require('../bot/actions');
 const { getAdaptiveCardFromTemplate } = require('../utils/getAdaptiveCardFromTemplate');
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
 const authTokenSavedTemplate = require('../adaptiveCards/authTokenSaved.json');
+const stateOperationLogTemplate = require('../adaptiveCards/stateOperationLog.json');
 
 async function saveAuthToken(authToken, body) {
   if (authToken) {
@@ -60,34 +63,13 @@ async function notificationInteractiveMessages(req, res) {
     res.send('ok');
     return;
   }
-  const bugsnag = new Bugsnag({
-    authToken: authToken.data,
-    projectId: body.data.projectId,
-    errorId: body.data.errorId,
-  });
   try {
-    if (action === 'fix') {
-      await bugsnag.makeAsFixed();
-    }
-    if (action === 'ignore') {
-      await bugsnag.ignore();
-    }
-    if (action === 'snooze') {
-      await bugsnag.snooze({ type: body.data.snoozeType });
-    }
-    if (action === 'open') {
-      await bugsnag.open();
-    }
-    const comment = (
-      body.data.fixComment ||
-      body.data.snoozeComment ||
-      body.data.ignoreComment ||
-      body.data.openComment ||
-      body.data.comment
-    );
-    if (comment) {
-      await bugsnag.comment({ message: comment });
-    }
+    const bugsnag = new Bugsnag({
+      authToken: authToken.data,
+      projectId: body.data.projectId,
+      errorId: body.data.errorId,
+    });
+    await bugsnag.updateErrorState({ action, data: body.data });
   } catch (e) {
     if (e.response) {
       if (e.response.status === 401) {
@@ -106,6 +88,82 @@ async function notificationInteractiveMessages(req, res) {
   }
   res.status(200);
   res.send('ok');
+}
+
+function getCardWithOperationLog(card, data, user) {
+  const action = data.action;
+  const newCard = {
+    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+    type: 'AdaptiveCard',
+    version: '1.3',
+    body: card.body,
+    actions: card.actions,
+    fallbackText: card.fallbackText,
+  };
+  const operationLogItem = findItemInAdaptiveCard(newCard, 'operationLog');
+  if (!operationLogItem) {
+    return null;
+  }
+  const name = `${user.firstName} ${user.lastName}`;
+  if (action === 'fix') {
+    operationLogItem.style = 'good';
+  } 
+  const currentTime = new Date();
+  const operationTime = `${currentTime.toISOString().split('.')[0]}Z`;
+  let operationLogDescriptions;
+  if (action === 'comment') {
+    operationLogDescriptions = [{
+      type: 'TextBlock',
+      wrap: true,
+      text: `**${name}** - {{DATE(${operationTime})}} {{TIME(${operationTime})}}`,
+    }, {
+      type: 'TextBlock',
+      wrap: true,
+      text: `${data.comment}`,
+      spacing: 'None',
+      isSubtle: true,
+    }];
+  } else {
+    operationLogDescriptions = [getAdaptiveCardFromTemplate(stateOperationLogTemplate, {
+      action: ACTION_DESCRIPTIONS[action],
+      operationTime,
+      name,
+    })];
+    if (action === 'snooze') {
+      operationLogDescriptions.push({
+        type: 'TextBlock',
+        wrap: true,
+        text: SNOOZE_TYPE_DESCRIPTIONS[data.snoozeType],
+        spacing: 'None',
+        isSubtle: true,
+      });
+    }
+    const stateActionsItem = findItemInAdaptiveCard(newCard, 'actions');
+    const reopenActions = findItemInAdaptiveCard(newCard, 'openActions');
+    if (action === 'open') {
+      delete stateActionsItem.isVisible;
+      reopenActions.isVisible = false;
+    } else {
+      delete reopenActions.isVisible;
+      stateActionsItem.isVisible = false;
+    }
+  }
+  operationLogItem.items = operationLogDescriptions;
+  delete operationLogItem.isVisible;
+  return newCard;
+}
+
+async function addOperationLogIntoCard(bot, cardId, data, user) {
+  try {
+    const cardResponse = await bot.rc.get(`/restapi/v1.0/glip/adaptive-cards/${cardId}`);
+    const card = cardResponse.data;
+    const newCard = getCardWithOperationLog(card, data, user);
+    if (newCard) {
+      await bot.updateAdaptiveCard(cardId, newCard);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 async function botInteractiveMessagesHandler(req, res) {
@@ -146,13 +204,41 @@ async function botInteractiveMessagesHandler(req, res) {
       res.send('ok');
       return;
     }
-    console.log(action);
-    res.status(200);
-    res.send('ok');
+    try {
+      const bugsnag = new Bugsnag({
+        authToken: authToken.data,
+        projectId: body.data.projectId,
+        errorId: body.data.errorId,
+      });
+      await bugsnag.updateErrorState({ action, data: body.data });
+      res.status(200);
+      res.end();
+      await addOperationLogIntoCard(bot, cardId, body.data, body.user);
+    } catch (e) {
+      if (e.response) {
+        if (e.response.status === 401) {
+          authToken.data = '';
+          await authToken.save();
+          await bot.sendAdaptiveCard(groupId, getAdaptiveCardFromTemplate(authTokenTemplate, {
+            botId,
+            messageType: 'Bot',
+            webhookId: null,
+          }));
+        } else if (e.response.status === 403) {
+          await bot.sendMessage(groupId, {
+            text: `Hi ${body.user.firstName}, your Bugsnag role doesn't have permission to perform this action.`,
+          });
+        }
+      } else {
+        console.error(e);
+      }
+      res.status(200);
+      res.send('ok');
+    }
   } catch (e) {
     console.error(e);
     res.status(500);
-    res.send('ok');
+    res.send('Internal error');
   }
 }
 

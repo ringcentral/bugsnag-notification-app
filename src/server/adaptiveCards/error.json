@@ -180,6 +180,13 @@
         },
         {
             "type": "Container",
+            "id": "operationLog",
+            "isVisible": false,
+            "style": "attention",
+            "items": []
+        },
+        {
+            "type": "Container",
             "items": [
                 {
                     "type": "ActionSet",

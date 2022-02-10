@@ -5,7 +5,7 @@ const {
   formatCommentMessage,
   formatErrorStateMessage,
 } = require('./formatBugsnagMessage');
-const { findItemInAdaptiveCard } = require('./findItemInAdaptiveCard');
+const { findItemInAdaptiveCard } = require('./adaptiveCardHelper');
 const { THUMB_ICON_URL } = require('./constants');
 
 const releaseTemplate = require('../adaptiveCards/release.json');
