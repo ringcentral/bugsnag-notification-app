@@ -4,10 +4,9 @@ const { Bugsnag } = require('../utils/bugsnag');
 const { Webhook } = require('../models/webhook');
 const { AuthToken } = require('../models/authToken');
 
-const { generateToken } = require('../utils/jwt');
 const { sendAdaptiveCardToRCWebhook, sendTextMessageToRCWebhook } = require('../utils/messageHelper');
+const botActions = require('../bot/actions');
 const { getAdaptiveCardFromTemplate } = require('../utils/getAdaptiveCardFromTemplate');
-const subscribeCardTemplate = require('../adaptiveCards/subscribeCard.json');
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
 const authTokenSavedTemplate = require('../adaptiveCards/authTokenSaved.json');
 
@@ -123,11 +122,7 @@ async function botInteractiveMessagesHandler(req, res) {
     }
     const action = body.data.action;
     if ( action === 'subscribe') {
-      const notifyId = generateToken({ botId, groupId });
-      const subscribeCard = getAdaptiveCardFromTemplate(subscribeCardTemplate, {
-        subscribeUrl: `${process.env.RINGCENTRAL_CHATBOT_SERVER}/bot-notify/${notifyId}`,
-      });
-      await bot.sendAdaptiveCard(groupId, subscribeCard);
+      await botActions.sendSubscribeCard(bot, groupId);
     }
     const authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
     if (action === 'saveAuthToken') {
