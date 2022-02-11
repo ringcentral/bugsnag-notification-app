@@ -1,5 +1,6 @@
 {
     "type": "AdaptiveCard",
+    "fallbackText": "Please follow steps below to setup your Bugsnag project.",
     "body": [
         {
             "type": "TextBlock",
