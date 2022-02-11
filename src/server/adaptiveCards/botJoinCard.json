@@ -1,6 +1,6 @@
 {
     "type": "AdaptiveCard",
-    "fallbackText": "Hi, I'm Bugsnag Bot.",
+    "fallbackText": "Hi, I am Bugsnag Bot.",
     "body": [
         {
             "type": "TextBlock",

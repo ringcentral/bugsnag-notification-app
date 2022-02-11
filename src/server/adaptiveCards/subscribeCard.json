@@ -36,6 +36,7 @@
             "items": [
                 {
                     "type": "TextBlock",
+                    "id": "subscribeUrl",
                     "text": "${subscribeUrl}",
                     "wrap": true
                 }

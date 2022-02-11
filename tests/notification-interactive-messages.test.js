@@ -7,7 +7,7 @@ const { RCWebhook } = require('../src/server/models/rc-webhook');
 const { Webhook } = require('../src/server/models/webhook');
 const { AuthToken } = require('../src/server/models/authToken');
 
-axios.defaults.adapter = require('axios/lib/adapters/http')
+axios.defaults.adapter = require('axios/lib/adapters/http');
 
 describe('Notification Interactive Messages', () => {
   const rcWebhookId = '12121';
