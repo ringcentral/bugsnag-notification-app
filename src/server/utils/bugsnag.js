@@ -85,7 +85,7 @@ class Bugsnag {
     );
   }
 
-  async updateErrorState({ action, data }) {
+  async operate({ action, data }) {
     if (action === 'fix') {
       await this.makeAsFixed();
     }

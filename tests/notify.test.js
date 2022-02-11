@@ -17,16 +17,9 @@ const collaboratorSnoozedCanceledData = require('../example-payload/collaborator
 const collaboratorSnoozedOccurrencesData = require('../example-payload/collaborator-snoozed-occurrences.json');
 const collaboratorSnoozedPerHourData = require('../example-payload/collaborator-snoozed-per-hour.json');
 
-axios.defaults.adapter = require('axios/lib/adapters/http')
+const { getRequestBody } = require('./utils');
 
-async function getRequestBody(scope) {
-  return new Promise((resolve, reject) => {
-    scope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
-      requestBody = JSON.parse(reqBody);
-      resolve(requestBody);
-    });
-  });
-}
+axios.defaults.adapter = require('axios/lib/adapters/http')
 
 describe('Notify', () => {
   const webhookId = '12121';

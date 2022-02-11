@@ -69,7 +69,7 @@ async function notificationInteractiveMessages(req, res) {
       projectId: body.data.projectId,
       errorId: body.data.errorId,
     });
-    await bugsnag.updateErrorState({ action, data: body.data });
+    await bugsnag.operate({ action, data: body.data });
   } catch (e) {
     if (e.response) {
       if (e.response.status === 401) {
@@ -174,13 +174,16 @@ async function botInteractiveMessagesHandler(req, res) {
   try {
     const bot = await Bot.findByPk(botId);
     if (!bot) {
-      res.status(400);
+      res.status(404);
       res.send('Params error');
       return;
     }
     const action = body.data.action;
-    if ( action === 'subscribe') {
+    if (action === 'subscribe') {
       await botActions.sendSubscribeCard(bot, groupId);
+      res.status(200);
+      res.send('ok');
+      return;
     }
     const authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
     if (action === 'saveAuthToken') {
@@ -213,7 +216,7 @@ async function botInteractiveMessagesHandler(req, res) {
       return;
     }
     if (!authToken || !authToken.data || authToken.data.length == 0) {
-      botActions.sendAuthCard(bot, groupId);
+      await botActions.sendAuthCard(bot, groupId);
       res.status(200);
       res.send('ok');
       return;
@@ -224,7 +227,7 @@ async function botInteractiveMessagesHandler(req, res) {
         projectId: body.data.projectId,
         errorId: body.data.errorId,
       });
-      await bugsnag.updateErrorState({ action, data: body.data });
+      await bugsnag.operate({ action, data: body.data });
       res.status(200);
       res.end();
       await addOperationLogIntoCard(bot, cardId, body.data, body.user);

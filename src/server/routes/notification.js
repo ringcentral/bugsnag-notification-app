@@ -95,6 +95,11 @@ function interactiveMessages(req, res) {
     return;
   }
   if (isForBot) {
+    if (!body.card) {
+      res.status(400);
+      res.send('Params error');
+      return;
+    }
     return botInteractiveMessagesHandler(req, res);
   }
   return notificationInteractiveMessages(req, res);

@@ -88,13 +88,14 @@ describe('Notification Interactive Messages', () => {
       requestBody = JSON.parse(reqBody);
     });
     await AuthToken.create({
-      id: 'test-user-id',
+      id: 'test-account-id-test-user-id',
     });
     const res = await request(server).post('/interactive-messages').send({
       data: {
         webhookId: webhookRecord.id
       },
       user: {
+        accountId: 'test-account-id',
         id: 'test-user-id',
       },
       conversation: {},
