@@ -34,10 +34,10 @@
     "dynamo-sequelize": "^0.8.2",
     "glip-integration-js": "^0.2.0",
     "jsonwebtoken": "^8.5.1",
+    "nanoid": "^3.2.0",
     "pug": "^3.0.0",
     "ringcentral-chatbot-core": "^1.0.13",
     "sequelize": "^5.22.5",
-    "serverless-http": "^2.6.0",
-    "nanoid": "^3.2.0"
+    "serverless-http": "^2.6.0"
   }
 }
