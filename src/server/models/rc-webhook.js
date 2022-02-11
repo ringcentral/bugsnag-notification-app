@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const { nanoid } = require('nanoid')
 const { sequelize } = require('./sequelize');
 
 // Add this table with 'webhooks' table for dynamodb query.
@@ -9,7 +10,8 @@ exports.RCWebhook = sequelize.define('rcWebhooks', {
     primaryKey: true,
   },
   bugsnag_webhook_id: { 
-    type: Sequelize.STRING // identify for bugsnag webhooks callback uri
+    type: Sequelize.STRING, // identify for bugsnag webhooks callback uri
+    defaultValue: nanoid,
   },
   rc_webhook_uri: {
     type: Sequelize.STRING, // ringcentral webhook uri
