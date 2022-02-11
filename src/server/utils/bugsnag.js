@@ -123,6 +123,7 @@ class Bugsnag {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'Authorization': `token ${this._authToken}`,
+      'X-Version': '2',
     };
   }
 }
