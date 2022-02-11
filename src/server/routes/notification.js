@@ -52,14 +52,14 @@ async function botNotification(req, res) {
   }
   const { botId, groupId } = decodedToken;
   // console.log(JSON.stringify(req.body, null, 2));
-  const card = formatBugsnagMessageIntoCard({
-    bugsnagMessage: req.body,
-    messageType: 'Bot',
-    botId,
-  });
   try {
     const bot = await Bot.findByPk(botId);
     if (bot) {
+      const card = formatBugsnagMessageIntoCard({
+        bugsnagMessage: req.body,
+        messageType: 'Bot',
+        botId,
+      });
       await bot.sendAdaptiveCard(groupId, card);
     }
     res.status(200);

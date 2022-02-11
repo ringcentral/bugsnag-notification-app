@@ -25,6 +25,10 @@ async function botHandler({
       await botActions.sendUnauthorizedCard(bot, group.id);
       return;
     }
+    // await bot.setupWebHook();
+    // await bot.ensureWebHook();
+    // await bot.getUser(userId);
+    // await bot.sendMessage(group.id, { text: 'Hi!' });
     await botActions.sendHelpCard(bot, group.id);
   }
 }

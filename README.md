@@ -44,7 +44,7 @@ In `App Permissions` section, add `Read Accounts`, `Team Messaging` and `Webhook
 
 In `OAuth Redirect URI` section, input `https://xxxxxx.ngrok.io/bot/oauth`. Please replace with your ngrok domain.
 
-In `App Features`, enable `Interactive Messages`, then input URI `https://xxxxxx.ngrok.io/bot-interactive-messages`. Please replace with your ngrok domain.
+In `App Features`, enable `Interactive Messages`, then input URI `https://xxxxxx.ngrok.io/interactive-messages`. Please replace with your ngrok domain.
 
 ### 6. Create `.env` file
 
