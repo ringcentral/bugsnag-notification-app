@@ -1,7 +1,7 @@
 # Bugsnag Add-in
 
 [![Build Status](https://github.com/ringcentral/bugsnag-notification-app/workflows/CI%20Pipeline/badge.svg?branch=main)](https://github.com/ringcentral/bugsnag-notification-app/actions)
-[![Coverage Status](https://coveralls.io/repos/github/ringcentral/bugsnag-notification-app/badge.svg?branch=bot)](https://coveralls.io/github/ringcentral/bugsnag-notification-app?branch=bot)
+[![Coverage Status](https://coveralls.io/repos/github/ringcentral/bugsnag-notification-app/badge.svg?branch=main)](https://coveralls.io/github/ringcentral/bugsnag-notification-app?branch=main)
 
 [Bugsnag notification add-in](https://www.ringcentral.com/apps/bugsnag) and bot for [RingCentral app](app.ringcentral.com).
 
