@@ -3,7 +3,7 @@ const { extendApp: extendBotApp } = require('ringcentral-chatbot-core');
 
 const notificationRoute = require('./routes/notification');
 const subscriptionRoute = require('./routes/subscription');
-const { botHandler, botInteractiveMessagesHandler } = require('./bot/handler');
+const { botHandler } = require('./bot/handler');
 const { botConfig } = require('./bot/config');
 
 exports.appExtend = (app) => {
