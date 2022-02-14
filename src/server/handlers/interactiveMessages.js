@@ -1,4 +1,4 @@
-const Bot = require('ringcentral-chatbot-core/dist/models/bot').default;
+const Bot = require('ringcentral-chatbot-core/dist/models/Bot').default;
 
 const { Bugsnag, ACTION_DESCRIPTIONS, SNOOZE_TYPE_DESCRIPTIONS } = require('../utils/bugsnag');
 const { Webhook } = require('../models/webhook');

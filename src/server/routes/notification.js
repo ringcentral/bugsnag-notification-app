@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const Bot = require('ringcentral-chatbot-core/dist/models/bot').default;
+const Bot = require('ringcentral-chatbot-core/dist/models/Bot').default;
 
 const { decodeToken } = require('../utils/jwt');
 const { sendAdaptiveCardToRCWebhook } = require('../utils/messageHelper');

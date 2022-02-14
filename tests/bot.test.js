@@ -1,7 +1,7 @@
 const request = require('supertest');
 const nock = require('nock');
 const axios = require('axios');
-const { default: Bot } = require('ringcentral-chatbot-core/dist/models/bot');
+const { default: Bot } = require('ringcentral-chatbot-core/dist/models/Bot');
 
 const { findItemInAdaptiveCard } = require('../src/server/utils/adaptiveCardHelper');
 

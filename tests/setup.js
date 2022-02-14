@@ -1,4 +1,4 @@
-const { default: Bot } = require('ringcentral-chatbot-core/dist/models/bot');
+const { default: Bot } = require('ringcentral-chatbot-core/dist/models/Bot');
 
 const { Webhook } = require('../src/server/models/webhook');
 const { AuthToken } = require('../src/server/models/authToken');
