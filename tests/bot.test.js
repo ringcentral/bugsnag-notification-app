@@ -299,6 +299,23 @@ describe('Bot', () => {
     rcGroupScope.done();
   });
 
+  it('should response 401 when bot get notification with wrong token', async () => {
+    const res = await request(server).post('/bot-notify/12121').send(repeatedErrorData);
+    expect(res.status).toEqual(401);
+  });
+
+  it('should response 500 when bot send adaptive card error', async () => {
+    const rcCardScope = nock(process.env.RINGCENTRAL_SERVER)
+      .post(uri => uri.includes(`/restapi/v1.0/glip/chats/${groupId}/adaptive-cards`))
+      .reply(500, {});
+    rcCardScope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
+      requestBody = JSON.parse(reqBody);
+    });
+    const res = await request(server).post(subscribeUrl.replace(process.env.RINGCENTRAL_CHATBOT_SERVER, '')).send(repeatedErrorData);
+    expect(res.status).toEqual(500);
+    rcCardScope.done();
+  });
+
   it('should redirect bugsnag error message to rc group by bot', async () => {
     const rcCardScope = nock(process.env.RINGCENTRAL_SERVER)
       .post(uri => uri.includes(`/restapi/v1.0/glip/chats/${groupId}/adaptive-cards`))
@@ -310,6 +327,7 @@ describe('Bot', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.type).toContain('AdaptiveCard');
     expect(requestBody.fallbackText).toContain('Repeated error');
+    rcCardScope.done();
   });
 
   it('should redirect bugsnag release message to rc group by bot', async () => {
@@ -323,6 +341,7 @@ describe('Bot', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.type).toContain('AdaptiveCard');
     expect(requestBody.fallbackText).toContain('New release');
+    rcCardScope.done();
   });
 
   it('should redirect bugsnag comment message to rc group by bot', async () => {
@@ -336,6 +355,7 @@ describe('Bot', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.type).toContain('AdaptiveCard');
     expect(requestBody.fallbackText).toContain('commented on');
+    rcCardScope.done();
   });
 
   it('should redirect bugsnag collaborator message to rc group by bot', async () => {
@@ -349,5 +369,6 @@ describe('Bot', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.type).toContain('AdaptiveCard');
     expect(requestBody.fallbackText).toContain('fixed');
+    rcCardScope.done();
   });
 });

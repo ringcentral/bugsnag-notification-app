@@ -1,0 +1,101 @@
+{
+    "account": {
+      "id": "5f7303028af952000e73ef64",
+      "name": "Embbnux",
+      "url": "https://app.bugsnag.com/account/embbnux?i=wh&m=nw"
+    },
+    "project": {
+      "id": "5f73031fb91aad0014229623",
+      "name": "Test App",
+      "url": "https://app.bugsnag.com/embbnux/test-app?i=wh&m=nw"
+    },
+    "trigger": {
+      "type": "firstException",
+      "message": "New handled error"
+    },
+    "error": {
+      "id": "620a14b5009055d6c5fb0000",
+      "errorId": "620a14b57cddcd00082f4e51",
+      "exceptionClass": "Error",
+      "message": "Test error",
+      "context": "/index.html",
+      "releaseStage": "production",
+      "occurrences": 1,
+      "firstReceived": "2022-02-14T08:37:09.000Z",
+      "receivedAt": "2022-02-14T08:37:09.154Z",
+      "requestUrl": "file:///index.html",
+      "userId": "202.163.1.218",
+      "url": "https://app.bugsnag.com/embbnux/test-app/errors/620a14b57cddcd00082f4e51?event_id=620a14b5009055d6c5fb0000&i=wh&m=nw",
+      "severity": "warning",
+      "status": "open",
+      "unhandled": false,
+      "app": {
+        "releaseStage": "production",
+        "type": "browser",
+        "duration": 19
+      },
+      "device": {
+        "id": "ckzmg0qqq00003e6syjmf4r9f",
+        "osName": "Mac OS X 10.15",
+        "browserName": "Chrome",
+        "browserVersion": "98.0.4758",
+        "orientation": "landscape-primary",
+        "locale": "en",
+        "time": "2022-02-14T08:37:08.076Z"
+      },
+      "user": {
+        "id": "192.168.0.10"
+      },
+      "metaData": {
+        "script": {
+          "content": "\n    Bugsnag.start('4993c4886251119b3eeaec6a2ca51c5f');\n    setTimeout(() => {\n      try {\n        throw new Error('Test error');\n      } catch (e) {\n        Bugsnag.notify(e)\n      }\n    }, 5);    \n  "
+        },
+        "device": {
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
+        }
+      },
+      "stackTrace": [
+        {
+          "file": "file:///index.html",
+          "lineNumber": "34",
+          "columnNumber": "15",
+          "method": "",
+          "inProject": false,
+          "code": {
+            "31": "  font-size: 0px;",
+            "32": "  height: 30px;",
+            "33": "  white-space: nowrap;",
+            "34": "  margin: 0 0 0 5px;",
+            "35": "}",
+            "36": ""
+          }
+        }
+      ],
+      "breadcrumbs": [
+        {
+          "name": "Bugsnag loaded",
+          "timestamp": "2022-02-14T08:37:08.068Z",
+          "type": "state",
+          "metaData": {}
+        },
+        {
+          "name": "DOMContentLoaded",
+          "timestamp": "2022-02-14T08:37:08.070Z",
+          "type": "navigation",
+          "metaData": {}
+        },
+        {
+          "name": "Page loaded",
+          "timestamp": "2022-02-14T08:37:08.070Z",
+          "type": "navigation",
+          "metaData": {}
+        },
+        {
+          "name": "Page shown",
+          "timestamp": "2022-02-14T08:37:08.070Z",
+          "type": "navigation",
+          "metaData": {}
+        }
+      ]
+    }
+  }

@@ -6,6 +6,7 @@ const { AuthToken } = require('../src/server/models/authToken');
 const { server } = require('../src/server');
 
 const errorCardMock = require('./mock-data/error-card.json');
+const commentCardMock = require('./mock-data/comment-card.json');
 
 const { getRequestBody } = require('./utils');
 
@@ -204,7 +205,7 @@ describe('Bot', () => {
     rcCardScope.done();
   });
 
-  it('should update error state successfully with card updated', async () => {
+  it('should update error state fixed successfully with card updated', async () => {
     const userId = 'test-user-id-1';
     await AuthToken.create({
       id: `test-account-id-${userId}`,
@@ -254,6 +255,110 @@ describe('Bot', () => {
     const cardRequestBody = await cardRequestBodyPromise;
     expect(cardRequestBody.type).toContain('AdaptiveCard');
     expect(JSON.stringify(cardRequestBody.body)).toContain('Fixed');
+    rcCardGetScope.done();
+    bugsnagScope.done();
+    rcCardScope.done();
+  });
+
+  it('should update error state snoozed successfully with card updated', async () => {
+    const userId = 'test-user-id-1';
+    const projectId = 'test-project-id';
+    const errorId = 'test-error-id';
+    const bugsnagScope = nock('https://api.bugsnag.com')
+      .patch(uri => uri.includes(`/projects/${projectId}/errors/${errorId}`))
+      .reply(200, {});
+    let bugsnagRequestBody = null;
+    bugsnagScope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
+      bugsnagRequestBody = JSON.parse(reqBody);
+    });
+    const cardId = 'test-card-id-1';
+    const rcCardScope = nock(process.env.RINGCENTRAL_SERVER)
+      .put(uri => uri.includes(`/v1.0/glip/adaptive-cards/${cardId}`))
+      .reply(200, {});
+    const rcCardGetScope = nock(process.env.RINGCENTRAL_SERVER)
+      .get(uri => uri.includes(`/v1.0/glip/adaptive-cards/${cardId}`))
+      .reply(200, errorCardMock);
+
+    const cardRequestBodyPromise = getRequestBody(rcCardScope);
+    const res = await request(server)
+      .post('/interactive-messages')
+      .send({
+        data: {
+          botId,
+          messageType: 'Bot',
+          action: 'snooze',
+          snoozeType: '1hr',
+          projectId,
+          errorId,
+        },
+        user: {
+          accountId: 'test-account-id',
+          id: userId,
+        },
+        conversation: {
+          id: groupId,
+        },
+        card: {
+          id: cardId,
+        },
+      });
+    expect(res.status).toEqual(200);
+    expect(bugsnagRequestBody.operation).toEqual('snooze');
+    const cardRequestBody = await cardRequestBodyPromise;
+    expect(cardRequestBody.type).toContain('AdaptiveCard');
+    expect(JSON.stringify(cardRequestBody.body)).toContain('Snoozed');
+    rcCardGetScope.done();
+    bugsnagScope.done();
+    rcCardScope.done();
+  });
+
+  it('should add comment successfully with card updated', async () => {
+    const userId = 'test-user-id-1';
+    const projectId = 'test-project-id';
+    const errorId = 'test-error-id';
+    const bugsnagScope = nock('https://api.bugsnag.com')
+      .post(uri => uri.includes(`/projects/${projectId}/errors/${errorId}/comments`))
+      .reply(200, {});
+    let bugsnagRequestBody = null;
+    bugsnagScope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
+      bugsnagRequestBody = JSON.parse(reqBody);
+    });
+    const cardId = 'test-card-id-2';
+    const rcCardScope = nock(process.env.RINGCENTRAL_SERVER)
+      .put(uri => uri.includes(`/v1.0/glip/adaptive-cards/${cardId}`))
+      .reply(200, {});
+    const rcCardGetScope = nock(process.env.RINGCENTRAL_SERVER)
+      .get(uri => uri.includes(`/v1.0/glip/adaptive-cards/${cardId}`))
+      .reply(200, commentCardMock);
+
+    const cardRequestBodyPromise = getRequestBody(rcCardScope);
+    const res = await request(server)
+      .post('/interactive-messages')
+      .send({
+        data: {
+          botId,
+          messageType: 'Bot',
+          action: 'comment',
+          comment: 'new comment',
+          projectId,
+          errorId,
+        },
+        user: {
+          accountId: 'test-account-id',
+          id: userId,
+        },
+        conversation: {
+          id: groupId,
+        },
+        card: {
+          id: cardId,
+        },
+      });
+    expect(res.status).toEqual(200);
+    expect(bugsnagRequestBody.message).toEqual('new comment');
+    const cardRequestBody = await cardRequestBodyPromise;
+    expect(cardRequestBody.type).toContain('AdaptiveCard');
+    expect(JSON.stringify(cardRequestBody.body)).toContain('new comment');
     rcCardGetScope.done();
     bugsnagScope.done();
     rcCardScope.done();

@@ -7,6 +7,9 @@ const { RCWebhook } = require('../src/server/models/rc-webhook');
 
 const repeatedErrorData = require('../example-payload/repeated-error.json');
 const powerTenErrorData = require('../example-payload/power-ten-error.json');
+const exceptionErrorData = require('../example-payload/exception.json');
+const firstExceptionErrorData = require('../example-payload/firstException.json');
+const reopenedErrorData = require('../example-payload/reopened.json');
 const releaseData = require('../example-payload/release.json');
 const commentData = require('../example-payload/comment.json');
 const collaboratorFixedData = require('../example-payload/collaborator-fixed.json');
@@ -65,6 +68,20 @@ describe('Notify', () => {
     scope.done();
   });
 
+  it('should get 500 rc webhook return error', async () => {
+    const scope = nock('http://test.com')
+      .post('/webhook/12121')
+      .reply(500, { result: 'OK' });
+    const requestBodyPromise = getRequestBody(scope);
+    const res = await request(server)
+      .post(`/notify/${bugsnagWebhookRecord.id}`)
+      .send(firstExceptionErrorData);
+    expect(res.status).toEqual(500);
+    const requestBody = await requestBodyPromise;
+    expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
+    scope.done();
+  });
+
   it('should get 200 with powerTen error message', async () => {
     const scope = nock('http://test.com')
       .post('/webhook/12121')
@@ -73,6 +90,48 @@ describe('Notify', () => {
     const res = await request(server)
       .post(`/notify/${bugsnagWebhookRecord.id}`)
       .send(powerTenErrorData);
+    expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
+    expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
+    scope.done();
+  });
+
+  it('should get 200 with first exception error message', async () => {
+    const scope = nock('http://test.com')
+      .post('/webhook/12121')
+      .reply(200, { result: 'OK' });
+    const requestBodyPromise = getRequestBody(scope);
+    const res = await request(server)
+      .post(`/notify/${bugsnagWebhookRecord.id}`)
+      .send(firstExceptionErrorData);
+    expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
+    expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
+    scope.done();
+  });
+
+  it('should get 200 with exception error message', async () => {
+    const scope = nock('http://test.com')
+      .post('/webhook/12121')
+      .reply(200, { result: 'OK' });
+    const requestBodyPromise = getRequestBody(scope);
+    const res = await request(server)
+      .post(`/notify/${bugsnagWebhookRecord.id}`)
+      .send(exceptionErrorData);
+    expect(res.status).toEqual(200);
+    const requestBody = await requestBodyPromise;
+    expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
+    scope.done();
+  });
+
+  it('should get 200 with reopened error message', async () => {
+    const scope = nock('http://test.com')
+      .post('/webhook/12121')
+      .reply(200, { result: 'OK' });
+    const requestBodyPromise = getRequestBody(scope);
+    const res = await request(server)
+      .post(`/notify/${bugsnagWebhookRecord.id}`)
+      .send(reopenedErrorData);
     expect(res.status).toEqual(200);
     const requestBody = await requestBodyPromise;
     expect(requestBody.attachments[0].type).toContain('AdaptiveCard');
