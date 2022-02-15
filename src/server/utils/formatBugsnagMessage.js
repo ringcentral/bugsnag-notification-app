@@ -14,13 +14,10 @@ function formatTriggerType(trigger) {
   if (trigger.type === 'reopened') {
     return 'Reopened error';
   }
-  if (trigger.type === 'errorStateManualChange') {
-    return `Collaborator state change (${trigger.stateChange})`
-  }
   return trigger.message;
 }
 
-function formatErrorStackTrace(error, bullet) {
+function formatErrorStackTrace(error) {
   let stackTrace = [];
   if (error.stackTrace) {
     let line = 0;
@@ -29,11 +26,7 @@ function formatErrorStackTrace(error, bullet) {
       if (line > 10) {
         return;
       }
-      if (bullet) {
-        stackTrace.push(`${bullet} ${stack.file}:${stack.lineNumber} - ${stack.method}`);
-      } else {
-        stackTrace.push(`${stack.file}:${stack.lineNumber} - ${stack.method}`);
-      }
+      stackTrace.push(`${stack.file}:${stack.lineNumber} - ${stack.method}`);
     });
   } else {
     stackTrace.push(error.requestUrl);

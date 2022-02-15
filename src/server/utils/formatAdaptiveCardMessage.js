@@ -1,48 +1,17 @@
-const { Template } = require('adaptivecards-templating');
+const { getAdaptiveCardFromTemplate } = require('./getAdaptiveCardFromTemplate');
 const {
   formatReleaseMessage,
   formatErrorMessage,
   formatCommentMessage,
   formatErrorStateMessage,
 } = require('./formatBugsnagMessage');
-const { findItemInAdaptiveCard } = require('./findItemInAdaptiveCard');
+const { findItemInAdaptiveCard } = require('./adaptiveCardHelper');
+const { THUMB_ICON_URL } = require('./constants');
 
 const releaseTemplate = require('../adaptiveCards/release.json');
 const commentTemplate = require('../adaptiveCards/comment.json');
 const errorTemplate = require('../adaptiveCards/error.json');
 const errorStateTemplate = require('../adaptiveCards/errorState.json');
-const authTokenTemplate = require('../adaptiveCards/authToken.json');
-
-const ICON_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/bugsnag-white.png';
-const THUMB_ICON_BASE_URL = 'https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/';
-const THUMB_ICON_URL = {
-  collaborator_fixed: `${THUMB_ICON_BASE_URL}/collaborator-fixed.png`,
-  collaborator_reopened: `${THUMB_ICON_BASE_URL}/collaborator-reopened.png`,
-  collaborator_snoozed: `${THUMB_ICON_BASE_URL}/collaborator-snooze.png`,
-  collaborator: `${THUMB_ICON_BASE_URL}/collaborator.png`,
-  comment: `${THUMB_ICON_BASE_URL}/comment.png`,
-  error: `${THUMB_ICON_BASE_URL}/error.png`,
-  general: `${THUMB_ICON_BASE_URL}/general.png`,
-  new: `${THUMB_ICON_BASE_URL}/new.png`,
-  release: `${THUMB_ICON_BASE_URL}/release.png`,
-  reopened: `${THUMB_ICON_BASE_URL}/reopened.png`,
-  repeated: `${THUMB_ICON_BASE_URL}/repeated.png`,
-  status_ignored: `${THUMB_ICON_BASE_URL}/ignored.png`,
-  status_snoozed: `${THUMB_ICON_BASE_URL}/snoozed.png`,
-  status_fixed: `${THUMB_ICON_BASE_URL}/fixed.png`,
-  status_open: `${THUMB_ICON_BASE_URL}/open.png`,
-  severity_error: `${THUMB_ICON_BASE_URL}/error.dot.png`,
-  severity_warning: `${THUMB_ICON_BASE_URL}/warning.dot.png`,
-  severity_info: `${THUMB_ICON_BASE_URL}/info.dot.png`,
-};
-
-function getAdaptiveCardFromTemplate(cardTemplate, params) {
-  const template = new Template(cardTemplate);
-  const card = template.expand({
-    $root: params
-  });
-  return card;
-}
 
 function formatReleaseMessageIntoCard(releaseMessage) {
   return getAdaptiveCardFromTemplate(releaseTemplate, {
@@ -75,7 +44,7 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function formatErrorMessageIntoCard(errorMessage, webhookId) {
+function formatErrorMessageIntoCard(errorMessage, webhookId, messageType, botId) {
   let thumbUrl = THUMB_ICON_URL.error;
   if (errorMessage.triggerType === 'errorEventFrequency' || errorMessage.triggerType === 'powerTen') {
     thumbUrl = THUMB_ICON_URL.repeated;
@@ -103,7 +72,9 @@ function formatErrorMessageIntoCard(errorMessage, webhookId) {
     url: errorMessage.url,
     errorId: errorMessage.errorId,
     projectId: errorMessage.projectId,
-    webhookId: webhookId,
+    webhookId,
+    messageType,
+    botId,
   });
   if (moreStackTrace.length > 0) {
     const viewMore = findItemInAdaptiveCard(card, 'shoreMoreButtons');
@@ -112,7 +83,7 @@ function formatErrorMessageIntoCard(errorMessage, webhookId) {
   return card;
 }
 
-function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
+function formatErrorStateMessageIntoCard(errorMessage, webhookId, messageType, botId) {
   const { stackTrace, moreStackTrace } = splitStackTrace(errorMessage.stackTrace);
   const iconUrl = THUMB_ICON_URL[`collaborator_${errorMessage.stateChange}`] || THUMB_ICON_URL['collaborator'];
   const statusIconUrl = THUMB_ICON_URL[`status_${errorMessage.status}`] || THUMB_ICON_URL['status_open'];
@@ -131,7 +102,9 @@ function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
     severityIcon: severityIconUrl,
     errorId: errorMessage.errorId,
     projectId: errorMessage.projectId,
-    webhookId: webhookId,
+    webhookId,
+    messageType,
+    botId,
   });
   if (moreStackTrace.length > 0) {
     const viewMore = findItemInAdaptiveCard(card, 'shoreMoreButtons');
@@ -147,7 +120,7 @@ function formatErrorStateMessageIntoCard(errorMessage, webhookId) {
   return card;
 }
 
-function formatCommentMessageIntoCard(commentMessage, webhookId) {
+function formatCommentMessageIntoCard(commentMessage, webhookId, messageType, botId) {
   const { stackTrace, moreStackTrace } = splitStackTrace(commentMessage.stackTrace);
   const statusIconUrl = THUMB_ICON_URL[`status_${commentMessage.status}`] || THUMB_ICON_URL['status_open'];
   const severityIconUrl = THUMB_ICON_URL[`severity_${commentMessage.severity}`] || THUMB_ICON_URL['severity_info'];
@@ -166,64 +139,36 @@ function formatCommentMessageIntoCard(commentMessage, webhookId) {
     errorId: commentMessage.errorId,
     projectId: commentMessage.projectId,
     webhookId,
+    messageType,
+    botId,
   });
 }
 
-function formatAdaptiveCardMessage(bugsnagMessage, webhookId) {
-  const attachments = []
+function formatBugsnagMessageIntoCard({
+  bugsnagMessage,
+  webhookId = null,
+  messageType = 'Notification',
+  botId = null,
+}) {
   let formattedMessage;
   if (bugsnagMessage.release) {
     formattedMessage = formatReleaseMessage(bugsnagMessage);
-    const releaseCard = formatReleaseMessageIntoCard(formattedMessage);
-    attachments.push(releaseCard);
+    return formatReleaseMessageIntoCard(formattedMessage);
   }
   if (bugsnagMessage.comment) {
     formattedMessage = formatCommentMessage(bugsnagMessage);
-    const commentCard = formatCommentMessageIntoCard(formattedMessage, webhookId);
-    attachments.push(commentCard);
-  } else if (bugsnagMessage.error) {
-    let errorCard
+    return formatCommentMessageIntoCard(formattedMessage, webhookId, messageType, botId);
+  }
+  if (bugsnagMessage.error) {
     if (bugsnagMessage.trigger.type === 'errorStateManualChange') {
       formattedMessage = formatErrorStateMessage(bugsnagMessage);
-      errorCard = formatErrorStateMessageIntoCard(formattedMessage, webhookId);
+      return formatErrorStateMessageIntoCard(formattedMessage, webhookId, messageType, botId);
     } else {
       formattedMessage = formatErrorMessage(bugsnagMessage);
-      errorCard = formatErrorMessageIntoCard(formattedMessage, webhookId);
+      return formatErrorMessageIntoCard(formattedMessage, webhookId, messageType, botId);
     }
-    attachments.push(errorCard);
   }
-  if (attachments.length === 0) {
-    return {
-      title: `**${bugsnagMessage.trigger.message}** for [${bugsnagMessage.project.name}](${bugsnagMessage.project.url})`,
-    };
-  }
-  return {
-    // title: formattedMessage && formattedMessage.subject,
-    attachments,
-    icon: ICON_URL,
-    activity: 'Bugsnag Add-in',
-  };
+  return null;
 }
 
-function createAuthTokenRequestCard({ webhookId }) {
-  const card = getAdaptiveCardFromTemplate(authTokenTemplate, {
-    webhookId,
-  });
-  return {
-    attachments: [card],
-    icon: ICON_URL,
-    activity: 'Bugsnag Add-in',
-  };
-}
-
-function createMessageCard({ message }) {
-  return {
-    icon: ICON_URL,
-    title: message,
-    activity: 'Bugsnag Add-in',
-  }
-}
-
-exports.formatAdaptiveCardMessage = formatAdaptiveCardMessage;
-exports.createAuthTokenRequestCard = createAuthTokenRequestCard;
-exports.createMessageCard = createMessageCard;
+exports.formatBugsnagMessageIntoCard = formatBugsnagMessageIntoCard;

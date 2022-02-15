@@ -1,7 +1,7 @@
 {
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
-    "fallbackText": "Please input your Bugsnag personal auth token.",
+    "fallbackText": "Are you sure to remove your Bugsnag personal auth token?",
     "version": "1.3",
     "body": [
         {
@@ -9,15 +9,8 @@
             "items": [
                 {
                     "type": "TextBlock",
-                    "text": "Hi, please input your Bugsnag personal auth token to use interactive buttons. Generate it in the **My Account** section of [Bugsnag settings](https://app.bugsnag.com/settings/my-account)",
+                    "text": "Hi, are you sure to remove your Bugsnag personal token? After it is removed, you need to provide it again if you want to use Bugsnag action buttons.",
                     "wrap": true
-                },
-                {
-                    "id": "token",
-                    "type": "Input.Text",
-                    "isRequired": true,
-                    "errorMessage": "Auth token is required",
-                    "placeholder": "Personal auth token"
                 },
                 {
                     "type": "ColumnSet",
@@ -70,9 +63,9 @@
                                             "actions": [
                                                 {
                                                     "type": "Action.Submit",
-                                                    "title": "Submit",
+                                                    "title": "Remove token",
                                                     "data": {
-                                                        "action": "saveAuthToken",
+                                                        "action": "removeAuthToken",
                                                         "webhookId": "${webhookId}",
                                                         "messageType": "${messageType}",
                                                         "botId": "${botId}"

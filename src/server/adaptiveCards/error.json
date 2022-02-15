@@ -180,7 +180,54 @@
         },
         {
             "type": "Container",
+            "id": "operationLog",
+            "isVisible": false,
+            "style": "attention",
+            "items": []
+        },
+        {
+            "type": "Container",
             "items": [
+                {
+                    "type": "ActionSet",
+                    "id": "openActions",
+                    "actions": [
+                        {
+                            "type": "Action.ShowCard",
+                            "title": "Reopen",
+                            "card": {
+                                "type": "AdaptiveCard",
+                                "version": "1.3",
+                                "body": [
+                                    {
+                                        "type": "Input.Text",
+                                        "id": "openComment",
+                                        "placeholder": "Add a comment (optional)",
+                                        "maxLength": 500,
+                                        "isMultiline": true,
+                                        "isVisible": true
+                                    }
+                                ],
+                                "actions": [
+                                    {
+                                        "type": "Action.Submit",
+                                        "title": "Reopen",
+                                        "data": {
+                                            "action": "open",
+                                            "webhookId": "${webhookId}",
+                                            "projectId": "${projectId}",
+                                            "errorId": "${errorId}",
+                                            "messageType": "${messageType}",
+                                            "botId": "${botId}"
+                                        },
+                                        "style": "positive"
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "isVisible": false
+                },
                 {
                     "type": "ActionSet",
                     "id": "actions",
@@ -209,7 +256,9 @@
                                             "action": "fix",
                                             "webhookId": "${webhookId}",
                                             "projectId": "${projectId}",
-                                            "errorId": "${errorId}"
+                                            "errorId": "${errorId}",
+                                            "messageType": "${messageType}",
+                                            "botId": "${botId}"
                                         },
                                         "style": "positive"
                                     }
@@ -291,7 +340,9 @@
                                             "action": "snooze",
                                             "webhookId": "${webhookId}",
                                             "projectId": "${projectId}",
-                                            "errorId": "${errorId}"
+                                            "errorId": "${errorId}",
+                                            "messageType": "${messageType}",
+                                            "botId": "${botId}"
                                         },
                                         "style": "positive"
                                     }
@@ -322,7 +373,9 @@
                                             "action": "ignore",
                                             "webhookId": "${webhookId}",
                                             "projectId": "${projectId}",
-                                            "errorId": "${errorId}"
+                                            "errorId": "${errorId}",
+                                            "messageType": "${messageType}",
+                                            "botId": "${botId}"
                                         },
                                         "style": "positive"
                                     }

@@ -29,6 +29,27 @@ function getReopenRules(type) {
   return rules;
 }
 
+const ACTION_DESCRIPTIONS = {
+  fix: 'Fixed',
+  open: 'Reopened',
+  ignore: 'Ignored',
+  snooze: 'Snoozed',
+};
+
+const SNOOZE_TYPE_DESCRIPTIONS = {
+  '1hr': 'After 1 hour',
+  '6hr': 'After 6 hours',
+  '1d': 'After 1 day',
+  '1_time': 'After 1 time',
+  '10_times': 'After 10 times',
+  '100_times': 'After 100 times',
+  '1000_times': 'After 1000 times',
+  '1_in_1_hr': 'Least 1 time per hr',
+  '10_in_1_hr': 'Least 10 times per hr',
+  '100_in_1_hr': 'Least 100 times per hr',
+  '1000_in_1_hr': 'Least 1000 times per hr',
+};
+
 class Bugsnag {
   constructor({ authToken, projectId, errorId }) {
     this._authToken = authToken;
@@ -64,6 +85,31 @@ class Bugsnag {
     );
   }
 
+  async operate({ action, data }) {
+    if (action === 'fix') {
+      await this.makeAsFixed();
+    }
+    if (action === 'ignore') {
+      await this.ignore();
+    }
+    if (action === 'snooze') {
+      await this.snooze({ type: data.snoozeType });
+    }
+    if (action === 'open') {
+      await this.open();
+    }
+    const comment = (
+      data.fixComment ||
+      data.snoozeComment ||
+      data.ignoreComment ||
+      data.openComment ||
+      data.comment
+    );
+    if (comment) {
+      await this.comment({ message: comment });
+    }
+  }
+
   _updateError(body) {
     return axios.patch(
       this._apiUrl,
@@ -77,8 +123,11 @@ class Bugsnag {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'Authorization': `token ${this._authToken}`,
+      'X-Version': '2',
     };
   }
 }
 
 exports.Bugsnag = Bugsnag;
+exports.ACTION_DESCRIPTIONS = ACTION_DESCRIPTIONS;
+exports.SNOOZE_TYPE_DESCRIPTIONS = SNOOZE_TYPE_DESCRIPTIONS;

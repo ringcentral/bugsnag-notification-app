@@ -1,0 +1,349 @@
+{
+  "id": "43860078",
+  "creationTime": "2022-02-11T12:12:47.217Z",
+  "lastModifiedTime": "2022-02-11T12:12:47.267Z",
+  "type": "AdaptiveCard",
+  "creator": {
+    "id": "713297005"
+  },
+  "chatIds": ["1092911110"],
+  "version": "1.3",
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/comment.png",
+                  "height": "24px"
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "**Embbnux Ji commented** on [Unable to connect to database 2](https://app.bugsnag.com/embbnux/test-app/errors/620473cc81176200094af64c?event_id=620a1324009048a5aa7a0000&i=wh&m=cm)",
+                  "wrap": true
+                }
+              ],
+              "verticalContentAlignment": "Center",
+              "spacing": "Small"
+            }
+          ]
+        },
+        {
+          "type": "TextBlock",
+          "text": "Comment",
+          "wrap": true,
+          "size": "Small"
+        },
+        {
+          "type": "TextBlock",
+          "text": "test comment",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "text": "Stack trace",
+          "wrap": true,
+          "size": "Small"
+        },
+        {
+          "type": "TextBlock",
+          "text": "controllers/auth/session_controller.rb:1234 - create",
+          "spacing": "Small",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "wrap": true,
+          "text": "",
+          "isVisible": false,
+          "id": "moreStackTrace",
+          "spacing": "None"
+        },
+        {
+          "type": "Container",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Show more",
+              "wrap": true,
+              "color": "Accent",
+              "id": "showMoreText"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Show less",
+              "wrap": true,
+              "color": "Accent",
+              "id": "showLessText",
+              "isVisible": false
+            }
+          ],
+          "selectAction": {
+            "type": "Action.ToggleVisibility",
+            "targetElements": [
+              "moreStackTrace",
+              "showMoreText",
+              "showLessText"
+            ],
+            "title": "Show more"
+          },
+          "isVisible": false
+        },
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Release Stage",
+                  "wrap": true,
+                  "size": "Small"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "Staging",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Project",
+                  "wrap": true,
+                  "size": "Small"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "[Test App](https://app.bugsnag.com/embbnux/test-app?i=wh&m=cm)",
+                  "wrap": true,
+                  "color": "Dark"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Status",
+                  "wrap": true,
+                  "size": "Small"
+                },
+                {
+                  "type": "ColumnSet",
+                  "columns": [
+                    {
+                      "type": "Column",
+                      "width": "auto",
+                      "items": [
+                        {
+                          "type": "Image",
+                          "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon//open.png",
+                          "height": "16px"
+                        }
+                      ],
+                      "verticalContentAlignment": "Center"
+                    },
+                    {
+                      "type": "Column",
+                      "width": "stretch",
+                      "items": [
+                        {
+                          "type": "TextBlock",
+                          "text": "Open",
+                          "wrap": true,
+                          "color": "Dark"
+                        }
+                      ],
+                      "spacing": "Small",
+                      "verticalContentAlignment": "Center"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Severity",
+                  "wrap": true,
+                  "size": "Small"
+                },
+                {
+                  "type": "ColumnSet",
+                  "columns": [
+                    {
+                      "type": "Column",
+                      "width": "auto",
+                      "items": [
+                        {
+                          "type": "Image",
+                          "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon//error.dot.png",
+                          "height": "16px"
+                        }
+                      ],
+                      "verticalContentAlignment": "Center"
+                    },
+                    {
+                      "type": "Column",
+                      "width": "stretch",
+                      "items": [
+                        {
+                          "type": "TextBlock",
+                          "text": "Error",
+                          "wrap": true,
+                          "color": "Dark"
+                        }
+                      ],
+                      "spacing": "Small",
+                      "verticalContentAlignment": "Center"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "id": "operationLog",
+      "style": "good",
+      "items": [],
+      "isVisible": false
+    },
+    {
+      "type": "Input.Text",
+      "id": "comment",
+      "label": "Comment",
+      "placeholder": "Add a comment",
+      "maxLength": 500,
+      "isMultiline": true,
+      "isVisible": false,
+      "isRequired": true
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "ColumnSet",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "14px",
+                  "items": [
+                    {
+                      "type": "Image",
+                      "url": "https://raw.githubusercontent.com/ringcentral/bugsnag-notification-app/main/icon/feedback.png",
+                      "height": "12px"
+                    }
+                  ],
+                  "verticalContentAlignment": "Center"
+                },
+                {
+                  "type": "Column",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "[Feedback](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
+                      "wrap": true,
+                      "size": "Small"
+                    }
+                  ],
+                  "width": "stretch",
+                  "verticalContentAlignment": "Center"
+                }
+              ]
+            }
+          ],
+          "verticalContentAlignment": "Bottom"
+        },
+        {
+          "type": "Column",
+          "items": [
+            {
+              "type": "Container",
+              "items": [
+                {
+                  "type": "ActionSet",
+                  "id": "actions",
+                  "actions": [
+                    {
+                      "type": "Action.ToggleVisibility",
+                      "title": "Add comment",
+                      "targetElements": ["submitActions", "comment", "actions"]
+                    }
+                  ]
+                },
+                {
+                  "type": "ActionSet",
+                  "id": "submitActions",
+                  "actions": [
+                    {
+                      "type": "Action.ToggleVisibility",
+                      "title": "Cancel",
+                      "targetElements": ["actions", "comment", "submitActions"]
+                    },
+                    {
+                      "type": "Action.Submit",
+                      "title": "Submit",
+                      "data": {
+                        "action": "comment",
+                        "webhookId": "I3Ac5PFrC",
+                        "projectId": "5f73031fb91aad0014229623",
+                        "errorId": "620473cc81176200094af64c",
+                        "messageType": "Notification",
+                        "botId": null
+                      },
+                      "style": "positive"
+                    }
+                  ],
+                  "isVisible": false
+                }
+              ]
+            }
+          ],
+          "width": "auto",
+          "verticalContentAlignment": "Bottom"
+        }
+      ],
+      "horizontalAlignment": "Center"
+    }
+  ],
+  "fallbackText": "Embbnux Ji commented on \"Unable to connect to database 2\""
+}

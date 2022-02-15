@@ -63,7 +63,7 @@ resources:
     rcWebhooksTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: bugsnag-rc-notification-rc-webhooks
+        TableName: bugsnag-rc-notification-rcWebhooks
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -77,6 +77,19 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: bugsnag-rc-notification-authTokens
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    botsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: bugsnag-rc-notification-bots
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S

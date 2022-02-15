@@ -59,10 +59,9 @@ async function createWebhook(req, res) {
     }
     if (!bugsnagWebhook) {
       bugsnagWebhook = await Webhook.create({
+        id: rcWebhook.bugsnag_webhook_id,
         rc_webhook: rcWebhookUri,
       });
-      rcWebhook.bugsnag_webhook_id = bugsnagWebhook.id;
-      await rcWebhook.save();
     } else {
       if (bugsnagWebhook.rc_webhook !== rcWebhookUri) {
         bugsnagWebhook.rc_webhook = rcWebhookUri;

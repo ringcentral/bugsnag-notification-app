@@ -232,6 +232,13 @@
             ]
         },
         {
+            "type": "Container",
+            "id": "operationLog",
+            "style": "good",
+            "items": [],
+            "isVisible": false
+        },
+        {
             "type": "Input.Text",
             "id": "comment",
             "label": "Comment",
@@ -322,7 +329,9 @@
                                                 "action": "comment",
                                                 "webhookId": "${webhookId}",
                                                 "projectId": "${projectId}",
-                                                "errorId": "${errorId}"
+                                                "errorId": "${errorId}",
+                                                "messageType": "${messageType}",
+                                                "botId": "${botId}"
                                             },
                                             "style": "positive"
                                         }

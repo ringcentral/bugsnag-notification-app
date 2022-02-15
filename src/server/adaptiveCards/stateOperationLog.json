@@ -1,0 +1,20 @@
+
+{
+    "type": "RichTextBlock",
+    "inlines": [
+        {
+            "type": "TextRun",
+            "text": "${action}",
+            "weight": "bolder"
+        },
+        {
+            "type": "TextRun",
+            "text": " by ${name} - "
+        },
+        {
+            "type": "TextRun",
+            "text": " {{DATE(${operationTime})}}, {{TIME(${operationTime})}}",
+            "isSubtle": true
+        }
+    ]
+}
