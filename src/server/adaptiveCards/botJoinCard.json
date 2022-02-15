@@ -9,7 +9,7 @@
         },
         {
             "type": "TextBlock",
-            "text": "I am **Bugsnag Bot**. To connect Bugsnag with this conversaton, please click **Subscribe** button.",
+            "text": "I am **Bugsnag Bot**. To connect Bugsnag with this conversation, please click **Subscribe** button.",
             "wrap": true
         },
         {
