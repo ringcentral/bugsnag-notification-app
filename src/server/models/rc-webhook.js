@@ -11,7 +11,7 @@ exports.RCWebhook = sequelize.define('rcWebhooks', {
   },
   bugsnag_webhook_id: { 
     type: Sequelize.STRING, // identify for bugsnag webhooks callback uri
-    defaultValue: nanoid,
+    defaultValue: (length = 15) => nanoid(length),
   },
   rc_webhook_uri: {
     type: Sequelize.STRING, // ringcentral webhook uri
