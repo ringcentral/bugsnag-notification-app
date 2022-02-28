@@ -228,9 +228,9 @@ async function botInteractiveMessagesHandler(req, res) {
         errorId: body.data.errorId,
       });
       await bugsnag.operate({ action, data: body.data });
+      await addOperationLogIntoCard(bot, cardId, body.data, body.user);
       res.status(200);
       res.end();
-      await addOperationLogIntoCard(bot, cardId, body.data, body.user);
     } catch (e) {
       if (e.response) {
         if (e.response.status === 401) {
