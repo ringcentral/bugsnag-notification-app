@@ -2,7 +2,7 @@ const path = require('path');
 var fs = require('fs');
 const DynamoDbLocal = require('dynamodb-local');
 
-const dynamoLocalPort = 8000
+const dynamoLocalPort = 8000;
 
 const dbPath = path.resolve(__dirname, '../.dynamodb');
 
