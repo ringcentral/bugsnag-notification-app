@@ -13,3 +13,4 @@ serverless-deploy/.serverless
 
 *.log
 coverage
+.dynamodb
