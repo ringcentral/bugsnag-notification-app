@@ -46,7 +46,7 @@
                                             "items": [
                                                 {
                                                     "type": "TextBlock",
-                                                    "text": "[Feedback](https://github.com/ringcentral/bugsnag-notification-app/issues/new)",
+                                                    "text": "[Feedback](https://forms.gle/H8XofEFvECk6Jzmu8)",
                                                     "wrap": true,
                                                     "size": "Small"
                                                 }
