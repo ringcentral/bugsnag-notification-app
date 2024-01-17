@@ -17,7 +17,7 @@ async function setup(req, res) {
   }
   res.render('new', {
     glipWebhookUri,
-    analyticsKey: process.env.SEGMENT_KEY,
+    analyticsKey: process.env.MIXPANEL_KEY,
   });
 }
 

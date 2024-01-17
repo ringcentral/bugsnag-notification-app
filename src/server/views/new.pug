@@ -10,6 +10,7 @@ html
     style
       include style.css
     script(src='https://unpkg.com/ringcentral-notification-integration-helper@0.4.2/dist/ringcentral-notification-integration-helper.js')
+    script(src='https://apps.ringcentral.com/integration/bugsnag/analytics.es5.js')
   body
     #container
       p The integration can send notifications to the RingCentral conversation and allows you to take action on errors straight from RingCentral.
@@ -36,23 +37,18 @@ html
       var webhookInput = window.document.getElementById('webhookURL');
       var glipWebhookUri = webhookInput.getAttribute('data-glip-webhook-uri');
       var analyticsKey = webhookInput.getAttribute('data-analytics-key');
-      if (analyticsKey) {
-        !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="write key redacted";analytics.SNIPPET_VERSION="4.13.2";
-          analytics.load(analyticsKey);
-          analytics.page();
-        }}();
+      var analyticsInitialized = false;
+      if (analyticsKey && window.analytics) {
+        analytics.init(analyticsKey)
+        analyticsInitialized = true;
+        window.analytics.page('Bugsnag setup')
       }
       function track(eventName) {
-        if (!window.analytics) {
+        if (!analyticsInitialized) {
           return;
         }
         window.analytics.track(eventName, {
           appName: 'Bugsnag Notifications',
-        }, {
-          integrations: {
-            All: true,
-            Mixpanel: true
-          }
         });
       }
       copyBtn.addEventListener('click', function() {
