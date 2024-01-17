@@ -10,7 +10,7 @@ const commentCardMock = require('./mock-data/comment-card.json');
 
 const { getRequestBody } = require('./utils');
 
-axios.defaults.adapter = require('axios/lib/adapters/http');
+axios.defaults.adapter = 'http';
 
 describe('Bot', () => {
   const botId = '266262004';
