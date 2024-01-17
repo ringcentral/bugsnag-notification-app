@@ -11,7 +11,7 @@ const releaseData = require('../example-payload/release.json');
 const commentData = require('../example-payload/comment.json');
 const collaboratorFixedData = require('../example-payload/collaborator-fixed.json');
 
-axios.defaults.adapter = require('axios/lib/adapters/http');
+axios.defaults.adapter = 'http';
 
 describe('Bot', () => {
   const botId = '266262004';

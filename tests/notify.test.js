@@ -22,7 +22,7 @@ const collaboratorSnoozedPerHourData = require('../example-payload/collaborator-
 
 const { getRequestBody } = require('./utils');
 
-axios.defaults.adapter = require('axios/lib/adapters/http')
+axios.defaults.adapter = 'http';
 
 describe('Notify', () => {
   const webhookId = '12121';
