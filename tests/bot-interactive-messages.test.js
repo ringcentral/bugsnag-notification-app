@@ -30,7 +30,7 @@ describe('Bot', () => {
     const rcWebhookScope = nock(process.env.RINGCENTRAL_SERVER)
       .post(uri => uri.includes('/restapi/v1.0/subscription'))
       .reply(200, {});
-    await request(server).get('/bot/oauth?code=xxxxxx&client_id=xxxxxx');
+    await request(server).get(`/bot/oauth?code=xxxxxx&client_id=xxxxxx&creator_extension_id=${botId}&creator_account_id=1234`);
     rcTokenScope.done();
     rcWebhookScope.done();
   });
@@ -119,6 +119,7 @@ describe('Bot', () => {
         user: {
           accountId: 'test-account-id',
           id: 'test-user-id',
+          extId: 'test-ext-id',
         },
         conversation: {
           id: groupId,
