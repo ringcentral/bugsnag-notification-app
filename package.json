@@ -13,7 +13,7 @@
     "serverless-deploy": "node ./scripts/serverless-deploy",
     "build": "npm run serverless-build",
     "deploy": "npm run serverless-deploy",
-    "test": "jest tests/bot.test.js",
+    "test": "jest",
     "test-coverage": "jest --coverage"
   },
   "devDependencies": {
