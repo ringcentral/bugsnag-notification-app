@@ -6,7 +6,7 @@ const { AuthToken } = require('../models/authToken');
 
 const { sendAdaptiveCardToRCWebhook, sendTextMessageToRCWebhook } = require('../utils/messageHelper');
 const { findItemInAdaptiveCard } = require('../utils/adaptiveCardHelper');
-
+const { Analytics } = require('../utils/analytics');
 const botActions = require('../bot/actions');
 const { getAdaptiveCardFromTemplate } = require('../utils/getAdaptiveCardFromTemplate');
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
@@ -171,6 +171,11 @@ async function botInteractiveMessagesHandler(req, res) {
   const groupId = body.conversation.id;
   const botId = body.data.botId;
   const cardId = req.body.card.id;
+  const analytics = new Analytics({
+    mixpanelKey: process.env.MIXPANEL_KEY,
+    secretKey: process.env.ANALYTICS_SECRET_KEY,
+    userId: botId,
+  });
   try {
     const bot = await Bot.findByPk(botId);
     if (!bot) {
@@ -178,11 +183,19 @@ async function botInteractiveMessagesHandler(req, res) {
       res.send('Params error');
       return;
     }
+    if (bot.token) {
+      analytics.setAccountId(bot.token.creator_account_id)
+    }
     const action = body.data.action;
     if (action === 'subscribe') {
       await botActions.sendSubscribeCard(bot, groupId);
       res.status(200);
       res.send('ok');
+      await analytics.trackUserAction('cardSubmitted', body.user.extId, {
+        action,
+        chatId: body.conversation.id,
+        result: 'success',
+      });
       return;
     }
     const authToken = await AuthToken.findByPk(`${body.user.accountId}-${body.user.id}`);
@@ -197,6 +210,11 @@ async function botInteractiveMessagesHandler(req, res) {
       await bot.updateAdaptiveCard(cardId, newCard);
       res.status(200);
       res.send('ok');
+      await analytics.trackUserAction('cardSubmitted', body.user.extId, {
+        action,
+        chatId: body.conversation.id,
+        result: 'success',
+      });
       return;
     }
     if (action === 'removeAuthToken') {
@@ -213,12 +231,22 @@ async function botInteractiveMessagesHandler(req, res) {
       await bot.updateAdaptiveCard(cardId, newCard);
       res.status(200);
       res.send('ok');
+      await analytics.trackUserAction('cardSubmitted', body.user.extId, {
+        action,
+        chatId: body.conversation.id,
+        result: 'success',
+      });
       return;
     }
     if (!authToken || !authToken.data || authToken.data.length == 0) {
       await botActions.sendAuthCard(bot, groupId);
       res.status(200);
       res.send('ok');
+      await analytics.trackUserAction('cardSubmitted', body.user.extId, {
+        action,
+        chatId: body.conversation.id,
+        result: 'authorizeRequired',
+      });
       return;
     }
     try {
@@ -231,7 +259,13 @@ async function botInteractiveMessagesHandler(req, res) {
       await addOperationLogIntoCard(bot, cardId, body.data, body.user);
       res.status(200);
       res.end();
+      await analytics.trackUserAction('cardSubmitted', body.user.extId, {
+        action,
+        chatId: body.conversation.id,
+        result: 'success',
+      });
     } catch (e) {
+      let trackResult = 'error';
       if (e.response) {
         if (e.response.status === 401) {
           authToken.data = '';
@@ -241,16 +275,23 @@ async function botInteractiveMessagesHandler(req, res) {
             messageType: 'Bot',
             webhookId: null,
           }));
+          trackResult = 'authorizeRequired';
         } else if (e.response.status === 403) {
           await bot.sendMessage(groupId, {
             text: `Hi ${body.user.firstName}, your Bugsnag role doesn't have permission to perform this action.`,
           });
+          trackResult = 'permissionDenied';
         }
       } else {
         console.error(e);
       }
       res.status(200);
       res.send('ok');
+      await analytics.trackUserAction('cardSubmitted', body.user.extId, {
+        action,
+        chatId: body.conversation.id,
+        result: trackResult,
+      });
     }
   } catch (e) {
     console.error(e);
