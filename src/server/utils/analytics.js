@@ -69,28 +69,6 @@ class Analytics {
     return this.track(action, properties);
   }
 
-  batchTrack(events) {
-    if (!this._mixpanel) {
-      return Promise.resolve();
-    }
-    return new Promise((resolve, reject) => {
-      const batch = events.map(event => ({
-        event: event.event,
-        properties: {
-          ...this.presetProperties,
-          ...event.properties,
-        },
-      }));
-      this._mixpanel.track_batch(batch, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
-  }
-
   identify() {
     if (!this._mixpanel || !this._hashAccountId) {
       return Promise.resolve();

@@ -57,6 +57,20 @@ async function botHandler({
       chatMemberCount: group.members.length - 1,
     });
   }
+  if (type === 'BotAdded') {
+    await analytics.trackUserAction(
+      'botInstalled',
+      bot.token.creator_extension_id,
+    );
+    await analytics.identify();
+    return;
+  }
+  if (type === 'BotRemoved') {
+    await analytics.trackUserAction(
+      'botUninstalled',
+      // bot.token.creator_extension_id,
+    );
+  }
 }
 
 exports.botHandler = botHandler;
