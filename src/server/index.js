@@ -29,4 +29,3 @@ extendBotApp(app, [], botHandler, botConfig);
 app.post('/bot-notify/:id', notificationRoute.botNotification);
 
 exports.app = app;
-
