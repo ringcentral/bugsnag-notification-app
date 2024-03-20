@@ -456,4 +456,118 @@ describe('Bot', () => {
     rcCardScope.done();
     bugsnagScope.done();
   });
+
+  it('should response 200 when Bugnsnag response with 404', async () => {
+    const userId = 'test-user-id-1';
+    const projectId = 'test-project-id';
+    const errorId = 'test-error-id';
+    const bugsnagScope = nock('https://api.bugsnag.com')
+      .patch(uri => uri.includes(`/projects/${projectId}/errors/${errorId}`))
+      .reply(404, {});
+    const cardId = 'test-card-id-1';
+    const authToken = await AuthToken.findByPk('test-account-id-test-user-id-1');
+    authToken.data = 'xxx';
+    await authToken.save();
+    const res = await request(server)
+      .post('/interactive-messages')
+      .send({
+        data: {
+          botId,
+          messageType: 'Bot',
+          action: 'fix',
+          projectId,
+          errorId,
+        },
+        user: {
+          accountId: 'test-account-id',
+          id: userId,
+        },
+        conversation: {
+          id: groupId,
+        },
+        card: {
+          id: cardId,
+        },
+      });
+    expect(res.status).toEqual(200);
+    bugsnagScope.done();
+  });
+
+  it('should response 200 when Bugnsnag response with network issue', async () => {
+    const userId = 'test-user-id-1';
+    const projectId = 'test-project-id';
+    const errorId = 'test-error-id';
+    const bugsnagScope = nock('https://api.bugsnag.com')
+      .patch(uri => uri.includes(`/projects/${projectId}/errors/${errorId}`))
+      .replyWithError("network issue");
+    const cardId = 'test-card-id-1';
+    const authToken = await AuthToken.findByPk('test-account-id-test-user-id-1');
+    authToken.data = 'xxx';
+    await authToken.save();
+    const res = await request(server)
+      .post('/interactive-messages')
+      .send({
+        data: {
+          botId,
+          messageType: 'Bot',
+          action: 'fix',
+          projectId,
+          errorId,
+        },
+        user: {
+          accountId: 'test-account-id',
+          id: userId,
+        },
+        conversation: {
+          id: groupId,
+        },
+        card: {
+          id: cardId,
+        },
+      });
+    expect(res.status).toEqual(200);
+    bugsnagScope.done();
+  });
+
+  it('should reply 500 when send no permission card error', async () => {
+    const userId = 'test-user-id-1';
+    const projectId = 'test-project-id';
+    const errorId = 'test-error-id';
+    const bugsnagScope = nock('https://api.bugsnag.com')
+      .patch(uri => uri.includes(`/projects/${projectId}/errors/${errorId}`))
+      .reply(403, {});
+    let bugsnagRequestBody = null;
+    bugsnagScope.once('request', ({ headers: requestHeaders }, interceptor, reqBody) => {
+      bugsnagRequestBody = JSON.parse(reqBody);
+    });
+    const cardId = 'test-card-id-1';
+    const rcPostScope = nock(process.env.RINGCENTRAL_SERVER)
+      .post(uri => uri.includes(`/restapi/v1.0/glip/groups/${groupId}/posts`))
+      .reply(500, {});
+
+    const res = await request(server)
+      .post('/interactive-messages')
+      .send({
+        data: {
+          botId,
+          messageType: 'Bot',
+          action: 'fix',
+          projectId,
+          errorId,
+        },
+        user: {
+          accountId: 'test-account-id',
+          id: userId,
+        },
+        conversation: {
+          id: groupId,
+        },
+        card: {
+          id: cardId,
+        },
+      });
+    expect(res.status).toEqual(500);
+    rcPostScope.done();
+    bugsnagScope.done();
+  });
 });

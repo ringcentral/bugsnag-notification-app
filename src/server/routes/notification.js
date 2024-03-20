@@ -36,7 +36,7 @@ async function notification(req, res) {
     res.status(200);
     res.send('ok');
   } catch (e) {
-    console.error(e);
+    console.error(e && e.message);
     res.status(500);
     res.send('error');
   }
@@ -75,7 +75,7 @@ async function botNotification(req, res) {
     res.status(200);
     res.send('ok');
   } catch (e) {
-    console.log(e);
+    console.error('Send bot notification error');
     res.status(500);
     res.send('error');
   }

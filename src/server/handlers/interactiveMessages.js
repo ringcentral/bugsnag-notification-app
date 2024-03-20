@@ -83,7 +83,7 @@ async function notificationInteractiveMessages(req, res) {
         );
       }
     } else {
-      console.error(e);
+      console.error(e && e.message);
     }
   }
   res.status(200);
@@ -162,7 +162,7 @@ async function addOperationLogIntoCard(bot, cardId, data, user) {
       await bot.updateAdaptiveCard(cardId, newCard);
     }
   } catch (e) {
-    console.error(e);
+    console.error(e && e.message);
   }
 }
 
@@ -258,12 +258,13 @@ async function botInteractiveMessagesHandler(req, res) {
       await bugsnag.operate({ action, data: body.data });
       await addOperationLogIntoCard(bot, cardId, body.data, body.user);
       res.status(200);
-      res.end();
+      res.send('ok');
       await analytics.trackUserAction('cardSubmitted', body.user.extId, {
         action,
         chatId: body.conversation.id,
         result: 'success',
       });
+      return;
     } catch (e) {
       let trackResult = 'error';
       if (e.response) {
@@ -283,10 +284,12 @@ async function botInteractiveMessagesHandler(req, res) {
           trackResult = 'permissionDenied';
         }
       } else {
-        console.error(e);
+        console.error(e && e.message);
       }
-      res.status(200);
-      res.send('ok');
+      if (!res.headersSent) {
+        res.status(200);
+        res.send('ok');
+      }
       await analytics.trackUserAction('cardSubmitted', body.user.extId, {
         action,
         chatId: body.conversation.id,
@@ -294,9 +297,11 @@ async function botInteractiveMessagesHandler(req, res) {
       });
     }
   } catch (e) {
-    console.error(e);
-    res.status(500);
-    res.send('Internal error');
+    console.error(e && e.message);
+    if (!res.headersSent) {
+      res.status(500);
+      res.send('Internal error');
+    }
   }
 }
 
