@@ -10,7 +10,19 @@ const { botHandler } = require('./bot/handler');
 const { botConfig } = require('./bot/config');
 
 const app = express()
-app.use(morgan('tiny'))
+app.use(morgan(function (tokens, req, res) {
+  let url = tokens.url(req, res);
+  if (url.indexOf('/bot-notify/') === 0) {
+    url = `/bot-notify/[MASK]-${url.slice(-5)}`; // mask from log
+  }
+  return [
+    tokens.method(req, res),
+    url,
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms'
+  ].join(' ');
+}));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
