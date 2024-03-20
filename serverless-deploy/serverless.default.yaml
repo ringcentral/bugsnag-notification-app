@@ -1,15 +1,14 @@
-service:
-  name: ringcentral-bugsnag-notification-app
+service: ringcentral-bugsnag-notification-app
+frameworkVersion: '3'
 provider:
   stage: ${opt:stage, 'prod'}
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   region: us-east-1
   memorySize: 256
   timeout: 30
   environment: ${file(./env.yml)}
   profile: default
-  excludeDevDependencies: true
   # iamRoleStatements:
   #   - Effect: Allow
   #     Action:
@@ -31,6 +30,7 @@ provider:
     Team: your-team
     Name: ringcentral-bugsnag-notification-app
 package:
+  excludeDevDependencies: true
   include:
     - '.json'
     - '.js'
