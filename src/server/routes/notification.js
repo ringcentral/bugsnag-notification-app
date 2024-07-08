@@ -4,7 +4,7 @@ const Bot = require('ringcentral-chatbot-core/dist/models/Bot').default;
 const { decodeToken } = require('../utils/jwt');
 const { sendAdaptiveCardToRCWebhook } = require('../utils/messageHelper');
 const { Analytics } = require('../utils/analytics');
-
+const { errorLogger } = require('../utils/logger');
 const { Webhook } = require('../models/webhook');
 const { notificationInteractiveMessages, botInteractiveMessagesHandler } = require('../handlers/interactiveMessages');
 
@@ -36,7 +36,7 @@ async function notification(req, res) {
     res.status(200);
     res.send('ok');
   } catch (e) {
-    console.error(e && e.message);
+    errorLogger(e);
     res.status(500);
     res.send('error');
   }
@@ -68,7 +68,7 @@ async function botNotification(req, res) {
         userId: bot.id,
         accountId: bot.token && bot.token.creator_account_id,
       });
-      analytics.trackBotAction('cardPosted', {
+      await analytics.trackBotAction('cardPosted', {
         chatId: groupId,
       });
     }

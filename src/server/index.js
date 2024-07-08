@@ -8,12 +8,16 @@ const notificationRoute = require('./routes/notification');
 const subscriptionRoute = require('./routes/subscription');
 const { botHandler } = require('./bot/handler');
 const { botConfig } = require('./bot/config');
+const { errorLogger } = require('./utils/logger');
 
 const app = express()
 app.use(morgan(function (tokens, req, res) {
   let url = tokens.url(req, res);
   if (url.indexOf('/bot-notify/') === 0) {
     url = `/bot-notify/[MASK]-${url.slice(-5)}`; // mask from log
+  }
+  if (url.indexOf('/bot/oauth') === 0) {
+    url = '/bot/oauth'; // mask from log
   }
   return [
     tokens.method(req, res),
@@ -39,5 +43,14 @@ app.post('/interactive-messages', notificationRoute.interactiveMessages);
 // bots:
 extendBotApp(app, [], botHandler, botConfig);
 app.post('/bot-notify/:id', notificationRoute.botNotification);
+
+app.use(function (err, req, res, next) {
+  errorLogger(err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500);
+  res.json({ result: 'error', message: 'Internal server error' });
+});
 
 exports.app = app;
