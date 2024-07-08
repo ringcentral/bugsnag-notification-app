@@ -1,5 +1,6 @@
 const { Webhook } = require('../models/webhook');
 const { RCWebhook } = require('../models/rc-webhook');
+const { errorLogger } = require('../utils/logger');
 
 // Setup page for install add-in
 async function setup(req, res) {
@@ -72,7 +73,7 @@ async function createWebhook(req, res) {
       webhookUri: `${process.env.APP_SERVER}/notify/${bugsnagWebhook.id}`,
     });
   } catch (e) {
-    console.error(e);
+    errorLogger(e);
     res.status(500);
     res.send('Internal server error');
     return;

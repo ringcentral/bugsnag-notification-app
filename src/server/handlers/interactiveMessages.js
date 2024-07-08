@@ -12,6 +12,7 @@ const { getAdaptiveCardFromTemplate } = require('../utils/getAdaptiveCardFromTem
 const authTokenTemplate = require('../adaptiveCards/authToken.json');
 const messageCardTemplate = require('../adaptiveCards/message.json');
 const stateOperationLogTemplate = require('../adaptiveCards/stateOperationLog.json');
+const { errorLogger } = require('../utils/logger');
 
 async function saveAuthToken(authToken, body) {
   if (authToken) {
@@ -83,7 +84,7 @@ async function notificationInteractiveMessages(req, res) {
         );
       }
     } else {
-      console.error(e && e.message);
+      errorLogger(e);
     }
   }
   res.status(200);
@@ -162,7 +163,7 @@ async function addOperationLogIntoCard(bot, cardId, data, user) {
       await bot.updateAdaptiveCard(cardId, newCard);
     }
   } catch (e) {
-    console.error(e && e.message);
+    errorLogger(e);
   }
 }
 
@@ -284,7 +285,7 @@ async function botInteractiveMessagesHandler(req, res) {
           trackResult = 'permissionDenied';
         }
       } else {
-        console.error(e && e.message);
+        errorLogger(e);
       }
       if (!res.headersSent) {
         res.status(200);
@@ -297,7 +298,7 @@ async function botInteractiveMessagesHandler(req, res) {
       });
     }
   } catch (e) {
-    console.error(e && e.message);
+    errorLogger(e);
     if (!res.headersSent) {
       res.status(500);
       res.send('Internal error');

@@ -40,7 +40,7 @@
     "morgan": "^1.10.0",
     "nanoid": "^3.2.0",
     "pug": "^3.0.3",
-    "ringcentral-chatbot-core": "^1.5.4-beta.1",
+    "ringcentral-chatbot-core": "^1.6.1",
     "sequelize": "^6.29.0",
     "serverless-http": "^2.6.0"
   }
