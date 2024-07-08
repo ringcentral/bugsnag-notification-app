@@ -9,6 +9,7 @@ const subscriptionRoute = require('./routes/subscription');
 const { botHandler } = require('./bot/handler');
 const { botConfig } = require('./bot/config');
 const { errorLogger } = require('./utils/logger');
+const { refererChecker } = require('./utils/refererChecker');
 
 const app = express()
 app.use(morgan(function (tokens, req, res) {
@@ -36,7 +37,7 @@ app.post('/notify/:id', notificationRoute.notification);
 app.post('/notify_v2/:id', notificationRoute.notification);
 
 app.get('/webhook/new', subscriptionRoute.setup);
-app.post('/webhooks', subscriptionRoute.createWebhook);
+app.post('/webhooks', refererChecker, subscriptionRoute.createWebhook);
 
 app.post('/interactive-messages', notificationRoute.interactiveMessages);
 

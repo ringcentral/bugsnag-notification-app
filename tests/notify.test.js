@@ -30,7 +30,7 @@ describe('Notify', () => {
   let bugsnagWebhookRecord;
 
   beforeAll(async () => {
-    await request(server).post('/webhooks').send({ webhook });
+    await request(server).post('/webhooks').send({ webhook }).set('Referer', process.env.APP_SERVER);
     const rcWebhookRecord = await RCWebhook.findByPk(webhookId);
     bugsnagWebhookRecord = await Webhook.findByPk(rcWebhookRecord.bugsnag_webhook_id);
   });
