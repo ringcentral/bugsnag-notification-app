@@ -6,6 +6,8 @@ const { extendApp: extendBotApp } = require('ringcentral-chatbot-core');
 
 const notificationRoute = require('./routes/notification');
 const subscriptionRoute = require('./routes/subscription');
+const maintainRoute = require('./routes/maintain');
+
 const { botHandler } = require('./bot/handler');
 const { botConfig } = require('./bot/config');
 const { errorLogger } = require('./utils/logger');
@@ -40,6 +42,7 @@ app.get('/webhook/new', subscriptionRoute.setup);
 app.post('/webhooks', refererChecker, subscriptionRoute.createWebhook);
 
 app.post('/interactive-messages', notificationRoute.interactiveMessages);
+app.get('/maintain/migrate-encrypted-data', maintainRoute.migrateEncryptedData);
 
 // bots:
 extendBotApp(app, [], botHandler, botConfig);

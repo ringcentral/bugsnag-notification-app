@@ -58,7 +58,8 @@ async function notificationInteractiveMessages(req, res) {
     res.send('ok');
     return;
   }
-  if (!authToken || !authToken.data || authToken.data.length == 0) {
+  const authTokenData = authToken && authToken.getDecryptedData();
+  if (!authTokenData) {
     await sendAuthCardToRCWebhook(webhookRecord.rc_webhook, webhookId);
     res.status(200);
     res.send('ok');
@@ -66,7 +67,7 @@ async function notificationInteractiveMessages(req, res) {
   }
   try {
     const bugsnag = new Bugsnag({
-      authToken: authToken.data,
+      authToken: authTokenData,
       projectId: body.data.projectId,
       errorId: body.data.errorId,
     });
@@ -74,7 +75,7 @@ async function notificationInteractiveMessages(req, res) {
   } catch (e) {
     if (e.response) {
       if (e.response.status === 401) {
-        authToken.data = '';
+        authToken.removeData();
         await authToken.save();
         await sendAuthCardToRCWebhook(webhookRecord.rc_webhook, webhookId);
       } else if (e.response.status === 403) {
@@ -220,7 +221,7 @@ async function botInteractiveMessagesHandler(req, res) {
     }
     if (action === 'removeAuthToken') {
       if (authToken) {
-        authToken.data = '';
+        authToken.removeData();
         await authToken.save();
       }
       const newCard = getAdaptiveCardFromTemplate(
@@ -239,7 +240,8 @@ async function botInteractiveMessagesHandler(req, res) {
       });
       return;
     }
-    if (!authToken || !authToken.data || authToken.data.length == 0) {
+    const authTokenData = authToken && authToken.getDecryptedData();
+    if (!authTokenData) {
       await botActions.sendAuthCard(bot, groupId);
       res.status(200);
       res.send('ok');
@@ -252,7 +254,7 @@ async function botInteractiveMessagesHandler(req, res) {
     }
     try {
       const bugsnag = new Bugsnag({
-        authToken: authToken.data,
+        authToken: authTokenData,
         projectId: body.data.projectId,
         errorId: body.data.errorId,
       });
@@ -270,7 +272,7 @@ async function botInteractiveMessagesHandler(req, res) {
       let trackResult = 'error';
       if (e.response) {
         if (e.response.status === 401) {
-          authToken.data = '';
+          authToken.removeData();
           await authToken.save();
           await bot.sendAdaptiveCard(groupId, getAdaptiveCardFromTemplate(authTokenTemplate, {
             botId,

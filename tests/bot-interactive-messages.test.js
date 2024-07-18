@@ -132,7 +132,7 @@ describe('Bot', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.type).toContain('AdaptiveCard');
     expect(JSON.stringify(requestBody.body)).toContain('token is saved successfully');
-    expect(authToken.data).toEqual('test-token');
+    expect(authToken.getDecryptedData()).toEqual('test-token');
     rcCardScope.done();
   });
 
@@ -168,7 +168,7 @@ describe('Bot', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.type).toContain('AdaptiveCard');
     expect(JSON.stringify(requestBody.body)).toContain('token is removed successfully');
-    expect(authToken.data).toEqual('');
+    expect(authToken.getDecryptedData()).toEqual('');
     rcCardScope.done();
   });
 

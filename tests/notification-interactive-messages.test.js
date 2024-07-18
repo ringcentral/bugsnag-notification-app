@@ -132,7 +132,7 @@ describe('Notification Interactive Messages', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.title).toContain('token is saved');
     const authToken = await AuthToken.findByPk('test-account-id-test-user-id');
-    expect(authToken.data).toEqual('test-token');
+    expect(authToken.getDecryptedData()).toEqual('test-token');
     scope.done();
   });
 
@@ -145,7 +145,7 @@ describe('Notification Interactive Messages', () => {
       requestBody = JSON.parse(reqBody);
     });
     let authToken = await AuthToken.findByPk('test-account-id-test-user-id');
-    expect(!!authToken.data).toEqual(true);
+    expect(!!authToken.getDecryptedData()).toEqual(true);
     const res = await request(server).post('/interactive-messages').send({
       data: {
         webhookId: webhookRecord.id,
@@ -163,7 +163,7 @@ describe('Notification Interactive Messages', () => {
     expect(res.status).toEqual(200);
     expect(requestBody.title).toContain('token is saved');
     authToken = await AuthToken.findByPk('test-account-id-test-user-id');
-    expect(authToken.data).toEqual('test-token-2');
+    expect(authToken.getDecryptedData()).toEqual('test-token-2');
     scope.done();
   });
 
