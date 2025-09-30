@@ -30,7 +30,7 @@
   "dependencies": {
     "adaptive-expressions": "^4.21.4",
     "adaptivecards-templating": "^2.1.0",
-    "axios": "^1.8.4",
+    "axios": "^1.12.2",
     "body-parser": "^1.20.2",
     "dotenv": "6.2.0",
     "dynamo-sequelize": "^3.0.0",
